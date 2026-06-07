@@ -4,6 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#FAF8F4" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Payer Pay">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <title>Payer Pay</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
@@ -49,13 +56,31 @@ svg{display:block}
 .hero .big .c{font-size:30px;color:var(--ink3)}
 .hero .chg{margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--green);font-weight:500;background:rgba(42,122,80,.08);padding:5px 11px;border-radius:100px}
 
-/* espresso card */
-.cardstage{perspective:1200px;margin:22px auto 8px;width:100%;max-width:336px;aspect-ratio:1.586/1}
-.pcard{position:relative;width:100%;height:100%;border-radius:22px;transform-style:preserve-3d;transition:transform .12s ease-out;will-change:transform;
+/* espresso card — 3D flip */
+.cardstage{position:relative;perspective:950px;perspective-origin:50% 42%;margin:22px auto 8px;width:100%;max-width:336px;aspect-ratio:1.586/1}
+.cardstage::after{content:"";position:absolute;left:9%;right:9%;bottom:-8px;height:28px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(40,25,12,.45),transparent 72%);opacity:0;transition:opacity .35s ease-out;pointer-events:none;z-index:-1}
+.cardstage.lift::after{opacity:1}
+.cardflip{position:relative;width:100%;height:100%;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;
+  transition:transform .65s cubic-bezier(.34,1.4,.64,1);will-change:transform;cursor:pointer}
+.cardflip.flipped{transform:rotateY(180deg)}
+.pcard{position:absolute;inset:0;border-radius:22px;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-origin:center center;-webkit-transform-origin:center center;
   background:radial-gradient(130% 150% at 100% 0%,#43382E 0%,transparent 50%),linear-gradient(150deg,#2E2823 0%,#241F1A 50%,#1A1612 100%);
-  box-shadow:0 30px 50px -26px rgba(40,25,12,.55),0 8px 20px -10px rgba(40,25,12,.3);overflow:hidden}
-.pcard .pad{position:absolute;inset:0;padding:24px}
-.sheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(108deg,transparent 34%,rgba(255,230,200,.13) 48%,transparent 60%);transform:translateX(-60%)}
+  box-shadow:0 24px 44px -24px rgba(40,25,12,.5),0 6px 16px -8px rgba(40,25,12,.28)}
+.pcard.back{transform:rotateY(180deg) translateZ(1px);-webkit-transform:rotateY(180deg) translateZ(1px);background:linear-gradient(150deg,#2B2620 0%,#211C17 60%,#1A1612 100%)}
+.pcard .pad,.bpad{position:absolute;inset:0;padding:24px}
+.fhint{position:absolute;right:22px;bottom:22px;display:flex;align-items:center;gap:5px;font-size:9.5px;letter-spacing:.1em;color:#8C8174;text-transform:uppercase;font-family:var(--sans)}
+/* back face */
+.mag{position:absolute;top:24px;left:0;right:0;height:44px;background:#0D0A07}
+.sig{position:absolute;top:84px;left:24px;right:24px;height:30px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;padding:0 6px 0 12px;
+  background:repeating-linear-gradient(45deg,#EBE3D5,#EBE3D5 7px,#DFD5C4 7px,#DFD5C4 14px)}
+.sig .sg{font-family:var(--serif);font-style:italic;font-size:13px;color:#4A4136}
+.sig .cvvb{font-weight:600;font-size:12px;color:#211C18;background:#fff;padding:3px 10px;border-radius:3px;font-family:var(--sans);letter-spacing:.08em}
+.bnum{position:absolute;left:24px;right:24px;bottom:64px;font-size:18px;letter-spacing:.15em;color:#D2C7B7;font-weight:500;font-family:var(--sans)}
+.brow{position:absolute;left:24px;right:24px;bottom:40px;display:flex;gap:30px;font-size:13px;color:#D2C7B7;font-weight:500;font-family:var(--sans)}
+.brow i{font-style:normal;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#8C8174;display:block;margin-bottom:3px}
+.bbrand{position:absolute;left:24px;right:24px;bottom:18px;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--serif);font-weight:600;color:var(--cream);font-size:16px}
 .pcard .stripe{position:absolute;top:0;left:24px;width:42px;height:6px;border-radius:0 0 4px 4px;background:var(--terra)}
 .pcard .br{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.01em;color:var(--cream);margin-top:6px}
 .pcard .tag{position:absolute;top:26px;right:24px;font-size:9.5px;letter-spacing:.16em;color:var(--terra);font-weight:600;font-family:var(--sans)}
@@ -159,6 +184,7 @@ svg{display:block}
 <g id="i-up" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></g>
 <g id="i-card" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="6" width="17.6" height="12" rx="2.6"/><path d="M3.2 10h17.6M6.5 14.3h3"/></g>
 <g id="i-phone" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M10.5 18h3"/></g>
+<g id="i-flip" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a8 8 0 0 1 13.5-3.5L20 8M20 4v4h-4M20 15a8 8 0 0 1-13.5 3.5L4 16M4 20v-4h4"/></g>
 </defs></svg>
 
 <div class="app">
@@ -177,11 +203,22 @@ svg{display:block}
         <div class="chg"><svg width="13" height="13"><use href="#i-up"/></svg> €12,480 · 11% this month</div>
       </div>
 
-      <div class="cardstage" id="stage"><div class="pcard" id="pcard"><div class="sheen" id="sheen"></div><span class="stripe"></span><div class="pad">
-        <div class="br">Payer Pay</div><div class="tag">BUSINESS · FIAT + CRYPTO</div>
-        <div class="num tnum">5274 •••• •••• 4921</div>
-        <div class="ft"><div class="n">Mida Group Inc</div><div class="vm">VISA</div></div>
-      </div></div></div>
+      <div class="cardstage"><div class="cardflip" id="cardflip">
+        <div class="pcard front"><div class="pad">
+          <span class="stripe"></span>
+          <div class="br">Payer Pay</div><div class="tag">BUSINESS · FIAT + CRYPTO</div>
+          <div class="num tnum">5274 •••• •••• 4921</div>
+          <div class="ft"><div class="n">Mida Group Inc</div><div class="vm">VISA</div></div>
+          <span class="fhint"><svg width="13" height="13"><use href="#i-flip"/></svg> tap to flip</span>
+        </div></div>
+        <div class="pcard back"><div class="bpad">
+          <div class="mag"></div>
+          <div class="sig"><span class="sg">Mida Group Inc</span><span class="cvvb">123</span></div>
+          <div class="bnum tnum">5274 0042 9918 4921</div>
+          <div class="brow"><span><i>Valid thru</i>09 / 29</span><span><i>CVV</i>123</span></div>
+          <div class="bbrand">Payer Pay <span>VISA</span></div>
+        </div></div>
+      </div></div>
 
       <div class="acts">
         <button class="act pri" data-go="payout"><span class="ic"><svg width="23" height="23"><use href="#i-globe"/></svg></span><span class="t">Pay out</span></button>
@@ -309,14 +346,14 @@ svg{display:block}
     function s(t){if(!t0)t0=t;var p=Math.min((t-t0)/1200,1),e=1-Math.pow(1-p,3);el.textContent='€'+Math.round(end*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(s);}requestAnimationFrame(s);}
   animBal();
 
-  var card=document.getElementById('pcard'),stage=document.getElementById('stage'),sheen=document.getElementById('sheen');
-  function tilt(rx,ry){if(card)card.style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg)';}
-  if(stage&&card){
-    stage.addEventListener('pointermove',function(e){var r=stage.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;tilt(-py*13,px*15);if(sheen)sheen.style.transform='translateX('+(px*120)+'%)';});
-    stage.addEventListener('pointerleave',function(){tilt(0,0);if(sheen)sheen.style.transform='translateX(-60%)';});
+  var cardflip=document.getElementById('cardflip'),cardstage=cardflip&&cardflip.parentNode,fanim=null;
+  if(cardflip){
+    cardflip.addEventListener('click',function(){
+      cardflip.classList.toggle('flipped');
+      if(cardstage){cardstage.classList.add('lift');clearTimeout(fanim);fanim=setTimeout(function(){cardstage.classList.remove('lift');},660);}
+    });
+    if(location.hash==='#back')cardflip.classList.add('flipped');
   }
-  if(window.DeviceOrientationEvent&&!reduce){addEventListener('deviceorientation',function(e){if(e.gamma==null)return;var ry=Math.max(-15,Math.min(15,e.gamma/3)),rx=Math.max(-11,Math.min(11,(e.beta-40)/4));tilt(-rx,ry);if(sheen)sheen.style.transform='translateX('+e.gamma+'%)';});}
-  setTimeout(function(){if(sheen){sheen.style.transition='transform 1.2s cubic-bezier(.16,1,.3,1)';sheen.style.transform='translateX(120%)';setTimeout(function(){sheen.style.transition='';sheen.style.transform='translateX(-60%)';},1300);}},650);
 })();
 </script>
 </body>
