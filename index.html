@@ -364,17 +364,6 @@ svg{display:block}
       <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Berlin · SEPA</div><div class="s">USDT → EUR</div></div><div class="amt">−$5,800</div></div>
     </div>
 
-    <!-- CONVERT -->
-    <div class="screen" data-screen="convert">
-      <div class="scrt">Convert</div>
-      <div class="scrs">Fiat ↔ crypto at a locked rate. Internal moves are free.</div>
-      <div class="pf"><div class="lab">You convert</div><div class="amt tnum">$10,000</div><div class="from">From <b>USD · Checking</b> <svg width="14" height="14" viewBox="0 0 24 24" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
-      <div class="pf" style="border-color:var(--terra-soft);background:var(--terra-tint)"><div class="lab">You receive</div><div class="amt tnum" style="color:var(--terra)">9,995 USDT</div><div class="from">To <b>USDT · Treasury</b> <svg width="14" height="14" viewBox="0 0 24 24" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
-      <div class="meta"><span>Rate · locked 30s</span><b>1 USD = 0.9995 USDT</b></div>
-      <div class="meta"><span>Fee</span><b style="color:var(--green)">$0.00 · internal</b></div>
-      <button class="cta"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-conv"/></svg> Convert now</button>
-    </div>
-
     <!-- ACCEPT -->
     <div class="screen" data-screen="acquiring">
       <div class="scrt">Accept payments</div>
@@ -398,6 +387,17 @@ svg{display:block}
       <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-conv"/></svg></div><div class="mid"><div class="n">USD → USDT</div><div class="s">Convert · 0.9995</div></div><div class="amt">$10,000</div></div>
       <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Payout · São Paulo</div><div class="s">USDT → BRL · PIX</div></div><div class="amt">−$3,100</div></div>
       <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-card"/></svg></div><div class="mid"><div class="n">Corporate card</div><div class="s">AWS · cloud</div></div><div class="amt">−$1,280</div></div>
+    </div>
+
+    <!-- CONVERT -->
+    <div class="screen" data-screen="convert">
+      <div class="scrt">Convert</div>
+      <div class="scrs">Fiat ↔ crypto at a locked rate. Internal moves are free.</div>
+      <div class="pf"><div class="lab">You convert</div><div class="amt tnum">$10,000</div><div class="from">From <b>USD · Checking</b> <svg width="14" height="14" viewBox="0 0 24 24" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
+      <div class="pf" style="border-color:var(--terra-soft);background:var(--terra-tint)"><div class="lab">You receive</div><div class="amt tnum" style="color:var(--terra)">9,995 USDT</div><div class="from">To <b>USDT · Treasury</b> <svg width="14" height="14" viewBox="0 0 24 24" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
+      <div class="meta"><span>Rate · locked 30s</span><b>1 USD = 0.9995 USDT</b></div>
+      <div class="meta"><span>Fee</span><b style="color:var(--green)">$0.00 · internal</b></div>
+      <button class="cta"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-conv"/></svg> Convert now</button>
     </div>
 
   </div></div>
@@ -426,7 +426,7 @@ svg{display:block}
     setTimeout(hideSplash,6000); // safety net — never stuck on splash
   }
   var tabsEl=document.getElementById('tabs'),ind=document.getElementById('tabind'),track=document.getElementById('track');
-  var order=['home','accounts','payout','convert','acquiring','activity'];
+  var order=['home','accounts','payout','acquiring','activity','convert'];
   var screensEls=document.querySelectorAll('.screen');
   function moveInd(t){if(!ind||!t)return;var s=64;ind.style.left=(t.offsetLeft+t.offsetWidth/2-s/2)+'px';ind.style.width=s+'px';}
   function slideTo(name,isTab){
