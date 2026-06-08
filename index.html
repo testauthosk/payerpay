@@ -81,7 +81,7 @@ svg{display:block}
 .pcard{position:absolute;inset:0;border-radius:22px;overflow:hidden;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-origin:center center;-webkit-transform-origin:center center;
   background:radial-gradient(130% 150% at 100% 0%,#43382E 0%,transparent 50%),linear-gradient(150deg,#2E2823 0%,#241F1A 50%,#1A1612 100%);
-  box-shadow:0 26px 60px -32px rgba(40,25,12,.4)}
+  box-shadow:0 8px 22px -12px rgba(40,25,12,.34)}
 .pcard.back{transform:rotateY(180deg) translateZ(1px);-webkit-transform:rotateY(180deg) translateZ(1px);background:linear-gradient(150deg,#2B2620 0%,#211C17 60%,#1A1612 100%)}
 .pcard .pad,.bpad{position:absolute;inset:0;padding:24px}
 .fhint{position:absolute;right:9px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:9px;letter-spacing:.2em;color:#8C8174;text-transform:uppercase;font-family:var(--sans)}
@@ -96,7 +96,7 @@ svg{display:block}
 .brow i{font-style:normal;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#8C8174;display:block;margin-bottom:3px}
 .bbrand{position:absolute;left:24px;right:24px;bottom:18px;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--serif);font-weight:600;color:var(--cream);font-size:16px}
 .pcard .stripe{position:absolute;top:0;left:24px;width:42px;height:6px;border-radius:0 0 4px 4px;background:var(--terra)}
-.pcard .br{position:absolute;top:22px;left:24px;font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.01em;color:var(--cream)}
+.pcard .br{position:absolute;top:20px;left:24px;line-height:1;font-family:var(--serif);font-weight:600;font-size:18px;letter-spacing:-.01em;color:var(--cream)}
 .pcard .tag{position:absolute;top:26px;right:24px;font-size:9.5px;letter-spacing:.16em;color:var(--terra);font-weight:600;font-family:var(--sans)}
 .pcard .num{position:absolute;left:24px;right:24px;bottom:52px;font-weight:500;font-size:17px;letter-spacing:.16em;color:#CFC4B4;font-family:var(--sans)}
 .pcard .ft{position:absolute;left:24px;right:24px;bottom:22px;display:flex;justify-content:space-between;align-items:flex-end}
@@ -105,7 +105,7 @@ svg{display:block}
 /* card carousel — horizontal snap */
 .carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:4px 0 0;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
 .carousel::-webkit-scrollbar{display:none}
-.slide{flex:0 0 100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:22px 2px 18px}
+.slide{flex:0 0 100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:26px 2px 26px}
 .dots{display:flex;justify-content:center;gap:7px;margin:0}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--line2);transition:width .3s,background .3s}
 .dot.on{width:22px;background:var(--terra)}
