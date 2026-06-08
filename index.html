@@ -37,7 +37,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overscroll-behavior:none}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;-webkit-tap-highlight-color:transparent;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E")}
 ::selection{background:var(--terra);color:#fff}
 .sf{font-family:var(--serif)}.tnum{font-variant-numeric:tabular-nums}
@@ -45,12 +45,12 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 svg{display:block}
 .app{position:relative;max-width:440px;height:100dvh;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
 
-.scroll{position:relative;z-index:1;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:none;padding:0 22px 120px}
-.scroll::-webkit-scrollbar{display:none}
-.screen{display:none}.screen.on{display:block}
-/* smooth in-app transitions — View Transitions API (Safari 18+/Chrome/FF), graceful fallback to instant */
-::view-transition-old(root),::view-transition-new(root){animation-duration:.32s;animation-timing-function:cubic-bezier(.4,0,.2,1)}
-@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none!important}}
+/* horizontal screen track — screens slide via bottom menu (like the card carousel) */
+.viewport{position:relative;z-index:1;flex:1;overflow:hidden}
+.track{display:flex;height:100%;transition:transform .42s cubic-bezier(.4,0,.2,1);will-change:transform}
+.screen{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 22px 120px}
+.screen::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion:reduce){.track{transition:none}}
 
 /* header */
 .top{display:flex;align-items:center;justify-content:space-between;padding:max(18px,env(safe-area-inset-top)) 22px 8px}
@@ -184,14 +184,15 @@ svg{display:block}
   height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 7px;
   background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border:1px solid var(--line2);
   border-radius:22px;box-shadow:0 16px 38px -14px rgba(60,40,20,.22)}
-.tabind{position:absolute;z-index:0;width:58px;height:48px;border-radius:15px;background:var(--terra);
+.tabind{position:absolute;z-index:0;width:64px;height:50px;border-radius:16px;background:var(--terra);
   top:50%;left:0;transform:translateY(-50%);pointer-events:none;box-shadow:0 6px 16px -5px rgba(200,90,42,.55);
   transition:left .34s cubic-bezier(.4,0,.2,1),width .34s cubic-bezier(.4,0,.2,1)}
-.tab{position:relative;z-index:1;flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  color:var(--ink3);font-size:9px;font-weight:600;transition:color .3s,transform .14s}
+.tab{position:relative;z-index:1;flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--ink3);font-size:9px;font-weight:600;transition:color .3s,transform .14s;-webkit-tap-highlight-color:transparent}
 .tab:active{transform:scale(.93)}
 .tab.on{color:#fff}
-.tab .lb{line-height:1}
+.tab .ic{display:flex}
+.tab .lb{position:absolute;left:0;right:0;top:50%;margin-top:13px;text-align:center;line-height:1}
 
 /* splash / launch screen */
 .splash{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
@@ -237,11 +238,11 @@ svg{display:block}
 
 <div class="app">
   <div class="top">
-    <div class="who"><div class="mark"><i></i></div><div><div class="nm">Mida Group</div><div class="sub">Business · <b>verified</b></div></div></div>
+    <div class="who"><div class="mark"><i></i></div><div><div class="nm">Tholim LLC</div><div class="sub">Business · <b>verified</b></div></div></div>
     <button class="tbtn" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-bell"/></svg></button>
   </div>
 
-  <div class="scroll" id="scroll">
+  <div class="viewport"><div class="track" id="track">
 
     <!-- HOME -->
     <div class="screen on" data-screen="home">
@@ -257,12 +258,12 @@ svg{display:block}
             <span class="stripe"></span>
             <div class="br">Payer Pay</div><div class="tag">BUSINESS · FIAT + CRYPTO</div>
             <div class="num tnum">5274 •••• •••• 4921</div>
-            <div class="ft"><div class="n">Mida Group Inc</div><div class="vm">VISA</div></div>
+            <div class="ft"><div class="n">Tholim LLC</div><div class="vm">VISA</div></div>
             <span class="fhint">tap to flip</span>
           </div></div>
           <div class="pcard back"><div class="bpad">
             <div class="mag"></div>
-            <div class="sig"><span class="sg">Mida Group Inc</span><span class="cvvb">123</span></div>
+            <div class="sig"><span class="sg">Tholim LLC</span><span class="cvvb">123</span></div>
             <div class="bnum tnum">5274 0042 9918 4921</div>
             <div class="brow"><span><i>Valid thru</i>09 / 29</span><span><i>CVV</i>123</span></div>
             <div class="bbrand">Payer Pay <span>VISA</span></div>
@@ -273,12 +274,12 @@ svg{display:block}
             <span class="stripe"></span>
             <div class="br">Payer Pay</div><div class="tag">CORPORATE · MULTI-CURRENCY</div>
             <div class="num tnum">5388 •••• •••• 7730</div>
-            <div class="ft"><div class="n">Mida Group Inc</div><span class="mc"><i></i><i></i></span></div>
+            <div class="ft"><div class="n">Tholim LLC</div><span class="mc"><i></i><i></i></span></div>
             <span class="fhint">tap to flip</span>
           </div></div>
           <div class="pcard back"><div class="bpad">
             <div class="mag"></div>
-            <div class="sig"><span class="sg">Mida Group Inc</span><span class="cvvb">455</span></div>
+            <div class="sig"><span class="sg">Tholim LLC</span><span class="cvvb">455</span></div>
             <div class="bnum tnum">5388 0091 2244 7730</div>
             <div class="brow"><span><i>Valid thru</i>11 / 28</span><span><i>CVV</i>455</span></div>
             <div class="bbrand">Payer Pay <span>Mastercard</span></div>
@@ -289,12 +290,12 @@ svg{display:block}
             <span class="stripe"></span>
             <div class="br">Payer Pay</div><div class="tag">VIRTUAL · SINGLE-USE</div>
             <div class="num tnum">4012 •••• •••• 1284</div>
-            <div class="ft"><div class="n">Mida Group Inc</div><div class="vm">VISA</div></div>
+            <div class="ft"><div class="n">Tholim LLC</div><div class="vm">VISA</div></div>
             <span class="fhint">tap to flip</span>
           </div></div>
           <div class="pcard back"><div class="bpad">
             <div class="mag"></div>
-            <div class="sig"><span class="sg">Mida Group Inc</span><span class="cvvb">901</span></div>
+            <div class="sig"><span class="sg">Tholim LLC</span><span class="cvvb">901</span></div>
             <div class="bnum tnum">4012 8830 5567 1284</div>
             <div class="brow"><span><i>Valid thru</i>03 / 27</span><span><i>CVV</i>901</span></div>
             <div class="bbrand">Payer Pay <span>VISA</span></div>
@@ -393,7 +394,7 @@ svg{display:block}
       <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-card"/></svg></div><div class="mid"><div class="n">Corporate card</div><div class="s">AWS · cloud</div></div><div class="amt">−$1,280</div></div>
     </div>
 
-  </div>
+  </div></div>
 
   <nav class="tabs" id="tabs">
     <span class="tabind" id="tabind"></span>
@@ -418,20 +419,20 @@ svg{display:block}
     if(document.readyState==='complete')run();else addEventListener('load',run);
     setTimeout(hideSplash,6000); // safety net — never stuck on splash
   }
-  var tabsEl=document.getElementById('tabs'),ind=document.getElementById('tabind');
-  function moveInd(t){if(!ind||!t)return;var s=58;ind.style.left=(t.offsetLeft+t.offsetWidth/2-s/2)+'px';ind.style.width=s+'px';}
-  function applyScreen(name,isTab){
-    document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('on',s.dataset.screen===name)});
+  var tabsEl=document.getElementById('tabs'),ind=document.getElementById('tabind'),track=document.getElementById('track');
+  var order=['home','accounts','payout','convert','acquiring','activity'];
+  var screensEls=document.querySelectorAll('.screen');
+  function moveInd(t){if(!ind||!t)return;var s=64;ind.style.left=(t.offsetLeft+t.offsetWidth/2-s/2)+'px';ind.style.width=s+'px';}
+  function slideTo(name,isTab){
+    var i=order.indexOf(name);if(i<0||!track)return;
+    track.style.transform='translateX(-'+(i*100)+'%)';
+    if(screensEls[i])screensEls[i].scrollTop=0;
+    document.querySelectorAll('.screen').forEach(function(s,k){s.classList.toggle('on',k===i);});
     if(isTab)document.querySelectorAll('.tab').forEach(function(t){var on=t.dataset.tab===name;t.classList.toggle('on',on);if(on)moveInd(t);});
-    scroll.scrollTo({top:0});
   }
-  function show(name,isTab){
-    var apply=function(){applyScreen(name,isTab);};
-    if(document.startViewTransition&&!reduce){document.startViewTransition(apply);}else{apply();}
-  }
-  tabsEl.addEventListener('click',function(e){var t=e.target.closest('.tab');if(t)show(t.dataset.tab,true);});
+  tabsEl.addEventListener('click',function(e){var t=e.target.closest('.tab');if(t)slideTo(t.dataset.tab,true);});
   document.querySelectorAll('[data-go]').forEach(function(b){b.addEventListener('click',function(){
-    var n=b.dataset.go;show(n,!!tabsEl.querySelector('[data-tab="'+n+'"]'));
+    var n=b.dataset.go;slideTo(n,!!tabsEl.querySelector('[data-tab="'+n+'"]'));
   })});
   function initInd(){var a=tabsEl.querySelector('.tab.on');if(!a)return;ind.style.transition='none';moveInd(a);requestAnimationFrame(function(){ind.style.transition='';});}
   if(document.readyState==='complete')initInd();else addEventListener('load',initInd);
