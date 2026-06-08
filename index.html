@@ -196,19 +196,22 @@ svg{display:block}
 .tab .lb{line-height:1}
 
 /* crypto wallet bottom sheet */
-.sheet-wrap{position:absolute;inset:0;z-index:100;visibility:hidden}
-.sheet-wrap.open{visibility:visible}
-.sheet-bg{position:absolute;inset:0;background:rgba(26,23,20,.42);opacity:0;transition:opacity .35s}
+.sheet-wrap{position:absolute;inset:0;z-index:100;visibility:hidden;transition:visibility 0s linear .85s}
+.sheet-wrap.open{visibility:visible;transition:visibility 0s linear 0s}
+.sheet-bg{position:absolute;inset:0;background:rgba(26,23,20,.42);opacity:0;transition:opacity .6s ease}
 .sheet-wrap.open .sheet-bg{opacity:1}
-.sheet{position:absolute;left:0;right:0;bottom:0;max-height:90%;overflow-y:auto;background:var(--bg);border-radius:26px 26px 0 0;
-  padding:10px 22px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -16px 44px -18px rgba(40,25,12,.32);
-  transform:translateY(101%);transition:transform .46s cubic-bezier(.16,1,.3,1)}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:90%;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);border-radius:26px 26px 0 0;
+  box-shadow:0 -16px 44px -18px rgba(40,25,12,.32);transform:translateY(101%);transition:transform .85s cubic-bezier(.16,1,.3,1)}
 .sheet-wrap.open .sheet{transform:translateY(0)}
-.sheet::-webkit-scrollbar{display:none}
-.sheet-handle{width:38px;height:5px;border-radius:100px;background:var(--line2);margin:0 auto 16px}
-.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.sheet.dragging{transition:none}
+.sheet-grip{flex-shrink:0;padding:10px 22px 4px;touch-action:none;cursor:grab}
+.sheet-handle{width:40px;height:5px;border-radius:100px;background:var(--line2);margin:0 auto 14px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between}
 .sheet-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
-.sheet-x{width:32px;height:32px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:17px;line-height:1}
+.sheet-x{width:38px;height:38px;border-radius:12px;background:var(--s1);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:18px;line-height:1;box-shadow:0 1px 3px rgba(70,50,30,.04)}
+.sheet-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 22px calc(24px + env(safe-area-inset-bottom))}
+.sheet-scroll::-webkit-scrollbar{display:none}
+.cico{width:42px;height:42px;border-radius:50%;flex-shrink:0;background:var(--s3)}
 .sheet-total{padding:14px 2px 16px}
 .sheet-total .l{font-size:12px;color:var(--ink2);letter-spacing:.02em}
 .sheet-total .v{font-family:var(--serif);font-weight:600;font-size:34px;letter-spacing:-.02em;margin-top:4px}
@@ -452,34 +455,38 @@ svg{display:block}
   <div class="sheet-wrap" id="cryptoSheet">
     <div class="sheet-bg" data-close></div>
     <div class="sheet">
-      <div class="sheet-handle" data-close></div>
-      <div class="sheet-head"><h3>Crypto wallets</h3><button class="sheet-x" data-close aria-label="Close">×</button></div>
-      <div class="sheet-total"><div class="l">Total value · USD</div><div class="v tnum">$87,400</div></div>
-      <div class="sheet-acts">
-        <button><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-req"/></svg></span>Receive</button>
-        <button><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-send"/></svg></span>Send</button>
-        <button class="pri"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-conv"/></svg></span>Convert</button>
+      <div class="sheet-grip">
+        <div class="sheet-handle"></div>
+        <div class="sheet-head"><h3>Crypto wallet</h3><button class="sheet-x" data-close aria-label="Close">×</button></div>
       </div>
-      <div class="csearch"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-search"/></svg><input type="text" placeholder="Search 120+ coins"></div>
-      <div class="cdh">Your assets</div>
-      <div class="crow"><div class="sym u">₮</div><div class="mid"><div class="n">Tether</div><div class="s">USDT · 31,540</div></div><div class="amt"><div class="v">$31,540</div><div class="c" style="color:var(--ink3)">0.0%</div></div></div>
-      <div class="crow"><div class="sym c">$</div><div class="mid"><div class="n">USD Coin</div><div class="s">USDC · 18,260</div></div><div class="amt"><div class="v">$18,260</div><div class="c" style="color:var(--ink3)">0.0%</div></div></div>
-      <div class="crow"><div class="sym b">₿</div><div class="mid"><div class="n">Bitcoin</div><div class="s">BTC · 0.4210</div></div><div class="amt"><div class="v">$28,400</div><div class="c pos">+3.4%</div></div></div>
-      <div class="crow"><div class="sym e">Ξ</div><div class="mid"><div class="n">Ethereum</div><div class="s">ETH · 3.080</div></div><div class="amt"><div class="v">$9,200</div><div class="c neg">−1.2%</div></div></div>
-      <div class="cdh">All coins</div>
-      <div class="crow"><div class="sym" style="background:rgba(243,186,47,.16);color:#C99A00">B</div><div class="mid"><div class="n">BNB</div><div class="s">BNB</div></div><div class="amt"><div class="v">$612.00</div><div class="c pos">+1.1%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(153,69,255,.14);color:#9945FF">S</div><div class="mid"><div class="n">Solana</div><div class="s">SOL</div></div><div class="amt"><div class="v">$148.00</div><div class="c pos">+5.2%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(35,41,47,.1);color:#23292F">X</div><div class="mid"><div class="n">XRP</div><div class="s">XRP</div></div><div class="amt"><div class="v">$0.62</div><div class="c neg">−0.8%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(0,51,173,.12);color:#0033AD">A</div><div class="mid"><div class="n">Cardano</div><div class="s">ADA</div></div><div class="amt"><div class="v">$0.45</div><div class="c pos">+2.1%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(186,154,46,.16);color:#9C8226">D</div><div class="mid"><div class="n">Dogecoin</div><div class="s">DOGE</div></div><div class="amt"><div class="v">$0.16</div><div class="c pos">+0.3%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(130,71,229,.14);color:#8247E5">M</div><div class="mid"><div class="n">Polygon</div><div class="s">MATIC</div></div><div class="amt"><div class="v">$0.71</div><div class="c pos">+1.8%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(230,0,122,.13);color:#E6007A">P</div><div class="mid"><div class="n">Polkadot</div><div class="s">DOT</div></div><div class="amt"><div class="v">$7.20</div><div class="c neg">−0.5%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(232,65,66,.14);color:#E84142">V</div><div class="mid"><div class="n">Avalanche</div><div class="s">AVAX</div></div><div class="amt"><div class="v">$38.00</div><div class="c pos">+3.0%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(42,90,218,.13);color:#2A5ADA">L</div><div class="mid"><div class="n">Chainlink</div><div class="s">LINK</div></div><div class="amt"><div class="v">$16.40</div><div class="c pos">+1.4%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(52,93,157,.15);color:#345D9D">Ł</div><div class="mid"><div class="n">Litecoin</div><div class="s">LTC</div></div><div class="amt"><div class="v">$84.00</div><div class="c pos">+0.9%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(255,6,10,.12);color:#E5060A">T</div><div class="mid"><div class="n">Tron</div><div class="s">TRX</div></div><div class="amt"><div class="v">$0.13</div><div class="c pos">+0.2%</div></div></div>
-      <div class="crow"><div class="sym" style="background:rgba(46,49,72,.12);color:#2E3148">C</div><div class="mid"><div class="n">Cosmos</div><div class="s">ATOM</div></div><div class="amt"><div class="v">$9.10</div><div class="c pos">+1.6%</div></div></div>
-      <div style="text-align:center;font-size:12.5px;color:var(--ink3);padding:18px 0 4px">+ 108 more coins · search to find any</div>
+      <div class="sheet-scroll">
+        <div class="sheet-total"><div class="l">Total value · USD</div><div class="v tnum">$87,400</div></div>
+        <div class="sheet-acts">
+          <button><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-req"/></svg></span>Receive</button>
+          <button><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-send"/></svg></span>Send</button>
+          <button class="pri"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-conv"/></svg></span>Convert</button>
+        </div>
+        <div class="csearch"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-search"/></svg><input type="text" placeholder="Search 120+ coins"></div>
+        <div class="cdh">Your assets</div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/usdt.svg" alt=""><div class="mid"><div class="n">Tether</div><div class="s">USDT · 31,540</div></div><div class="amt"><div class="v">$31,540</div><div class="c" style="color:var(--ink3)">0.0%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/usdc.svg" alt=""><div class="mid"><div class="n">USD Coin</div><div class="s">USDC · 18,260</div></div><div class="amt"><div class="v">$18,260</div><div class="c" style="color:var(--ink3)">0.0%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/btc.svg" alt=""><div class="mid"><div class="n">Bitcoin</div><div class="s">BTC · 0.4210</div></div><div class="amt"><div class="v">$28,400</div><div class="c pos">+3.4%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/eth.svg" alt=""><div class="mid"><div class="n">Ethereum</div><div class="s">ETH · 3.080</div></div><div class="amt"><div class="v">$9,200</div><div class="c neg">−1.2%</div></div></div>
+        <div class="cdh">All coins</div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/bnb.svg" alt=""><div class="mid"><div class="n">BNB</div><div class="s">BNB</div></div><div class="amt"><div class="v">$612.00</div><div class="c pos">+1.1%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/sol.svg" alt=""><div class="mid"><div class="n">Solana</div><div class="s">SOL</div></div><div class="amt"><div class="v">$148.00</div><div class="c pos">+5.2%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/xrp.svg" alt=""><div class="mid"><div class="n">XRP</div><div class="s">XRP</div></div><div class="amt"><div class="v">$0.62</div><div class="c neg">−0.8%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/ada.svg" alt=""><div class="mid"><div class="n">Cardano</div><div class="s">ADA</div></div><div class="amt"><div class="v">$0.45</div><div class="c pos">+2.1%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/doge.svg" alt=""><div class="mid"><div class="n">Dogecoin</div><div class="s">DOGE</div></div><div class="amt"><div class="v">$0.16</div><div class="c pos">+0.3%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/matic.svg" alt=""><div class="mid"><div class="n">Polygon</div><div class="s">MATIC</div></div><div class="amt"><div class="v">$0.71</div><div class="c pos">+1.8%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/dot.svg" alt=""><div class="mid"><div class="n">Polkadot</div><div class="s">DOT</div></div><div class="amt"><div class="v">$7.20</div><div class="c neg">−0.5%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/avax.svg" alt=""><div class="mid"><div class="n">Avalanche</div><div class="s">AVAX</div></div><div class="amt"><div class="v">$38.00</div><div class="c pos">+3.0%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/link.svg" alt=""><div class="mid"><div class="n">Chainlink</div><div class="s">LINK</div></div><div class="amt"><div class="v">$16.40</div><div class="c pos">+1.4%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/ltc.svg" alt=""><div class="mid"><div class="n">Litecoin</div><div class="s">LTC</div></div><div class="amt"><div class="v">$84.00</div><div class="c pos">+0.9%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/trx.svg" alt=""><div class="mid"><div class="n">Tron</div><div class="s">TRX</div></div><div class="amt"><div class="v">$0.13</div><div class="c pos">+0.2%</div></div></div>
+        <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/atom.svg" alt=""><div class="mid"><div class="n">Cosmos</div><div class="s">ATOM</div></div><div class="amt"><div class="v">$9.10</div><div class="c pos">+1.6%</div></div></div>
+        <div style="text-align:center;font-size:12.5px;color:var(--ink3);padding:18px 0 4px">+ 108 more coins · search to find any</div>
+      </div>
     </div>
   </div>
 </div>
@@ -542,9 +549,19 @@ svg{display:block}
   }
   var cryptoSheet=document.getElementById('cryptoSheet');
   if(cryptoSheet){
-    document.querySelectorAll('[data-crypto]').forEach(function(el){el.addEventListener('click',function(){cryptoSheet.classList.add('open');});});
-    cryptoSheet.querySelectorAll('[data-close]').forEach(function(el){el.addEventListener('click',function(){cryptoSheet.classList.remove('open');});});
-    if(location.hash==='#crypto')cryptoSheet.classList.add('open');
+    var sheetEl=cryptoSheet.querySelector('.sheet'),grip=cryptoSheet.querySelector('.sheet-grip');
+    function openSheet(){cryptoSheet.classList.add('open');}
+    function closeSheet(){if(sheetEl)sheetEl.style.transform='';cryptoSheet.classList.remove('open');}
+    document.querySelectorAll('[data-crypto]').forEach(function(el){el.addEventListener('click',openSheet);});
+    cryptoSheet.querySelectorAll('[data-close]').forEach(function(el){el.addEventListener('click',closeSheet);});
+    if(grip&&sheetEl){
+      var sy=0,drg=false;
+      grip.addEventListener('pointerdown',function(e){sy=e.clientY;drg=true;sheetEl.classList.add('dragging');try{grip.setPointerCapture(e.pointerId);}catch(_){}});
+      grip.addEventListener('pointermove',function(e){if(!drg)return;var dy=Math.max(0,e.clientY-sy);sheetEl.style.transform='translateY('+dy+'px)';});
+      function endDrag(e){if(!drg)return;drg=false;var dy=Math.max(0,(e.clientY||0)-sy);sheetEl.classList.remove('dragging');sheetEl.style.transform='';if(dy>90)cryptoSheet.classList.remove('open');}
+      grip.addEventListener('pointerup',endDrag);grip.addEventListener('pointercancel',endDrag);
+    }
+    if(location.hash==='#crypto')openSheet();
   }
 })();
 </script>
