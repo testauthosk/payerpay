@@ -204,7 +204,8 @@ svg{display:block}
   box-shadow:0 -16px 44px -18px rgba(40,25,12,.32);transform:translateY(101%);transition:transform .85s cubic-bezier(.16,1,.3,1)}
 .sheet-wrap.open .sheet{transform:translateY(0)}
 .sheet.dragging{transition:none}
-.sheet-grip{flex-shrink:0;padding:10px 22px 4px;touch-action:none;cursor:grab}
+.sheet-grip{flex-shrink:0;padding:10px 22px 0;touch-action:none;cursor:grab}
+.sheet-fixed{flex-shrink:0;padding:2px 22px 4px}
 .sheet-handle{width:40px;height:5px;border-radius:100px;background:var(--line2);margin:0 auto 14px}
 .sheet-head{display:flex;align-items:center;justify-content:space-between}
 .sheet-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
@@ -459,7 +460,7 @@ svg{display:block}
         <div class="sheet-handle"></div>
         <div class="sheet-head"><h3>Crypto wallet</h3><button class="sheet-x" data-close aria-label="Close">×</button></div>
       </div>
-      <div class="sheet-scroll">
+      <div class="sheet-fixed">
         <div class="sheet-total"><div class="l">Total value · USD</div><div class="v tnum">$87,400</div></div>
         <div class="sheet-acts">
           <button><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-req"/></svg></span>Receive</button>
@@ -467,6 +468,8 @@ svg{display:block}
           <button class="pri"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-conv"/></svg></span>Convert</button>
         </div>
         <div class="csearch"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-search"/></svg><input type="text" placeholder="Search 120+ coins"></div>
+      </div>
+      <div class="sheet-scroll">
         <div class="cdh">Your assets</div>
         <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/usdt.svg" alt=""><div class="mid"><div class="n">Tether</div><div class="s">USDT · 31,540</div></div><div class="amt"><div class="v">$31,540</div><div class="c" style="color:var(--ink3)">0.0%</div></div></div>
         <div class="crow"><img class="cico" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/usdc.svg" alt=""><div class="mid"><div class="n">USD Coin</div><div class="s">USDC · 18,260</div></div><div class="amt"><div class="v">$18,260</div><div class="c" style="color:var(--ink3)">0.0%</div></div></div>
