@@ -48,7 +48,7 @@ svg{display:block}
 /* horizontal screen track — screens slide via bottom menu (like the card carousel) */
 .viewport{position:relative;z-index:1;flex:1;overflow:hidden}
 .track{display:flex;height:100%;transition:transform .42s cubic-bezier(.4,0,.2,1);will-change:transform}
-.screen{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 22px 120px}
+.screen{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:none;padding:0 22px 120px}
 .screen::-webkit-scrollbar{display:none}
 @media (prefers-reduced-motion:reduce){.track{transition:none}}
 
