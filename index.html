@@ -89,10 +89,10 @@ svg{display:block}
 .pcard .ft .n{font-size:11px;letter-spacing:.08em;color:#9C9285;text-transform:uppercase;font-family:var(--sans)}
 .pcard .ft .vm{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--cream)}
 /* card carousel — horizontal snap */
-.carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:20px 0 0;scrollbar-width:none;overscroll-behavior-x:contain}
+.carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:4px 0 0;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
 .carousel::-webkit-scrollbar{display:none}
-.slide{flex:0 0 100%;scroll-snap-align:center;display:flex;justify-content:center;padding:4px 2px 8px}
-.dots{display:flex;justify-content:center;gap:7px;margin:12px 0 0}
+.slide{flex:0 0 100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:30px 2px}
+.dots{display:flex;justify-content:center;gap:7px;margin:0}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--line2);transition:width .3s,background .3s}
 .dot.on{width:22px;background:var(--terra)}
 /* card colour variants */
