@@ -57,7 +57,7 @@ svg{display:block}
 .hero .chg{margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--green);font-weight:500;background:rgba(42,122,80,.08);padding:5px 11px;border-radius:100px}
 
 /* espresso card — 3D flip */
-.cardstage{position:relative;perspective:950px;perspective-origin:50% 42%;margin:22px auto 8px;width:100%;max-width:336px;aspect-ratio:1.586/1}
+.cardstage{position:relative;perspective:950px;perspective-origin:50% 42%;width:100%;max-width:336px;aspect-ratio:1.586/1}
 .cardstage::after{content:"";position:absolute;left:9%;right:9%;bottom:-8px;height:28px;border-radius:50%;
   background:radial-gradient(ellipse,rgba(40,25,12,.45),transparent 72%);opacity:0;transition:opacity .35s ease-out;pointer-events:none;z-index:-1}
 .cardstage.lift::after{opacity:1}
@@ -88,6 +88,22 @@ svg{display:block}
 .pcard .ft{position:absolute;left:24px;right:24px;bottom:22px;display:flex;justify-content:space-between;align-items:flex-end}
 .pcard .ft .n{font-size:11px;letter-spacing:.08em;color:#9C9285;text-transform:uppercase;font-family:var(--sans)}
 .pcard .ft .vm{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--cream)}
+/* card carousel — horizontal snap */
+.carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:20px 0 0;scrollbar-width:none;overscroll-behavior-x:contain}
+.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:center;display:flex;justify-content:center;padding:4px 2px 8px}
+.dots{display:flex;justify-content:center;gap:7px;margin:12px 0 0}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--line2);transition:width .3s,background .3s}
+.dot.on{width:22px;background:var(--terra)}
+/* card colour variants */
+.v-cognac .pcard{background:radial-gradient(130% 150% at 100% 0%,#A85A33 0%,transparent 52%),linear-gradient(150deg,#7C3F23 0%,#552A18 55%,#33190E 100%)}
+.v-cognac .pcard.back{background:linear-gradient(150deg,#5A2E1A 0%,#3E2011 60%,#2A160C 100%)}
+.v-ink .pcard{background:radial-gradient(130% 150% at 0% 0%,#3C424B 0%,transparent 50%),linear-gradient(150deg,#2B2E34 0%,#1D1F24 55%,#141518 100%)}
+.v-ink .pcard.back{background:linear-gradient(150deg,#26282E 0%,#1A1C20 60%,#131418 100%)}
+.mc{display:flex;align-items:center}
+.mc i{width:20px;height:20px;border-radius:50%;display:block}
+.mc i:first-child{background:#EB001B}
+.mc i:last-child{background:#F79E1B;margin-left:-8px;mix-blend-mode:screen}
 
 /* quick actions */
 .acts{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:24px 0 4px}
@@ -203,22 +219,57 @@ svg{display:block}
         <div class="chg"><svg width="13" height="13" viewBox="0 0 24 24"><use href="#i-up"/></svg> €12,480 · 11% this month</div>
       </div>
 
-      <div class="cardstage"><div class="cardflip" id="cardflip">
-        <div class="pcard front"><div class="pad">
-          <span class="stripe"></span>
-          <div class="br">Payer Pay</div><div class="tag">BUSINESS · FIAT + CRYPTO</div>
-          <div class="num tnum">5274 •••• •••• 4921</div>
-          <div class="ft"><div class="n">Mida Group Inc</div><div class="vm">VISA</div></div>
-          <span class="fhint">tap to flip</span>
-        </div></div>
-        <div class="pcard back"><div class="bpad">
-          <div class="mag"></div>
-          <div class="sig"><span class="sg">Mida Group Inc</span><span class="cvvb">123</span></div>
-          <div class="bnum tnum">5274 0042 9918 4921</div>
-          <div class="brow"><span><i>Valid thru</i>09 / 29</span><span><i>CVV</i>123</span></div>
-          <div class="bbrand">Payer Pay <span>VISA</span></div>
-        </div></div>
-      </div></div>
+      <div class="carousel" id="carousel">
+        <div class="slide"><div class="cardstage"><div class="cardflip">
+          <div class="pcard front"><div class="pad">
+            <span class="stripe"></span>
+            <div class="br">Payer Pay</div><div class="tag">BUSINESS · FIAT + CRYPTO</div>
+            <div class="num tnum">5274 •••• •••• 4921</div>
+            <div class="ft"><div class="n">Mida Group Inc</div><div class="vm">VISA</div></div>
+            <span class="fhint">tap to flip</span>
+          </div></div>
+          <div class="pcard back"><div class="bpad">
+            <div class="mag"></div>
+            <div class="sig"><span class="sg">Mida Group Inc</span><span class="cvvb">123</span></div>
+            <div class="bnum tnum">5274 0042 9918 4921</div>
+            <div class="brow"><span><i>Valid thru</i>09 / 29</span><span><i>CVV</i>123</span></div>
+            <div class="bbrand">Payer Pay <span>VISA</span></div>
+          </div></div>
+        </div></div></div>
+        <div class="slide"><div class="cardstage v-cognac"><div class="cardflip">
+          <div class="pcard front"><div class="pad">
+            <span class="stripe"></span>
+            <div class="br">Payer Pay</div><div class="tag">CORPORATE · MULTI-CURRENCY</div>
+            <div class="num tnum">5388 •••• •••• 7730</div>
+            <div class="ft"><div class="n">Mida Group Inc</div><span class="mc"><i></i><i></i></span></div>
+            <span class="fhint">tap to flip</span>
+          </div></div>
+          <div class="pcard back"><div class="bpad">
+            <div class="mag"></div>
+            <div class="sig"><span class="sg">Mida Group Inc</span><span class="cvvb">455</span></div>
+            <div class="bnum tnum">5388 0091 2244 7730</div>
+            <div class="brow"><span><i>Valid thru</i>11 / 28</span><span><i>CVV</i>455</span></div>
+            <div class="bbrand">Payer Pay <span>Mastercard</span></div>
+          </div></div>
+        </div></div></div>
+        <div class="slide"><div class="cardstage v-ink"><div class="cardflip">
+          <div class="pcard front"><div class="pad">
+            <span class="stripe"></span>
+            <div class="br">Payer Pay</div><div class="tag">VIRTUAL · SINGLE-USE</div>
+            <div class="num tnum">4012 •••• •••• 1284</div>
+            <div class="ft"><div class="n">Mida Group Inc</div><div class="vm">VISA</div></div>
+            <span class="fhint">tap to flip</span>
+          </div></div>
+          <div class="pcard back"><div class="bpad">
+            <div class="mag"></div>
+            <div class="sig"><span class="sg">Mida Group Inc</span><span class="cvvb">901</span></div>
+            <div class="bnum tnum">4012 8830 5567 1284</div>
+            <div class="brow"><span><i>Valid thru</i>03 / 27</span><span><i>CVV</i>901</span></div>
+            <div class="bbrand">Payer Pay <span>VISA</span></div>
+          </div></div>
+        </div></div></div>
+      </div>
+      <div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
 
       <div class="acts">
         <button class="act pri" data-go="payout"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24"><use href="#i-globe"/></svg></span><span class="t">Pay out</span></button>
@@ -346,13 +397,20 @@ svg{display:block}
     function s(t){if(!t0)t0=t;var p=Math.min((t-t0)/1200,1),e=1-Math.pow(1-p,3);el.textContent='€'+Math.round(end*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(s);}requestAnimationFrame(s);}
   animBal();
 
-  var cardflip=document.getElementById('cardflip'),cardstage=cardflip&&cardflip.parentNode,fanim=null;
-  if(cardflip){
-    cardflip.addEventListener('click',function(){
-      cardflip.classList.toggle('flipped');
-      if(cardstage){cardstage.classList.add('lift');clearTimeout(fanim);fanim=setTimeout(function(){cardstage.classList.remove('lift');},1320);}
+  var fanim={};
+  document.querySelectorAll('.cardflip').forEach(function(cf,idx){
+    cf.addEventListener('click',function(){
+      cf.classList.toggle('flipped');
+      var st=cf.parentNode;
+      if(st){st.classList.add('lift');if(fanim[idx])clearTimeout(fanim[idx]);fanim[idx]=setTimeout(function(){st.classList.remove('lift');},1320);}
     });
-    if(location.hash==='#back')cardflip.classList.add('flipped');
+  });
+  var carousel=document.getElementById('carousel'),dots=document.querySelectorAll('.dot');
+  if(carousel&&dots.length){
+    carousel.addEventListener('scroll',function(){
+      var i=Math.round(carousel.scrollLeft/carousel.clientWidth);
+      dots.forEach(function(d,k){d.classList.toggle('on',k===i);});
+    },{passive:true});
   }
 })();
 </script>
