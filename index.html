@@ -92,7 +92,7 @@ svg{display:block}
 .sig .sg{font-family:var(--serif);font-style:italic;font-size:13px;color:#4A4136}
 .sig .cvvb{font-weight:600;font-size:12px;color:#211C18;background:#fff;padding:3px 10px;border-radius:3px;font-family:var(--sans);letter-spacing:.08em}
 .bnum{position:absolute;left:24px;right:24px;bottom:64px;font-size:18px;letter-spacing:.15em;color:#D2C7B7;font-weight:500;font-family:var(--sans)}
-.brow{position:absolute;left:24px;right:24px;bottom:40px;display:flex;gap:30px;font-size:13px;color:#D2C7B7;font-weight:500;font-family:var(--sans)}
+.brow{position:absolute;left:24px;right:24px;bottom:36px;display:flex;gap:30px;font-size:13px;color:#D2C7B7;font-weight:500;font-family:var(--sans)}
 .brow i{font-style:normal;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#8C8174;display:block;margin-bottom:3px}
 .bbrand{position:absolute;left:24px;right:24px;bottom:18px;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--serif);font-weight:600;color:var(--cream);font-size:16px}
 .pcard .stripe{position:absolute;top:0;left:24px;width:42px;height:6px;border-radius:0 0 4px 4px;background:var(--terra)}
@@ -539,6 +539,7 @@ svg{display:block}
       if(st){st.classList.add('lift');if(fanim[idx])clearTimeout(fanim[idx]);fanim[idx]=setTimeout(function(){st.classList.remove('lift');},1320);}
     });
   });
+  if(location.hash==='#back'){var f0=document.querySelector('.cardflip');if(f0)f0.classList.add('flipped');}
   var carousel=document.getElementById('carousel'),dots=document.querySelectorAll('.dot');
   if(carousel&&dots.length){
     var cslides=carousel.querySelectorAll('.slide');
