@@ -25,7 +25,7 @@
   --serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
+html,body{height:100%;overscroll-behavior:none}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E")}
 ::selection{background:var(--terra);color:#fff}
@@ -34,7 +34,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 svg{display:block}
 .app{position:relative;max-width:440px;height:100dvh;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
 
-.scroll{position:relative;z-index:1;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 22px 120px}
+.scroll{position:relative;z-index:1;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:none;padding:0 22px 120px}
 .scroll::-webkit-scrollbar{display:none}
 .screen{display:none}.screen.on{display:block;animation:scin .5s cubic-bezier(.16,1,.3,1)}
 @keyframes scin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -155,7 +155,7 @@ svg{display:block}
   height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 7px;
   background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border:1px solid var(--line2);
   border-radius:22px;box-shadow:0 16px 38px -14px rgba(60,40,20,.22)}
-.tabind{position:absolute;z-index:0;width:48px;height:48px;border-radius:15px;background:var(--terra);
+.tabind{position:absolute;z-index:0;width:58px;height:48px;border-radius:15px;background:var(--terra);
   top:50%;left:0;transform:translateY(-50%);pointer-events:none;box-shadow:0 6px 16px -5px rgba(200,90,42,.55);
   transition:left .34s cubic-bezier(.4,0,.2,1),width .34s cubic-bezier(.4,0,.2,1)}
 .tab{position:relative;z-index:1;flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
@@ -190,7 +190,7 @@ svg{display:block}
 <div class="app">
   <div class="top">
     <div class="who"><div class="mark"><i></i></div><div><div class="nm">Mida Group</div><div class="sub">Business · <b>verified</b></div></div></div>
-    <button class="tbtn" aria-label="Notifications"><svg width="20" height="20"><use href="#i-bell"/></svg></button>
+    <button class="tbtn" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-bell"/></svg></button>
   </div>
 
   <div class="scroll" id="scroll">
@@ -200,7 +200,7 @@ svg{display:block}
       <div class="hero">
         <div class="eye">Total balance · EUR</div>
         <div class="big tnum"><span data-bal="124820">€0</span><span class="c">.00</span></div>
-        <div class="chg"><svg width="13" height="13"><use href="#i-up"/></svg> €12,480 · 11% this month</div>
+        <div class="chg"><svg width="13" height="13" viewBox="0 0 24 24"><use href="#i-up"/></svg> €12,480 · 11% this month</div>
       </div>
 
       <div class="cardstage"><div class="cardflip" id="cardflip">
@@ -221,21 +221,21 @@ svg{display:block}
       </div></div>
 
       <div class="acts">
-        <button class="act pri" data-go="payout"><span class="ic"><svg width="23" height="23"><use href="#i-globe"/></svg></span><span class="t">Pay out</span></button>
-        <button class="act" data-go="convert"><span class="ic"><svg width="22" height="22"><use href="#i-conv"/></svg></span><span class="t">Convert</span></button>
-        <button class="act" data-go="acquiring"><span class="ic"><svg width="22" height="22"><use href="#i-link"/></svg></span><span class="t">Accept</span></button>
-        <button class="act"><span class="ic"><svg width="22" height="22"><use href="#i-add"/></svg></span><span class="t">Top up</span></button>
+        <button class="act pri" data-go="payout"><span class="ic"><svg width="23" height="23" viewBox="0 0 24 24"><use href="#i-globe"/></svg></span><span class="t">Pay out</span></button>
+        <button class="act" data-go="convert"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-conv"/></svg></span><span class="t">Convert</span></button>
+        <button class="act" data-go="acquiring"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-link"/></svg></span><span class="t">Accept</span></button>
+        <button class="act"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-add"/></svg></span><span class="t">Top up</span></button>
       </div>
 
-      <div class="sh"><h3>Accounts</h3><a data-go="accounts">All <svg width="13" height="13"><use href="#i-chev"/></svg></a></div>
+      <div class="sh"><h3>Accounts</h3><a data-go="accounts">All <svg width="13" height="13" viewBox="0 0 24 24"><use href="#i-chev"/></svg></a></div>
       <div class="row"><div class="sym">EUR</div><div class="mid"><div class="n">Euro · IBAN</div><div class="s">DE89 •••• 4921</div></div><div class="amt"><div class="v">€86,400</div></div></div>
       <div class="row"><div class="sym">USD</div><div class="mid"><div class="n">US Dollar</div><div class="s">ACH · Wire · FedNow</div></div><div class="amt"><div class="v">$28,900</div></div></div>
       <div class="row"><div class="sym t">₮</div><div class="mid"><div class="n">USDT · Treasury</div><div class="s">Crypto wallet</div></div><div class="amt"><div class="v">31,540</div></div></div>
 
-      <div class="sh"><h3>Recent</h3><a data-go="activity">See all <svg width="13" height="13"><use href="#i-chev"/></svg></a></div>
-      <div class="tx"><div class="ic in"><svg width="20" height="20"><use href="#i-bank"/></svg></div><div class="mid"><div class="n">Pay-in · Acme Ltd</div><div class="s">Virtual account → USDT</div></div><div class="amt pos">+€18,200</div></div>
-      <div class="tx"><div class="ic"><svg width="20" height="20"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Payout · Lagos</div><div class="s">USDT → NGN · mobile money</div></div><div class="amt">−$4,500</div></div>
-      <div class="tx"><div class="ic in"><svg width="20" height="20"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Acquiring settlement</div><div class="s">Card + crypto</div></div><div class="amt pos">+$12,040</div></div>
+      <div class="sh"><h3>Recent</h3><a data-go="activity">See all <svg width="13" height="13" viewBox="0 0 24 24"><use href="#i-chev"/></svg></a></div>
+      <div class="tx"><div class="ic in"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-bank"/></svg></div><div class="mid"><div class="n">Pay-in · Acme Ltd</div><div class="s">Virtual account → USDT</div></div><div class="amt pos">+€18,200</div></div>
+      <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Payout · Lagos</div><div class="s">USDT → NGN · mobile money</div></div><div class="amt">−$4,500</div></div>
+      <div class="tx"><div class="ic in"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Acquiring settlement</div><div class="s">Card + crypto</div></div><div class="amt pos">+$12,040</div></div>
     </div>
 
     <!-- ACCOUNTS -->
@@ -243,82 +243,82 @@ svg{display:block}
       <div class="scrt">Accounts</div>
       <div class="scrs">Hold and receive in every major currency — and crypto.</div>
       <div class="dh">Your accounts</div>
-      <div class="row"><div class="sym">EUR</div><div class="mid"><div class="n">Euro · IBAN</div><div class="s">SEPA · SWIFT · DE89 •••• 4921</div></div><span class="chev"><svg width="16" height="16"><use href="#i-chev"/></svg></span></div>
-      <div class="row"><div class="sym">USD</div><div class="mid"><div class="n">US Dollar</div><div class="s">ACH · Wire · RTP · FedNow</div></div><span class="chev"><svg width="16" height="16"><use href="#i-chev"/></svg></span></div>
-      <div class="row"><div class="sym">GBP</div><div class="mid"><div class="n">British Pound</div><div class="s">Faster Payments</div></div><span class="chev"><svg width="16" height="16"><use href="#i-chev"/></svg></span></div>
-      <div class="row"><div class="sym t">₿</div><div class="mid"><div class="n">Crypto wallets</div><div class="s">USDT · USDC · BTC · ETH</div></div><span class="chev"><svg width="16" height="16"><use href="#i-chev"/></svg></span></div>
+      <div class="row"><div class="sym">EUR</div><div class="mid"><div class="n">Euro · IBAN</div><div class="s">SEPA · SWIFT · DE89 •••• 4921</div></div><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span></div>
+      <div class="row"><div class="sym">USD</div><div class="mid"><div class="n">US Dollar</div><div class="s">ACH · Wire · RTP · FedNow</div></div><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span></div>
+      <div class="row"><div class="sym">GBP</div><div class="mid"><div class="n">British Pound</div><div class="s">Faster Payments</div></div><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span></div>
+      <div class="row"><div class="sym t">₿</div><div class="mid"><div class="n">Crypto wallets</div><div class="s">USDT · USDC · BTC · ETH</div></div><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span></div>
       <div class="dh">Virtual accounts · pay-in</div>
       <div class="scrs" style="margin:2px 2px 14px">Give each client a unique IBAN. Fiat lands, auto-converts to crypto, settles instantly.</div>
-      <div class="row"><div class="ic"><svg width="20" height="20"><use href="#i-bank"/></svg></div><div class="mid"><div class="n">Acme Ltd</div><div class="s">GB •••• 8841 → USDT</div></div><span class="badge g">active</span></div>
-      <div class="row"><div class="ic"><svg width="20" height="20"><use href="#i-bank"/></svg></div><div class="mid"><div class="n">Nord Trading</div><div class="s">DE •••• 2207 → USDC</div></div><span class="badge g">active</span></div>
-      <button class="cta ghost"><svg width="18" height="18"><use href="#i-add"/></svg> New virtual account</button>
+      <div class="row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-bank"/></svg></div><div class="mid"><div class="n">Acme Ltd</div><div class="s">GB •••• 8841 → USDT</div></div><span class="badge g">active</span></div>
+      <div class="row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-bank"/></svg></div><div class="mid"><div class="n">Nord Trading</div><div class="s">DE •••• 2207 → USDC</div></div><span class="badge g">active</span></div>
+      <button class="cta ghost"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-add"/></svg> New virtual account</button>
     </div>
 
     <!-- PAYOUT -->
     <div class="screen" data-screen="payout">
       <div class="scrt">Global payout</div>
       <div class="scrs">Convert crypto and pay out to 120+ currencies via local rails — in minutes.</div>
-      <div class="pf"><div class="lab">You pay out</div><div class="amt tnum">$4,500.00</div><div class="from">From <b>USDT · Treasury</b> <svg width="14" height="14" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
+      <div class="pf"><div class="lab">You pay out</div><div class="amt tnum">$4,500.00</div><div class="from">From <b>USDT · Treasury</b> <svg width="14" height="14" viewBox="0 0 24 24" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
       <div class="selrow">
-        <div class="sel"><div class="k">Country</div><div class="v">Nigeria <svg width="14" height="14"><use href="#i-chev"/></svg></div></div>
-        <div class="sel"><div class="k">Currency</div><div class="v">NGN <svg width="14" height="14"><use href="#i-chev"/></svg></div></div>
+        <div class="sel"><div class="k">Country</div><div class="v">Nigeria <svg width="14" height="14" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div></div>
+        <div class="sel"><div class="k">Currency</div><div class="v">NGN <svg width="14" height="14" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div></div>
       </div>
-      <div class="sel" style="margin-bottom:12px"><div class="k">Local rail</div><div class="v">Mobile money <svg width="14" height="14"><use href="#i-chev"/></svg></div></div>
+      <div class="sel" style="margin-bottom:12px"><div class="k">Local rail</div><div class="v">Mobile money <svg width="14" height="14" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div></div>
       <div class="meta"><span>Recipient gets</span><b>₦ 6,884,000</b></div>
       <div class="meta"><span>Rate · locked</span><b>1 USDT = 1,530 NGN</b></div>
       <div class="meta"><span>Arrives</span><b style="color:var(--terra)">in minutes</b></div>
-      <button class="cta"><svg width="19" height="19"><use href="#i-send"/></svg> Send payout</button>
+      <button class="cta"><svg width="19" height="19" viewBox="0 0 24 24"><use href="#i-send"/></svg> Send payout</button>
       <div class="sh"><h3>Recent payouts</h3></div>
-      <div class="tx"><div class="ic"><svg width="20" height="20"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">São Paulo · PIX</div><div class="s">USDT → BRL</div></div><div class="amt">−$3,100</div></div>
-      <div class="tx"><div class="ic"><svg width="20" height="20"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Mumbai · UPI</div><div class="s">USDC → INR</div></div><div class="amt">−$2,400</div></div>
-      <div class="tx"><div class="ic"><svg width="20" height="20"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Berlin · SEPA</div><div class="s">USDT → EUR</div></div><div class="amt">−$5,800</div></div>
+      <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">São Paulo · PIX</div><div class="s">USDT → BRL</div></div><div class="amt">−$3,100</div></div>
+      <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Mumbai · UPI</div><div class="s">USDC → INR</div></div><div class="amt">−$2,400</div></div>
+      <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Berlin · SEPA</div><div class="s">USDT → EUR</div></div><div class="amt">−$5,800</div></div>
     </div>
 
     <!-- CONVERT -->
     <div class="screen" data-screen="convert">
       <div class="scrt">Convert</div>
       <div class="scrs">Fiat ↔ crypto at a locked rate. Internal moves are free.</div>
-      <div class="pf"><div class="lab">You convert</div><div class="amt tnum">€10,000</div><div class="from">From <b>EUR · IBAN</b> <svg width="14" height="14" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
-      <div class="pf" style="border-color:var(--terra-soft);background:var(--terra-tint)"><div class="lab">You receive</div><div class="amt tnum" style="color:var(--terra)">10,742 USDT</div><div class="from">To <b>USDT · Treasury</b> <svg width="14" height="14" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
+      <div class="pf"><div class="lab">You convert</div><div class="amt tnum">€10,000</div><div class="from">From <b>EUR · IBAN</b> <svg width="14" height="14" viewBox="0 0 24 24" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
+      <div class="pf" style="border-color:var(--terra-soft);background:var(--terra-tint)"><div class="lab">You receive</div><div class="amt tnum" style="color:var(--terra)">10,742 USDT</div><div class="from">To <b>USDT · Treasury</b> <svg width="14" height="14" viewBox="0 0 24 24" style="color:var(--ink3)"><use href="#i-chev"/></svg></div></div>
       <div class="meta"><span>Rate · locked 30s</span><b>1 EUR = 1.0742 USDT</b></div>
       <div class="meta"><span>Fee</span><b style="color:var(--green)">€0.00 · internal</b></div>
-      <button class="cta"><svg width="18" height="18"><use href="#i-conv"/></svg> Convert now</button>
+      <button class="cta"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-conv"/></svg> Convert now</button>
     </div>
 
     <!-- ACCEPT -->
     <div class="screen" data-screen="acquiring">
       <div class="scrt">Accept payments</div>
       <div class="scrs">Cards and crypto on your site — including the high-risk verticals banks reject. No chargebacks on crypto.</div>
-      <div class="row"><div class="ic t"><svg width="20" height="20"><use href="#i-link"/></svg></div><div class="mid"><div class="n">Payment link</div><div class="s">Share &amp; get paid — cards + crypto</div></div><span class="chev"><svg width="16" height="16"><use href="#i-chev"/></svg></span></div>
-      <div class="row"><div class="ic"><svg width="20" height="20"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Hosted checkout</div><div class="s">Drop-in on your site</div></div><span class="chev"><svg width="16" height="16"><use href="#i-chev"/></svg></span></div>
-      <div class="row"><div class="ic"><svg width="20" height="20"><use href="#i-phone"/></svg></div><div class="mid"><div class="n">API integration</div><div class="s">One endpoint · plugins</div></div><span class="chev"><svg width="16" height="16"><use href="#i-chev"/></svg></span></div>
+      <div class="row"><div class="ic t"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-link"/></svg></div><div class="mid"><div class="n">Payment link</div><div class="s">Share &amp; get paid — cards + crypto</div></div><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span></div>
+      <div class="row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Hosted checkout</div><div class="s">Drop-in on your site</div></div><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span></div>
+      <div class="row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-phone"/></svg></div><div class="mid"><div class="n">API integration</div><div class="s">One endpoint · plugins</div></div><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span></div>
       <div class="sh"><h3>Settlements</h3><span class="badge t">no chargebacks</span></div>
-      <div class="tx"><div class="ic in"><svg width="20" height="20"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Card settlement</div><div class="s">Today · USDT</div></div><div class="amt pos">+$12,040</div></div>
-      <div class="tx"><div class="ic in"><svg width="20" height="20"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Crypto checkout</div><div class="s">Yesterday · USDC</div></div><div class="amt pos">+$3,720</div></div>
+      <div class="tx"><div class="ic in"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Card settlement</div><div class="s">Today · USDT</div></div><div class="amt pos">+$12,040</div></div>
+      <div class="tx"><div class="ic in"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Crypto checkout</div><div class="s">Yesterday · USDC</div></div><div class="amt pos">+$3,720</div></div>
     </div>
 
     <!-- ACTIVITY -->
     <div class="screen" data-screen="activity">
       <div class="scrt">Activity</div>
       <div class="dh">Today</div>
-      <div class="tx"><div class="ic in"><svg width="20" height="20"><use href="#i-bank"/></svg></div><div class="mid"><div class="n">Pay-in · Acme Ltd</div><div class="s">Virtual account → USDT</div></div><div class="amt pos">+€18,200</div></div>
-      <div class="tx"><div class="ic"><svg width="20" height="20"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Payout · Lagos</div><div class="s">USDT → NGN · mobile money</div></div><div class="amt">−$4,500</div></div>
-      <div class="tx"><div class="ic in"><svg width="20" height="20"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Acquiring settlement</div><div class="s">Card + crypto</div></div><div class="amt pos">+$12,040</div></div>
+      <div class="tx"><div class="ic in"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-bank"/></svg></div><div class="mid"><div class="n">Pay-in · Acme Ltd</div><div class="s">Virtual account → USDT</div></div><div class="amt pos">+€18,200</div></div>
+      <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Payout · Lagos</div><div class="s">USDT → NGN · mobile money</div></div><div class="amt">−$4,500</div></div>
+      <div class="tx"><div class="ic in"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-store"/></svg></div><div class="mid"><div class="n">Acquiring settlement</div><div class="s">Card + crypto</div></div><div class="amt pos">+$12,040</div></div>
       <div class="dh">Yesterday</div>
-      <div class="tx"><div class="ic"><svg width="20" height="20"><use href="#i-conv"/></svg></div><div class="mid"><div class="n">EUR → USDT</div><div class="s">Convert · 1.0742</div></div><div class="amt">€10,000</div></div>
-      <div class="tx"><div class="ic"><svg width="20" height="20"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Payout · São Paulo</div><div class="s">USDT → BRL · PIX</div></div><div class="amt">−$3,100</div></div>
-      <div class="tx"><div class="ic"><svg width="20" height="20"><use href="#i-card"/></svg></div><div class="mid"><div class="n">Corporate card</div><div class="s">AWS · cloud</div></div><div class="amt">−$1,280</div></div>
+      <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-conv"/></svg></div><div class="mid"><div class="n">EUR → USDT</div><div class="s">Convert · 1.0742</div></div><div class="amt">€10,000</div></div>
+      <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div><div class="mid"><div class="n">Payout · São Paulo</div><div class="s">USDT → BRL · PIX</div></div><div class="amt">−$3,100</div></div>
+      <div class="tx"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-card"/></svg></div><div class="mid"><div class="n">Corporate card</div><div class="s">AWS · cloud</div></div><div class="amt">−$1,280</div></div>
     </div>
 
   </div>
 
   <nav class="tabs" id="tabs">
     <span class="tabind" id="tabind"></span>
-    <button class="tab on" data-tab="home"><span class="ic"><svg width="22" height="22"><use href="#i-home"/></svg></span><span class="lb">Home</span></button>
-    <button class="tab" data-tab="accounts"><span class="ic"><svg width="22" height="22"><use href="#i-bank"/></svg></span><span class="lb">Accounts</span></button>
-    <button class="tab" data-tab="payout"><span class="ic"><svg width="22" height="22"><use href="#i-globe"/></svg></span><span class="lb">Pay out</span></button>
-    <button class="tab" data-tab="acquiring"><span class="ic"><svg width="22" height="22"><use href="#i-store"/></svg></span><span class="lb">Accept</span></button>
-    <button class="tab" data-tab="activity"><span class="ic"><svg width="22" height="22"><use href="#i-act"/></svg></span><span class="lb">Activity</span></button>
+    <button class="tab on" data-tab="home"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-home"/></svg></span><span class="lb">Home</span></button>
+    <button class="tab" data-tab="accounts"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-bank"/></svg></span><span class="lb">Accounts</span></button>
+    <button class="tab" data-tab="payout"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-globe"/></svg></span><span class="lb">Pay out</span></button>
+    <button class="tab" data-tab="acquiring"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-store"/></svg></span><span class="lb">Accept</span></button>
+    <button class="tab" data-tab="activity"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-act"/></svg></span><span class="lb">Activity</span></button>
   </nav>
 </div>
 
@@ -326,7 +326,7 @@ svg{display:block}
 (function(){
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, scroll=document.getElementById('scroll');
   var tabsEl=document.getElementById('tabs'),ind=document.getElementById('tabind');
-  function moveInd(t){if(!ind||!t)return;var s=48;ind.style.left=(t.offsetLeft+t.offsetWidth/2-s/2)+'px';ind.style.width=s+'px';}
+  function moveInd(t){if(!ind||!t)return;var s=58;ind.style.left=(t.offsetLeft+t.offsetWidth/2-s/2)+'px';ind.style.width=s+'px';}
   function show(name){
     document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('on',s.dataset.screen===name)});
     document.querySelectorAll('.tab').forEach(function(t){var on=t.dataset.tab===name;t.classList.toggle('on',on);if(on)moveInd(t);});
