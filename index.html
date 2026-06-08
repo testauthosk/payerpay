@@ -411,6 +411,8 @@ svg{display:block}
       var i=Math.round(carousel.scrollLeft/carousel.clientWidth);
       dots.forEach(function(d,k){d.classList.toggle('on',k===i);});
     },{passive:true});
+    var hm=location.hash.match(/c([1-9])/);
+    if(hm){setTimeout(function(){carousel.scrollLeft=(+hm[1]-1)*carousel.clientWidth;dots.forEach(function(d,k){d.classList.toggle('on',k===+hm[1]-1);});},80);}
   }
 })();
 </script>
