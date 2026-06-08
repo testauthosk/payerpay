@@ -103,7 +103,7 @@ svg{display:block}
 .pcard .ft .n{font-size:11px;letter-spacing:.08em;color:#9C9285;text-transform:uppercase;font-family:var(--sans)}
 .pcard .ft .vm{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--cream)}
 /* card carousel — horizontal snap */
-.carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:4px 0 0;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
+.carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin:4px 0 0;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
 .carousel::-webkit-scrollbar{display:none}
 .slide{flex:0 0 100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:26px 2px 26px}
 .dots{display:flex;justify-content:center;gap:7px;margin:0}
@@ -188,12 +188,12 @@ svg{display:block}
 .tabind{position:absolute;z-index:0;width:64px;height:50px;border-radius:16px;background:var(--terra);
   top:50%;left:0;transform:translateY(-50%);pointer-events:none;box-shadow:0 6px 16px -5px rgba(200,90,42,.55);
   transition:left .34s cubic-bezier(.4,0,.2,1),width .34s cubic-bezier(.4,0,.2,1)}
-.tab{position:relative;z-index:1;flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+.tab{position:relative;z-index:1;flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
   color:var(--ink3);font-size:9px;font-weight:600;transition:color .3s,transform .14s;-webkit-tap-highlight-color:transparent}
 .tab:active{transform:scale(.93)}
 .tab.on{color:#fff}
-.tab .ic{display:flex}
-.tab .lb{position:absolute;left:0;right:0;top:50%;margin-top:13px;text-align:center;line-height:1}
+.tab .ic{display:flex;align-items:center;justify-content:center}
+.tab .lb{line-height:1}
 
 /* splash / launch screen */
 .splash{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
