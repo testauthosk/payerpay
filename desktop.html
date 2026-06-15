@@ -206,30 +206,17 @@ tailwind.config={theme:{extend:{
         </div>
       </div>
 
-      <!-- MARKETS RAIL (xl screens) -->
-      <aside class="hidden xl:flex flex-col gap-4 w-[316px] shrink-0 border-l border-line bg-surf/40 p-4 self-start sticky top-14 scroll-y" style="height:calc(100vh - 3.5rem)">
+      <!-- MARKETS RAIL (xl screens) — fills full height -->
+      <aside class="hidden xl:flex flex-col gap-4 w-[316px] shrink-0 border-l border-line bg-surf/40 p-4 self-start sticky top-14 overflow-hidden" style="height:calc(100vh - 3.5rem)">
 
         <!-- Markets -->
         <div class="bg-surf border border-line rounded-2xl overflow-hidden shrink-0">
           <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">Markets</div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">See all</button></div>
           <div class="divide-y divide-line">
-            <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-[#F7931A]/10 grid place-items-center text-[#F7931A] shrink-0"><i class="ph-fill ph-currency-btc text-[16px]"></i></span><div class="min-w-0 w-[58px]"><div class="text-[12.5px] font-bold leading-tight">BTC</div><div class="text-[10.5px] text-t3">Bitcoin</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-btc" fill="none" stroke="#12B981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$64,820</div><div class="text-[10.5px] font-semibold text-pos num">+2.1%</div></div></div>
-            <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-[#627EEA]/10 grid place-items-center text-[#627EEA] shrink-0"><i class="ph-bold ph-diamond text-[15px]"></i></span><div class="min-w-0 w-[58px]"><div class="text-[12.5px] font-bold leading-tight">ETH</div><div class="text-[10.5px] text-t3">Ethereum</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-eth" fill="none" stroke="#12B981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$3,180</div><div class="text-[10.5px] font-semibold text-pos num">+1.4%</div></div></div>
-            <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-[#14F195]/15 grid place-items-center text-[#0E9E6E] shrink-0"><i class="ph-bold ph-sun text-[15px]"></i></span><div class="min-w-0 w-[58px]"><div class="text-[12.5px] font-bold leading-tight">SOL</div><div class="text-[10.5px] text-t3">Solana</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-sol" fill="none" stroke="#E5533C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$148.20</div><div class="text-[10.5px] font-semibold text-neg num">−0.8%</div></div></div>
-            <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-duotone ph-coins text-[15px]"></i></span><div class="min-w-0 w-[58px]"><div class="text-[12.5px] font-bold leading-tight">USDC</div><div class="text-[10.5px] text-t3">USD Coin</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-usdc" fill="none" stroke="#9AA69F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$1.00</div><div class="text-[10.5px] font-semibold text-t3 num">0.0%</div></div></div>
-          </div>
-        </div>
-
-        <!-- Portfolio allocation -->
-        <div class="bg-surf border border-line rounded-2xl p-4 shrink-0">
-          <div class="flex items-center justify-between mb-3"><div class="text-[13px] font-bold">Asset allocation</div><span class="text-[10.5px] font-semibold text-t3">$12,480.50</span></div>
-          <div class="flex h-2.5 rounded-full overflow-hidden mb-3">
-            <div style="width:82%" class="bg-mint"></div><div style="width:17%" class="bg-mint-bright"></div><div style="width:1%" class="bg-ink"></div>
-          </div>
-          <div class="space-y-2">
-            <div class="flex items-center gap-2 text-[12px]"><span class="w-2.5 h-2.5 rounded-sm bg-mint"></span><span class="flex-1 font-semibold">US Dollar</span><span class="num font-bold">82%</span></div>
-            <div class="flex items-center gap-2 text-[12px]"><span class="w-2.5 h-2.5 rounded-sm bg-mint-bright"></span><span class="flex-1 font-semibold">USD Coin</span><span class="num font-bold">17%</span></div>
-            <div class="flex items-center gap-2 text-[12px]"><span class="w-2.5 h-2.5 rounded-sm bg-ink"></span><span class="flex-1 font-semibold">Bitcoin</span><span class="num font-bold">1%</span></div>
+            <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-[#F7931A]/10 grid place-items-center text-[#F7931A] shrink-0"><i class="ph-fill ph-currency-btc text-[16px]"></i></span><div class="min-w-0 w-[54px]"><div class="text-[12.5px] font-bold leading-tight">BTC</div><div class="text-[10.5px] text-t3">Bitcoin</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-btc" fill="none" stroke="#12B981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$64,820</div><div class="text-[10.5px] font-semibold text-pos num">+2.1%</div></div></div>
+            <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-[#627EEA]/10 grid place-items-center text-[#627EEA] shrink-0"><i class="ph-bold ph-diamond text-[15px]"></i></span><div class="min-w-0 w-[54px]"><div class="text-[12.5px] font-bold leading-tight">ETH</div><div class="text-[10.5px] text-t3">Ethereum</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-eth" fill="none" stroke="#12B981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$3,180</div><div class="text-[10.5px] font-semibold text-pos num">+1.4%</div></div></div>
+            <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-[#14F195]/15 grid place-items-center text-[#0E9E6E] shrink-0"><i class="ph-bold ph-sun text-[15px]"></i></span><div class="min-w-0 w-[54px]"><div class="text-[12.5px] font-bold leading-tight">SOL</div><div class="text-[10.5px] text-t3">Solana</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-sol" fill="none" stroke="#E5533C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$148.20</div><div class="text-[10.5px] font-semibold text-neg num">−0.8%</div></div></div>
+            <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-[#23A8DF]/10 grid place-items-center text-[#23A8DF] shrink-0"><i class="ph-bold ph-drop text-[15px]"></i></span><div class="min-w-0 w-[54px]"><div class="text-[12.5px] font-bold leading-tight">XRP</div><div class="text-[10.5px] text-t3">Ripple</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-xrp" fill="none" stroke="#12B981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$0.62</div><div class="text-[10.5px] font-semibold text-pos num">+3.2%</div></div></div>
           </div>
         </div>
 
@@ -239,12 +226,22 @@ tailwind.config={theme:{extend:{
           <div class="divide-y divide-line">
             <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><span class="text-[14px]">🇪🇺</span><span class="text-[12.5px] font-bold">EUR</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.0845</span> <span class="text-[10.5px] font-semibold text-pos num">+0.2%</span></div></div>
             <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><span class="text-[14px]">🇬🇧</span><span class="text-[12.5px] font-bold">GBP</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.2710</span> <span class="text-[10.5px] font-semibold text-neg num">−0.1%</span></div></div>
-            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><span class="text-[14px]">🇨🇭</span><span class="text-[12.5px] font-bold">CHF</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.1180</span> <span class="text-[10.5px] font-semibold text-pos num">+0.3%</span></div></div>
             <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><span class="text-[14px]">🇯🇵</span><span class="text-[12.5px] font-bold">JPY</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">0.0067</span> <span class="text-[10.5px] font-semibold text-pos num">+0.4%</span></div></div>
           </div>
         </div>
 
-        <div class="text-[10.5px] text-t3 text-center pb-1">Rates are indicative · for demo</div>
+        <!-- News (fills remaining height; AI-autofilled later, full list on /news) -->
+        <div class="bg-surf border border-line rounded-2xl flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-line shrink-0"><div class="flex items-center gap-2"><div class="text-[13px] font-bold">News</div><span class="w-1.5 h-1.5 rounded-full bg-mint animate-pulse"></span></div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">See all</button></div>
+          <div class="scroll-y divide-y divide-line flex-1 min-h-0">
+            <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-[#F7931A] mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Bitcoin tops $64K as ETF inflows accelerate</div><div class="text-[10.5px] text-t3 mt-1">CoinDesk · 2h ago</div></div></a>
+            <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Fed holds rates steady, signals patience on cuts</div><div class="text-[10.5px] text-t3 mt-1">Bloomberg · 4h ago</div></div></a>
+            <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-[#627EEA] mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Ethereum's next network upgrade set for Q3</div><div class="text-[10.5px] text-t3 mt-1">Decrypt · 7h ago</div></div></a>
+            <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">USDC reserves attestation published for Q2</div><div class="text-[10.5px] text-t3 mt-1">Circle · 11h ago</div></div></a>
+            <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-[#14F195] mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Solana network activity hits a new all-time high</div><div class="text-[10.5px] text-t3 mt-1">The Block · 1d ago</div></div></a>
+            <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-[#23A8DF] mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Cross-border payments volume up 18% YoY</div><div class="text-[10.5px] text-t3 mt-1">Reuters · 1d ago</div></div></a>
+          </div>
+        </div>
       </aside>
     </div>
   </main>
@@ -273,7 +270,7 @@ tailwind.config={theme:{extend:{
   set('sp-btc', [[0,24],[20,20],[40,22],[60,14],[80,16],[100,7]]);
   set('sp-eth', [[0,22],[20,24],[40,18],[60,20],[80,12],[100,10]]);
   set('sp-sol', [[0,10],[20,12],[40,9],[60,16],[80,15],[100,22]]);
-  set('sp-usdc',[[0,16],[20,15],[40,17],[60,16],[80,16],[100,15]]);
+  set('sp-xrp', [[0,26],[20,22],[40,24],[60,16],[80,18],[100,8]]);
 
   var sb=document.getElementById('sidebar'), bd=document.getElementById('backdrop');
   function open(){ sb.classList.remove('-translate-x-full'); bd.classList.remove('opacity-0','pointer-events-none'); }
