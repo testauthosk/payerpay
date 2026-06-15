@@ -23,12 +23,15 @@ tailwind.config={theme:{extend:{
  .scroll-y::-webkit-scrollbar{width:6px}
  .scroll-y::-webkit-scrollbar-thumb{background:#D6DEDA;border-radius:99px}
  .scroll-y::-webkit-scrollbar-track{background:transparent}
+ .chip{background:linear-gradient(135deg,#F0E2B0,#C9A24B 55%,#E7D49B);box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+ .chip::before,.chip::after{content:"";position:absolute;left:18%;right:18%;height:1px;background:rgba(120,90,20,.45)}
+ .chip::before{top:38%}.chip::after{top:62%}
 </style>
 </head>
 <body class="font-sans bg-bg text-ink h-full overflow-hidden">
 <div class="flex h-full">
 
-  <!-- SIDEBAR -->
+  <!-- SIDEBAR (unchanged) -->
   <aside class="w-[230px] bg-surf border-r border-line flex flex-col shrink-0 px-3 py-3.5">
     <div class="flex items-center gap-2.5 px-2.5 pb-3.5">
       <div class="w-8 h-8 rounded-lg bg-mint grid place-items-center text-ink"><i class="ph-fill ph-wave-triangle text-[18px]"></i></div>
@@ -62,6 +65,7 @@ tailwind.config={theme:{extend:{
 
   <!-- MAIN -->
   <main class="flex-1 min-w-0 flex flex-col h-full">
+    <!-- HEADER (unchanged) -->
     <header class="h-14 bg-surf border-b border-line flex items-center justify-between px-6 shrink-0">
       <div><div class="text-[16px] font-extrabold tracking-tight leading-none">Home</div><div class="text-[11px] text-t3 font-medium mt-0.5">Welcome back, Igor</div></div>
       <div class="flex items-center gap-2">
@@ -72,114 +76,160 @@ tailwind.config={theme:{extend:{
       </div>
     </header>
 
-    <!-- CONTENT — fills viewport, no page scroll -->
+    <!-- INNER PLANE — premium bento -->
     <div class="flex-1 min-h-0 flex flex-col gap-3.5 px-6 py-4 overflow-hidden">
 
-      <!-- HERO -->
+      <!-- HERO STRIP -->
       <div class="flex items-center justify-between shrink-0">
-        <div>
-          <div class="text-[12px] font-semibold text-t2">Total balance</div>
-          <div class="flex items-end gap-3">
-            <div class="text-[34px] font-extrabold tracking-[-0.03em] num leading-none mt-0.5"><span class="text-t3 text-[20px] align-top">$</span>12,480<span class="text-t3 text-[20px]">.50</span></div>
-            <div class="flex items-center gap-1.5 text-[12.5px] font-semibold text-pos pb-0.5"><i class="ph-bold ph-trend-up text-[15px]"></i> +$240.10 <span class="text-t3 font-medium">this week · +1.96%</span></div>
+        <div class="flex items-end gap-5">
+          <div>
+            <div class="text-[12px] font-semibold text-t2">Total balance</div>
+            <div class="text-[32px] font-extrabold tracking-[-0.03em] num leading-none mt-1"><span class="text-t3 text-[19px] align-top">$</span>12,480<span class="text-t3 text-[19px]">.50</span></div>
           </div>
+          <div class="flex items-center gap-1.5 text-[12.5px] font-semibold text-pos pb-1"><i class="ph-bold ph-trend-up text-[15px]"></i> +$240.10 <span class="text-t3 font-medium">· +1.96% this week</span></div>
         </div>
         <div class="flex gap-2">
-          <button class="flex items-center gap-2 bg-mint text-ink rounded-xl px-4 py-2.5 text-[13px] font-bold"><i class="ph-bold ph-arrow-up text-[15px]"></i> Send</button>
-          <button class="flex items-center gap-2 bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold"><i class="ph-bold ph-arrow-down text-[15px] text-mint-deep"></i> Request</button>
-          <button class="flex items-center gap-2 bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold"><i class="ph-bold ph-arrows-left-right text-[15px] text-mint-deep"></i> Convert</button>
-          <button class="flex items-center gap-2 bg-surf border border-line rounded-xl px-3.5 py-2.5 text-[13px] font-bold"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Top up</button>
+          <button class="flex items-center gap-2 bg-mint text-ink rounded-xl px-4 py-2.5 text-[13px] font-bold hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrow-up text-[15px]"></i> Send</button>
+          <button class="flex items-center gap-2 bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-arrow-down text-[15px] text-mint-deep"></i> Request</button>
+          <button class="flex items-center gap-2 bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-arrows-left-right text-[15px] text-mint-deep"></i> Convert</button>
+          <button class="flex items-center gap-2 bg-surf border border-line rounded-xl px-3.5 py-2.5 text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Top up</button>
         </div>
       </div>
 
-      <!-- ACCOUNTS -->
-      <div class="grid grid-cols-3 gap-3 shrink-0">
-        <div class="bg-surf border border-line rounded-2xl px-3.5 py-3 flex items-center gap-3">
-          <span class="w-10 h-10 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-fill ph-currency-dollar text-[18px]"></i></span>
-          <div class="flex-1"><div class="text-[11px] text-t3 font-semibold">US Dollar · USD</div><div class="text-[19px] font-extrabold num leading-tight">$10,240.00</div></div>
-        </div>
-        <div class="bg-surf border border-line rounded-2xl px-3.5 py-3 flex items-center gap-3">
-          <span class="w-10 h-10 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-duotone ph-coins text-[18px]"></i></span>
-          <div class="flex-1"><div class="text-[11px] text-t3 font-semibold">USDC · 2,150</div><div class="text-[19px] font-extrabold num leading-tight">$2,150.00</div></div>
-        </div>
-        <div class="bg-surf border border-line rounded-2xl px-3.5 py-3 flex items-center gap-3">
-          <span class="w-10 h-10 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-duotone ph-currency-btc text-[18px]"></i></span>
-          <div class="flex-1"><div class="text-[11px] text-t3 font-semibold">Bitcoin · 0.0061</div><div class="text-[19px] font-extrabold num leading-tight">$90.50</div></div>
-        </div>
-      </div>
+      <!-- BENTO GRID -->
+      <div class="flex-1 min-h-0 grid grid-cols-12 grid-rows-[1.25fr_1fr] gap-3.5">
 
-      <!-- TWO COLUMNS — both stretch to fill remaining height; bottoms align, no empty space -->
-      <div class="flex-1 min-h-0 grid grid-cols-[1.9fr_1fr] gap-3.5 items-stretch">
-
-        <!-- LEFT: chart (natural) + activity (fills, scrolls) -->
-        <div class="flex flex-col gap-3.5 min-h-0">
-          <div class="bg-surf border border-line rounded-2xl p-4 flex flex-col shrink-0">
-            <div class="flex items-center justify-between mb-3">
-              <div><div class="text-[13px] font-bold">Spending</div><div class="text-[18px] font-extrabold num mt-0.5">$1,284.40 <span class="text-[11px] font-semibold text-t3">last 7 days</span></div></div>
-              <div class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5">
-                <span class="px-2.5 py-1 rounded-md bg-ink text-white">7D</span><span class="px-2.5 py-1 rounded-md text-t2">30D</span><span class="px-2.5 py-1 rounded-md text-t2">90D</span>
+        <!-- CASHFLOW (col-span-8, row1) -->
+        <div class="col-span-8 bg-surf border border-line rounded-2xl p-5 flex flex-col min-h-0">
+          <div class="flex items-start justify-between shrink-0">
+            <div>
+              <div class="text-[13px] font-bold">Cash flow</div>
+              <div class="flex items-center gap-4 mt-2.5">
+                <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-pos/10 grid place-items-center text-pos"><i class="ph-bold ph-arrow-down-left text-[14px]"></i></span><div><div class="text-[10.5px] text-t3 font-semibold leading-none">Money in</div><div class="text-[14px] font-extrabold num leading-tight">+$4,300.00</div></div></div>
+                <div class="w-px h-7 bg-line"></div>
+                <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-ink/5 grid place-items-center text-ink"><i class="ph-bold ph-arrow-up-right text-[14px]"></i></span><div><div class="text-[10.5px] text-t3 font-semibold leading-none">Money out</div><div class="text-[14px] font-extrabold num leading-tight">−$1,284.40</div></div></div>
               </div>
             </div>
-            <div class="grid grid-cols-7 gap-2.5 h-[120px]">
-              <div class="flex flex-col justify-end items-center gap-1.5"><div class="w-full rounded-md bg-mint-tint" style="height:42%"></div><span class="text-[10.5px] text-t3 font-semibold">Mon</span></div>
-              <div class="flex flex-col justify-end items-center gap-1.5"><div class="w-full rounded-md bg-mint-tint" style="height:64%"></div><span class="text-[10.5px] text-t3 font-semibold">Tue</span></div>
-              <div class="flex flex-col justify-end items-center gap-1.5"><div class="w-full rounded-md bg-mint-tint" style="height:36%"></div><span class="text-[10.5px] text-t3 font-semibold">Wed</span></div>
-              <div class="flex flex-col justify-end items-center gap-1.5"><div class="w-full rounded-md bg-mint" style="height:90%"></div><span class="text-[10.5px] text-ink font-bold">Thu</span></div>
-              <div class="flex flex-col justify-end items-center gap-1.5"><div class="w-full rounded-md bg-mint-tint" style="height:54%"></div><span class="text-[10.5px] text-t3 font-semibold">Fri</span></div>
-              <div class="flex flex-col justify-end items-center gap-1.5"><div class="w-full rounded-md bg-mint-tint" style="height:28%"></div><span class="text-[10.5px] text-t3 font-semibold">Sat</span></div>
-              <div class="flex flex-col justify-end items-center gap-1.5"><div class="w-full rounded-md bg-mint-tint" style="height:48%"></div><span class="text-[10.5px] text-t3 font-semibold">Sun</span></div>
+            <div class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5">
+              <span class="px-2.5 py-1 rounded-md text-t2">7D</span><span class="px-2.5 py-1 rounded-md bg-ink text-white">30D</span><span class="px-2.5 py-1 rounded-md text-t2">90D</span>
             </div>
           </div>
+          <div class="relative flex-1 min-h-0 mt-3">
+            <div class="absolute top-1 right-1 z-10 flex items-center gap-1.5 bg-ink text-white rounded-lg px-2.5 py-1 text-[11px] font-bold shadow-sm">Now <span class="num text-mint-bright">$12,480</span></div>
+            <svg class="w-full h-full" viewBox="0 0 600 200" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="cfg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#12B981" stop-opacity="0.28"/>
+                  <stop offset="100%" stop-color="#12B981" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <line x1="0" y1="55" x2="600" y2="55" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="110" x2="600" y2="110" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="165" x2="600" y2="165" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+              <path id="cf-area" fill="url(#cfg)" d=""/>
+              <path id="cf-line" fill="none" stroke="#12B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/>
+            </svg>
+          </div>
+          <div class="flex justify-between text-[10.5px] text-t3 font-semibold shrink-0 mt-2 px-0.5"><span>Feb 14</span><span>Feb 22</span><span>Mar 1</span><span>Mar 8</span><span>Mar 15</span></div>
+        </div>
 
-          <div class="bg-surf border border-line rounded-2xl flex flex-col flex-1 min-h-0 overflow-hidden">
-            <div class="flex items-center justify-between px-4 py-3 border-b border-line shrink-0"><div class="text-[13px] font-bold">Recent activity</div><button class="text-[12px] font-semibold text-mint-deep">View all</button></div>
-            <div class="scroll-y divide-y divide-line flex-1 min-h-0">
-              <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold">Incoming · USDC</div><div class="text-[11px] text-t3">Today · 14:02</div></div><div class="text-[13.5px] font-bold num text-pos">+$1,500.00</div></div>
-              <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold">Apple Store</div><div class="text-[11px] text-t3">Yesterday · 18:21</div></div><div class="text-[13.5px] font-bold num">−$129.00</div></div>
-              <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-arrows-left-right text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold">Convert · USD → USDC</div><div class="text-[11px] text-t3">Mar 12 · 09:40</div></div><div class="text-[13.5px] font-bold num">$500.00</div></div>
-              <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-coffee text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold">Starbucks</div><div class="text-[11px] text-t3">Mar 11 · 08:15</div></div><div class="text-[13.5px] font-bold num">−$6.40</div></div>
-              <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-lightning text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold">Electric bill</div><div class="text-[11px] text-t3">Mar 10 · 12:00</div></div><div class="text-[13.5px] font-bold num">−$84.20</div></div>
-              <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold">Payout · SEPA</div><div class="text-[11px] text-t3">Mar 9 · 16:30</div></div><div class="text-[13.5px] font-bold num text-pos">+$2,300.00</div></div>
-              <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-cart text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold">Amazon</div><div class="text-[11px] text-t3">Mar 8 · 20:10</div></div><div class="text-[13.5px] font-bold num">−$58.30</div></div>
+        <!-- VIRTUAL CARD + ACTIONS (col-span-4, row1) -->
+        <div class="col-span-4 flex flex-col gap-3 min-h-0">
+          <div class="relative rounded-2xl p-4 overflow-hidden flex flex-col justify-between flex-1 min-h-0" style="background:linear-gradient(135deg,#16271E 0%,#0B130F 70%)">
+            <div class="absolute -right-10 -top-12 w-44 h-44 rounded-full" style="background:radial-gradient(circle,rgba(51,230,160,0.32),transparent 70%)"></div>
+            <div class="absolute inset-0 opacity-[0.06]" style="background:repeating-linear-gradient(115deg,#fff 0 1px,transparent 1px 9px)"></div>
+            <div class="relative flex items-start justify-between">
+              <div>
+                <div class="text-[10.5px] font-medium text-white/55">Virtual card</div>
+                <div class="text-white font-bold text-[14px] mt-0.5">PayerPay Debit</div>
+              </div>
+              <span class="text-white/90 font-extrabold italic text-[16px] tracking-tight">VISA</span>
+            </div>
+            <div class="relative flex items-center gap-3">
+              <span class="chip relative w-9 h-7 rounded-md shrink-0"></span>
+              <i class="ph-bold ph-wifi-high text-white/70 text-[18px] rotate-90"></i>
+            </div>
+            <div class="relative">
+              <div class="text-white/90 num tracking-[0.18em] text-[15px] font-semibold">5421 •••• •••• 8830</div>
+              <div class="flex items-center justify-between mt-2 text-[10.5px] font-medium text-white/55"><span class="uppercase tracking-wide">Igor Petrov</span><span class="num">VALID 09/29</span></div>
+            </div>
+          </div>
+          <div class="bg-surf border border-line rounded-2xl p-2 grid grid-cols-3 gap-1 text-center shrink-0">
+            <button class="flex flex-col items-center gap-1 py-1.5 rounded-xl hover:bg-bg transition-colors"><span class="w-8 h-8 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-snowflake text-[15px]"></i></span><span class="text-[10.5px] font-semibold">Freeze</span></button>
+            <button class="flex flex-col items-center gap-1 py-1.5 rounded-xl hover:bg-bg transition-colors"><span class="w-8 h-8 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-eye text-[15px]"></i></span><span class="text-[10.5px] font-semibold">Details</span></button>
+            <button class="flex flex-col items-center gap-1 py-1.5 rounded-xl hover:bg-bg transition-colors"><span class="w-8 h-8 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-sliders-horizontal text-[15px]"></i></span><span class="text-[10.5px] font-semibold">Limits</span></button>
+          </div>
+        </div>
+
+        <!-- RECENT ACTIVITY (col-span-5, row2) -->
+        <div class="col-span-5 bg-surf border border-line rounded-2xl flex flex-col min-h-0 overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-2.5 border-b border-line shrink-0"><div class="text-[13px] font-bold">Recent activity</div><button class="text-[12px] font-semibold text-mint-deep hover:underline">View all</button></div>
+          <div class="scroll-y divide-y divide-line flex-1 min-h-0">
+            <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[14px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold truncate">Incoming · USDC</div><div class="text-[11px] text-t3">Today · 14:02</div></div><div class="text-[13px] font-bold num text-pos">+$1,500.00</div></div>
+            <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-bag text-[14px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold truncate">Apple Store</div><div class="text-[11px] text-t3">Yesterday · 18:21</div></div><div class="text-[13px] font-bold num">−$129.00</div></div>
+            <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-arrows-left-right text-[14px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold truncate">Convert · USD → USDC</div><div class="text-[11px] text-t3">Mar 12 · 09:40</div></div><div class="text-[13px] font-bold num">$500.00</div></div>
+            <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-coffee text-[14px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold truncate">Starbucks</div><div class="text-[11px] text-t3">Mar 11 · 08:15</div></div><div class="text-[13px] font-bold num">−$6.40</div></div>
+            <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[14px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold truncate">Payout · SEPA</div><div class="text-[11px] text-t3">Mar 9 · 16:30</div></div><div class="text-[13px] font-bold num text-pos">+$2,300.00</div></div>
+            <div class="flex items-center gap-3 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-lightning text-[14px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13px] font-semibold truncate">Electric bill</div><div class="text-[11px] text-t3">Mar 10 · 12:00</div></div><div class="text-[13px] font-bold num">−$84.20</div></div>
+          </div>
+        </div>
+
+        <!-- ACCOUNTS (col-span-4, row2) -->
+        <div class="col-span-4 bg-surf border border-line rounded-2xl flex flex-col min-h-0 overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-2.5 border-b border-line shrink-0"><div class="text-[13px] font-bold">Accounts</div><button class="text-[12px] font-semibold text-mint-deep hover:underline">Manage</button></div>
+          <div class="flex-1 min-h-0 flex flex-col justify-around px-4 py-1">
+            <div class="flex items-center gap-3 py-1.5">
+              <span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-fill ph-currency-dollar text-[17px]"></i></span>
+              <div class="flex-1 min-w-0"><div class="text-[13px] font-bold leading-tight">US Dollar</div><div class="text-[11px] text-t3">ACH · Wire · USD</div></div>
+              <div class="text-right"><div class="text-[14px] font-extrabold num leading-tight">$10,240.00</div><div class="text-[10.5px] font-semibold text-pos num">+0.4%</div></div>
+            </div>
+            <div class="h-px bg-line"></div>
+            <div class="flex items-center gap-3 py-1.5">
+              <span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-duotone ph-coins text-[17px]"></i></span>
+              <div class="flex-1 min-w-0"><div class="text-[13px] font-bold leading-tight">USD Coin</div><div class="text-[11px] text-t3">2,150 USDC</div></div>
+              <div class="text-right"><div class="text-[14px] font-extrabold num leading-tight">$2,150.00</div><div class="text-[10.5px] font-semibold text-t3 num">0.0%</div></div>
+            </div>
+            <div class="h-px bg-line"></div>
+            <div class="flex items-center gap-3 py-1.5">
+              <span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-duotone ph-currency-btc text-[17px]"></i></span>
+              <div class="flex-1 min-w-0"><div class="text-[13px] font-bold leading-tight">Bitcoin</div><div class="text-[11px] text-t3">0.0061 BTC</div></div>
+              <div class="text-right"><div class="text-[14px] font-extrabold num leading-tight">$90.50</div><div class="text-[10.5px] font-semibold text-pos num">+2.1%</div></div>
             </div>
           </div>
         </div>
 
-        <!-- RIGHT: neat card (fixed proportion) + actions + convert (fills) -->
-        <div class="flex flex-col gap-3.5 min-h-0">
-          <!-- card — neat credit-card proportion, NOT stretched -->
-          <div class="relative rounded-2xl p-4 overflow-hidden flex flex-col justify-between shrink-0 aspect-[1.6/1] max-h-[200px]" style="background:linear-gradient(135deg,#14241C,#0C1712)">
-            <div class="absolute -right-8 -top-10 w-40 h-40 rounded-full" style="background:radial-gradient(circle,rgba(51,230,160,0.35),transparent 70%)"></div>
-            <div class="flex items-start justify-between">
-              <div><div class="text-[10.5px] font-medium text-white/55">Virtual card</div><div class="text-white font-bold text-[15px] mt-0.5">PayerPay <span class="text-mint-bright">·</span> Visa</div></div>
-              <i class="ph-duotone ph-wifi-high text-white/70 text-[22px]"></i>
-            </div>
-            <div>
-              <div class="text-white/90 num tracking-[0.14em] text-[16px] font-semibold">5421 •••• •••• 8830</div>
-              <div class="flex items-center justify-between mt-2 text-[11px] font-medium text-white/55"><span>I. Petrov</span><span class="num">VALID 09/29</span></div>
-            </div>
-          </div>
-
-          <!-- card actions -->
-          <div class="bg-surf border border-line rounded-2xl p-3 grid grid-cols-3 gap-2 text-center shrink-0">
-            <button class="flex flex-col items-center gap-1.5 py-1"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-snowflake text-[15px]"></i></span><span class="text-[10.5px] font-semibold">Freeze</span></button>
-            <button class="flex flex-col items-center gap-1.5 py-1"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-eye text-[15px]"></i></span><span class="text-[10.5px] font-semibold">Details</span></button>
-            <button class="flex flex-col items-center gap-1.5 py-1"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-sliders-horizontal text-[15px]"></i></span><span class="text-[10.5px] font-semibold">Limits</span></button>
-          </div>
-
-          <!-- quick convert — fills remaining height so right column bottom aligns with activity -->
-          <div class="bg-surf border border-line rounded-2xl p-4 flex-1 min-h-0 flex flex-col">
-            <div class="text-[13px] font-bold mb-2.5 shrink-0">Quick convert</div>
-            <div class="bg-bg border border-line rounded-xl px-3 py-2.5 flex items-center justify-between shrink-0"><div><div class="text-[10.5px] text-t3 font-semibold">From</div><div class="text-[15px] font-bold num">$500.00</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD</div></div>
-            <div class="flex justify-center -my-2 relative z-10 shrink-0"><span class="w-7 h-7 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf"><i class="ph-bold ph-arrow-down text-[13px]"></i></span></div>
-            <div class="bg-bg border border-line rounded-xl px-3 py-2.5 flex items-center justify-between shrink-0"><div><div class="text-[10.5px] text-t3 font-semibold">To</div><div class="text-[15px] font-bold num">499.40</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC</div></div>
-            <div class="text-[10.5px] text-t3 font-medium text-center mt-2 shrink-0">1 USD = 0.9988 USDC · no fee</div>
-            <button class="w-full mt-auto bg-mint text-ink rounded-xl py-2.5 text-[13px] font-bold">Convert</button>
-          </div>
+        <!-- QUICK CONVERT (col-span-3, row2) -->
+        <div class="col-span-3 bg-surf border border-line rounded-2xl p-4 flex flex-col min-h-0">
+          <div class="text-[13px] font-bold mb-2.5 shrink-0">Quick convert</div>
+          <div class="bg-bg border border-line rounded-xl px-3 py-2.5 flex items-center justify-between shrink-0"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">From</div><div class="text-[15px] font-bold num">$500.00</div></div><div class="flex items-center gap-1.5 text-[12px] font-bold shrink-0"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD</div></div>
+          <div class="flex justify-center -my-2 relative z-10 shrink-0"><span class="w-7 h-7 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf"><i class="ph-bold ph-arrow-down text-[13px]"></i></span></div>
+          <div class="bg-bg border border-line rounded-xl px-3 py-2.5 flex items-center justify-between shrink-0"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">To</div><div class="text-[15px] font-bold num">499.40</div></div><div class="flex items-center gap-1.5 text-[12px] font-bold shrink-0"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC</div></div>
+          <div class="text-[10px] text-t3 font-medium text-center mt-2 shrink-0">1 USD = 0.9988 · no fee</div>
+          <button class="w-full mt-auto bg-mint text-ink rounded-xl py-2.5 text-[13px] font-bold hover:bg-mint-deep transition-colors">Convert</button>
         </div>
+
       </div>
     </div>
   </main>
 </div>
+
+<script>
+(function(){
+  var pts=[[0,150],[50,138],[100,152],[150,116],[200,128],[250,92],[300,108],[350,78],[400,96],[450,62],[500,76],[550,48],[600,40]];
+  function line(p){
+    var d="M "+p[0][0]+" "+p[0][1];
+    for(var i=0;i<p.length-1;i++){
+      var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p[i+1];
+      var c1x=p1[0]+(p2[0]-p0[0])/6, c1y=p1[1]+(p2[1]-p0[1])/6;
+      var c2x=p2[0]-(p3[0]-p1[0])/6, c2y=p2[1]-(p3[1]-p1[1])/6;
+      d+=" C "+c1x+" "+c1y+" "+c2x+" "+c2y+" "+p2[0]+" "+p2[1];
+    }
+    return d;
+  }
+  var l=line(pts);
+  document.getElementById('cf-line').setAttribute('d',l);
+  document.getElementById('cf-area').setAttribute('d',l+" L 600 200 L 0 200 Z");
+})();
+</script>
 </body>
 </html>
