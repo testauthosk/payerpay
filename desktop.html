@@ -19,10 +19,16 @@ tailwind.config={theme:{extend:{
 <style>
  .num{font-variant-numeric:tabular-nums}
  body{-webkit-font-smoothing:antialiased;margin:0}
- .scroll-y{overflow-y:auto;scrollbar-width:thin;scrollbar-color:#D6DEDA transparent}
- .scroll-y::-webkit-scrollbar{width:6px}
+ .scroll-y{scrollbar-width:thin;scrollbar-color:#D6DEDA transparent}
+ .scroll-y::-webkit-scrollbar{width:7px}
  .scroll-y::-webkit-scrollbar-thumb{background:#D6DEDA;border-radius:99px}
  .scroll-y::-webkit-scrollbar-track{background:transparent}
+ [data-screen][hidden]{display:none}
+ .navi.active{background:#E6F8F0;color:#0E9E6E}
+ .navi.active i{color:#0E9E6E}
+ .seg.active{background:#0F1A15;color:#fff}
+ .toggle-on{background:#12B981}
+ .toggle-on .knob{transform:translateX(16px)}
 </style>
 </head>
 <body class="font-sans bg-bg text-ink overflow-x-hidden">
@@ -40,25 +46,28 @@ tailwind.config={theme:{extend:{
       </div>
       <button id="closeSb" class="lg:hidden w-8 h-8 grid place-items-center rounded-lg text-t2 hover:bg-bg"><i class="ph-bold ph-x text-[16px]"></i></button>
     </div>
-    <div class="flex bg-bg border border-line rounded-xl p-1 mb-3.5">
-      <button class="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-ink text-white text-[12px] font-semibold"><i class="ph-fill ph-user text-[13px]"></i> Personal</button>
-      <button class="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-t2 text-[12px] font-semibold"><i class="ph ph-buildings text-[13px]"></i> Business</button>
-    </div>
-    <nav class="flex flex-col gap-0.5 text-[13px] font-semibold">
-      <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-mint-tint text-mint-deep"><i class="ph-fill ph-house text-[17px]"></i> Home</a>
-      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-wallet text-[17px]"></i> Accounts</a>
-      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-credit-card text-[17px]"></i> Cards</a>
-      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-arrows-left-right text-[17px]"></i> Convert</a>
-      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-chart-line text-[17px]"></i> Activity</a>
+
+    <nav class="flex flex-col gap-0.5 text-[13px] font-semibold mt-1">
+      <a data-nav="home" class="navi active cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph-fill ph-house text-[17px]"></i> Home</a>
+      <a data-nav="accounts" class="navi cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-wallet text-[17px]"></i> Accounts</a>
+      <a data-nav="cards" class="navi cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-credit-card text-[17px]"></i> Cards</a>
+      <a data-nav="convert" class="navi cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-arrows-left-right text-[17px]"></i> Convert</a>
+      <a data-nav="activity" class="navi cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-chart-line text-[17px]"></i> Activity</a>
     </nav>
     <div class="text-[9.5px] font-bold uppercase tracking-[0.1em] text-t3 px-3 pt-4 pb-1.5">Crypto</div>
     <nav class="flex flex-col gap-0.5 text-[13px] font-semibold">
-      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-coins text-[17px]"></i> Wallet</a>
-      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-arrow-line-down text-[17px]"></i> Receive</a>
+      <a data-nav="wallet" class="navi cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-coins text-[17px]"></i> Wallet</a>
+      <a data-nav="receive" class="navi cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg"><i class="ph ph-arrow-line-down text-[17px]"></i> Receive</a>
     </nav>
+
     <div class="mt-auto">
-      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg text-[13px] font-semibold"><i class="ph ph-gear text-[17px]"></i> Settings</a>
-      <div class="flex items-center gap-2.5 px-2.5 py-2 mt-1 border-t border-line">
+      <a data-nav="settings" class="navi cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg text-t2 hover:bg-bg text-[13px] font-semibold"><i class="ph ph-gear text-[17px]"></i> Settings</a>
+      <!-- Personal / Business switcher — moved here, under Settings -->
+      <div class="flex bg-bg border border-line rounded-xl p-1 mt-2">
+        <button data-seg="personal" class="seg active flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-t2 text-[12px] font-semibold transition-colors"><i class="ph-fill ph-user text-[13px]"></i> Personal</button>
+        <button data-seg="business" class="seg flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-t2 text-[12px] font-semibold transition-colors"><i class="ph ph-buildings text-[13px]"></i> Business</button>
+      </div>
+      <div class="flex items-center gap-2.5 px-2.5 py-2 mt-2 border-t border-line">
         <span class="w-8 h-8 rounded-full bg-ink text-white grid place-items-center text-[11px] font-bold">ИП</span>
         <div class="leading-tight flex-1 min-w-0"><div class="text-[12.5px] font-bold truncate">Igor Petrov</div><div class="text-[10.5px] text-t3 truncate">igor@payerpay.io</div></div>
         <i class="ph ph-caret-up-down text-t3 text-[15px]"></i>
@@ -68,11 +77,11 @@ tailwind.config={theme:{extend:{
 
   <!-- MAIN -->
   <main class="flex-1 min-w-0 flex flex-col">
-    <!-- HEADER (sticky) -->
+    <!-- HEADER -->
     <header class="sticky top-0 z-30 h-14 bg-surf/90 backdrop-blur border-b border-line flex items-center justify-between px-4 lg:px-6 gap-3">
       <div class="flex items-center gap-2 min-w-0">
         <button id="openSb" class="lg:hidden w-9 h-9 -ml-1 grid place-items-center rounded-xl text-ink hover:bg-bg shrink-0"><i class="ph-bold ph-list text-[18px]"></i></button>
-        <div class="min-w-0"><div class="text-[16px] font-extrabold tracking-tight leading-none">Home</div><div class="text-[11px] text-t3 font-medium mt-0.5 truncate">Welcome back, Igor</div></div>
+        <div class="min-w-0"><div id="screen-title" class="text-[16px] font-extrabold tracking-tight leading-none">Home</div><div class="text-[11px] text-t3 font-medium mt-0.5 truncate">Welcome back, Igor</div></div>
       </div>
       <div class="flex items-center gap-2">
         <div class="hidden md:flex items-center gap-2 bg-bg border border-line rounded-xl px-3 py-1.5 text-[12.5px] text-t3 font-medium w-[200px] xl:w-[240px]"><i class="ph ph-magnifying-glass text-[15px]"></i> Search…</div>
@@ -82,91 +91,176 @@ tailwind.config={theme:{extend:{
       </div>
     </header>
 
-    <!-- BODY: center content + markets rail (rail appears on xl) -->
+    <!-- BODY: center (screens) + markets rail -->
     <div class="flex flex-1 min-w-0">
 
-      <!-- CENTER CONTENT -->
-      <div class="flex-1 min-w-0 flex flex-col gap-4 px-4 lg:px-6 py-4">
+      <!-- CENTER -->
+      <div class="flex-1 min-w-0 px-4 lg:px-6 py-4">
 
-        <!-- HERO -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div class="flex items-end gap-5 min-w-0">
-            <div>
-              <div class="text-[12px] font-semibold text-t2">Total balance</div>
-              <div class="text-[28px] lg:text-[34px] font-extrabold tracking-[-0.03em] num leading-none mt-1"><span class="text-t3 text-[19px] align-top">$</span>12,480<span class="text-t3 text-[19px]">.50</span></div>
+        <!-- ============ HOME ============ -->
+        <section data-screen="home" class="flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-end gap-5 min-w-0">
+              <div><div class="text-[12px] font-semibold text-t2">Total balance</div>
+                <div class="text-[28px] lg:text-[34px] font-extrabold tracking-[-0.03em] num leading-none mt-1"><span class="text-t3 text-[19px] align-top">$</span>12,480<span class="text-t3 text-[19px]">.50</span></div></div>
+              <div class="flex items-center gap-1.5 text-[12.5px] font-semibold text-pos pb-0.5 whitespace-nowrap"><i class="ph-bold ph-trend-up text-[15px]"></i> +$240.10 <span class="text-t3 font-medium">· +1.96%</span></div>
             </div>
-            <div class="flex items-center gap-1.5 text-[12.5px] font-semibold text-pos pb-0.5 whitespace-nowrap"><i class="ph-bold ph-trend-up text-[15px]"></i> +$240.10 <span class="text-t3 font-medium">· +1.96%</span></div>
+            <div class="grid grid-cols-4 gap-2 sm:flex sm:gap-2">
+              <button class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 whitespace-nowrap bg-mint text-ink rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-bold hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrow-up text-[16px] sm:text-[15px]"></i> Send</button>
+              <button class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 whitespace-nowrap bg-surf border border-line rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-arrow-down text-[16px] sm:text-[15px] text-mint-deep"></i> Request</button>
+              <button data-go="convert" class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 whitespace-nowrap bg-surf border border-line rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-arrows-left-right text-[16px] sm:text-[15px] text-mint-deep"></i> Convert</button>
+              <button class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 whitespace-nowrap bg-surf border border-line rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[16px] sm:text-[15px] text-mint-deep"></i> Top up</button>
+            </div>
           </div>
-          <div class="grid grid-cols-4 gap-2 sm:flex sm:gap-2">
-            <button class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 whitespace-nowrap bg-mint text-ink rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-bold hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrow-up text-[16px] sm:text-[15px]"></i> Send</button>
-            <button class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 whitespace-nowrap bg-surf border border-line rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-arrow-down text-[16px] sm:text-[15px] text-mint-deep"></i> Request</button>
-            <button class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 whitespace-nowrap bg-surf border border-line rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-arrows-left-right text-[16px] sm:text-[15px] text-mint-deep"></i> Convert</button>
-            <button class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 whitespace-nowrap bg-surf border border-line rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-[12px] sm:text-[13px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[16px] sm:text-[15px] text-mint-deep"></i> Top up</button>
-          </div>
-        </div>
 
-        <!-- ACCOUNTS -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3">
-            <span class="w-10 h-10 rounded-xl bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-fill ph-currency-dollar text-[18px]"></i></span>
-            <div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">US Dollar</div><div class="text-[20px] font-extrabold num leading-tight">$10,240.00</div></div>
-            <span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+0.4%</span>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div data-go="accounts" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><span class="w-10 h-10 rounded-xl bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-fill ph-currency-dollar text-[18px]"></i></span><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">US Dollar</div><div class="text-[20px] font-extrabold num leading-tight">$10,240.00</div></div><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+0.4%</span></div>
+            <div data-go="accounts" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><span class="w-10 h-10 rounded-xl bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-duotone ph-coins text-[18px]"></i></span><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">USD Coin · 2,150</div><div class="text-[20px] font-extrabold num leading-tight">$2,150.00</div></div><span class="text-[10.5px] font-bold text-t3 bg-bg rounded-full px-2 py-0.5 num shrink-0">0.0%</span></div>
+            <div data-go="wallet" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><span class="w-10 h-10 rounded-xl bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-duotone ph-currency-btc text-[18px]"></i></span><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">Bitcoin · 0.0061</div><div class="text-[20px] font-extrabold num leading-tight">$90.50</div></div><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+2.1%</span></div>
           </div>
-          <div class="bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3">
-            <span class="w-10 h-10 rounded-xl bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-duotone ph-coins text-[18px]"></i></span>
-            <div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">USD Coin · 2,150</div><div class="text-[20px] font-extrabold num leading-tight">$2,150.00</div></div>
-            <span class="text-[10.5px] font-bold text-t3 bg-bg rounded-full px-2 py-0.5 num shrink-0">0.0%</span>
-          </div>
-          <div class="bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3">
-            <span class="w-10 h-10 rounded-xl bg-mint-tint grid place-items-center text-mint-deep shrink-0"><i class="ph-duotone ph-currency-btc text-[18px]"></i></span>
-            <div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">Bitcoin · 0.0061</div><div class="text-[20px] font-extrabold num leading-tight">$90.50</div></div>
-            <span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+2.1%</span>
-          </div>
-        </div>
 
-        <!-- CASH FLOW (full width of center) -->
-        <div class="bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col">
-          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-            <div>
-              <div class="text-[13px] font-bold">Cash flow</div>
-              <div class="flex items-center gap-4 mt-2">
-                <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-pos/10 grid place-items-center text-pos"><i class="ph-bold ph-arrow-down-left text-[14px]"></i></span><div><div class="text-[10.5px] text-t3 font-semibold leading-none">Money in</div><div class="text-[14px] font-extrabold num leading-tight">+$4,300.00</div></div></div>
-                <div class="w-px h-7 bg-line"></div>
-                <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-ink/5 grid place-items-center text-ink"><i class="ph-bold ph-arrow-up-right text-[14px]"></i></span><div><div class="text-[10.5px] text-t3 font-semibold leading-none">Money out</div><div class="text-[14px] font-extrabold num leading-tight">−$1,284.40</div></div></div>
+          <div class="bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col">
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div><div class="text-[13px] font-bold">Cash flow</div>
+                <div class="flex items-center gap-4 mt-2">
+                  <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-pos/10 grid place-items-center text-pos"><i class="ph-bold ph-arrow-down-left text-[14px]"></i></span><div><div class="text-[10.5px] text-t3 font-semibold leading-none">Money in</div><div class="text-[14px] font-extrabold num leading-tight">+$4,300.00</div></div></div>
+                  <div class="w-px h-7 bg-line"></div>
+                  <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-ink/5 grid place-items-center text-ink"><i class="ph-bold ph-arrow-up-right text-[14px]"></i></span><div><div class="text-[10.5px] text-t3 font-semibold leading-none">Money out</div><div class="text-[14px] font-extrabold num leading-tight">−$1,284.40</div></div></div>
+                </div></div>
+              <div class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5 shrink-0 self-start"><span class="px-2.5 py-1 rounded-md text-t2">7D</span><span class="px-2.5 py-1 rounded-md bg-ink text-white">30D</span><span class="px-2.5 py-1 rounded-md text-t2">90D</span></div>
+            </div>
+            <div class="relative h-[180px] xl:h-[200px] mt-3">
+              <div class="absolute top-1 right-1 z-10 flex items-center gap-1.5 bg-ink text-white rounded-lg px-2.5 py-1 text-[11px] font-bold shadow-sm">Now <span class="num text-mint-bright">$12,480</span></div>
+              <svg class="w-full h-full" viewBox="0 0 600 200" preserveAspectRatio="none">
+                <defs><linearGradient id="cfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12B981" stop-opacity="0.28"/><stop offset="100%" stop-color="#12B981" stop-opacity="0"/></linearGradient></defs>
+                <line x1="0" y1="55" x2="600" y2="55" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+                <line x1="0" y1="110" x2="600" y2="110" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+                <line x1="0" y1="165" x2="600" y2="165" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+                <path id="cf-area" fill="url(#cfg)" d=""/>
+                <path id="cf-line" fill="none" stroke="#12B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/>
+              </svg>
+            </div>
+            <div class="flex justify-between text-[10px] text-t3 font-semibold mt-1.5 px-0.5"><span>Feb 14</span><span>Feb 22</span><span>Mar 1</span><span>Mar 8</span><span>Mar 15</span></div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div class="lg:col-span-8 min-w-0 bg-surf border border-line rounded-2xl overflow-hidden">
+              <div class="flex items-center justify-between px-5 py-3 border-b border-line"><div class="text-[14px] font-bold">Recent transactions</div><button data-go="activity" class="text-[12.5px] font-semibold text-mint-deep hover:underline">View all</button></div>
+              <div class="hidden sm:flex items-center gap-3 px-5 py-2 text-[10.5px] font-bold uppercase tracking-[0.08em] text-t3 border-b border-line bg-bg/40"><div class="flex-1">Transaction</div><div class="w-32">Date</div><div class="w-24 text-center">Status</div><div class="w-28 text-right">Amount</div></div>
+              <div class="divide-y divide-line">
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Incoming transfer</div><div class="text-[11.5px] text-t3">USDC · Coinbase</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Today, 14:02</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$1,500.00</div></div>
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Apple Store</div><div class="text-[11.5px] text-t3">Shopping · Card ••8830</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Yesterday, 18:21</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$129.00</div></div>
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-arrows-left-right text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Convert USD → USDC</div><div class="text-[11.5px] text-t3">Exchange</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 12, 09:40</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">$500.00</div></div>
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Payout · SEPA</div><div class="text-[11.5px] text-t3">Salary · Acme Inc</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 9, 16:30</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$2,300.00</div></div>
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-lightning text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Electric bill</div><div class="text-[11.5px] text-t3">Utilities · Direct debit</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 10, 12:00</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-amber-600 bg-amber-500/10 rounded-full px-2 py-0.5">Pending</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$84.20</div></div>
               </div>
             </div>
-            <div class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5 shrink-0 self-start">
-              <span class="px-2.5 py-1 rounded-md text-t2">7D</span><span class="px-2.5 py-1 rounded-md bg-ink text-white">30D</span><span class="px-2.5 py-1 rounded-md text-t2">90D</span>
+            <div class="lg:col-span-4 min-w-0 bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col">
+              <div class="text-[14px] font-bold mb-3">Quick convert</div>
+              <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">From</div><div class="text-[16px] font-bold num">$500.00</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD</div></div>
+              <div class="flex justify-center -my-2 relative z-10"><span class="w-8 h-8 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf"><i class="ph-bold ph-arrow-down text-[14px]"></i></span></div>
+              <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">To</div><div class="text-[16px] font-bold num">499.40</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC</div></div>
+              <div class="text-[11px] text-t3 font-medium text-center mt-2.5">1 USD = 0.9988 · no fee</div>
+              <button data-go="convert" class="w-full mt-3 bg-mint text-ink rounded-xl py-3 text-[13.5px] font-bold hover:bg-mint-deep transition-colors">Convert now</button>
             </div>
           </div>
-          <div class="relative h-[180px] xl:h-[200px] mt-3">
-            <div class="absolute top-1 right-1 z-10 flex items-center gap-1.5 bg-ink text-white rounded-lg px-2.5 py-1 text-[11px] font-bold shadow-sm">Now <span class="num text-mint-bright">$12,480</span></div>
-            <svg class="w-full h-full" viewBox="0 0 600 200" preserveAspectRatio="none">
-              <defs><linearGradient id="cfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12B981" stop-opacity="0.28"/><stop offset="100%" stop-color="#12B981" stop-opacity="0"/></linearGradient></defs>
-              <line x1="0" y1="55" x2="600" y2="55" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
-              <line x1="0" y1="110" x2="600" y2="110" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
-              <line x1="0" y1="165" x2="600" y2="165" stroke="#E6EBE8" stroke-width="1" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
-              <path id="cf-area" fill="url(#cfg)" d=""/>
-              <path id="cf-line" fill="none" stroke="#12B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/>
-            </svg>
-          </div>
-          <div class="flex justify-between text-[10px] text-t3 font-semibold mt-1.5 px-0.5"><span>Feb 14</span><span>Feb 22</span><span>Mar 1</span><span>Mar 8</span><span>Mar 15</span></div>
-        </div>
+        </section>
 
-        <!-- transactions + card column -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <!-- transactions -->
-          <div class="lg:col-span-8 min-w-0 bg-surf border border-line rounded-2xl overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-3 border-b border-line">
-              <div class="text-[14px] font-bold">Recent transactions</div>
-              <div class="flex items-center gap-2">
-                <button class="hidden sm:flex items-center gap-1.5 text-[12px] font-semibold text-t2 bg-bg border border-line rounded-lg px-2.5 py-1.5 hover:border-mint hover:text-mint-deep transition-colors"><i class="ph ph-funnel text-[13px]"></i> Filter</button>
-                <button class="text-[12.5px] font-semibold text-mint-deep hover:underline">View all</button>
+        <!-- ============ ACCOUNTS ============ -->
+        <section data-screen="accounts" hidden class="flex flex-col gap-4">
+          <div class="flex items-center justify-between"><div><div class="text-[12px] font-semibold text-t2">Total across accounts</div><div class="text-[30px] font-extrabold num leading-none mt-1">$12,480.50</div></div><button class="flex items-center gap-2 bg-mint text-ink rounded-xl px-4 py-2.5 text-[13px] font-bold hover:bg-mint-deep transition-colors"><i class="ph-bold ph-plus text-[15px]"></i> Add account</button></div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="bg-surf border border-line rounded-2xl p-5">
+              <div class="flex items-center gap-3 mb-4"><span class="w-11 h-11 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-fill ph-currency-dollar text-[20px]"></i></span><div class="flex-1"><div class="text-[14px] font-bold">US Dollar</div><div class="text-[11.5px] text-t3">Checking · USD</div></div><div class="text-[20px] font-extrabold num">$10,240.00</div></div>
+              <div class="grid grid-cols-2 gap-2 text-[12px] mb-4"><div class="bg-bg rounded-lg px-3 py-2"><div class="text-t3 text-[10.5px] font-semibold">Account number</div><div class="font-bold num">•••• 4821</div></div><div class="bg-bg rounded-lg px-3 py-2"><div class="text-t3 text-[10.5px] font-semibold">Routing</div><div class="font-bold num">021000021</div></div></div>
+              <div class="flex gap-2"><button class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Send</button><button data-go="receive" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Receive</button><button data-go="convert" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Convert</button></div>
+            </div>
+            <div class="bg-surf border border-line rounded-2xl p-5">
+              <div class="flex items-center gap-3 mb-4"><span class="w-11 h-11 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-duotone ph-coins text-[20px]"></i></span><div class="flex-1"><div class="text-[14px] font-bold">USD Coin</div><div class="text-[11.5px] text-t3">2,150.00 USDC</div></div><div class="text-[20px] font-extrabold num">$2,150.00</div></div>
+              <div class="grid grid-cols-1 gap-2 text-[12px] mb-4"><div class="bg-bg rounded-lg px-3 py-2"><div class="text-t3 text-[10.5px] font-semibold">Wallet address</div><div class="font-bold num truncate">0x7a2f…9C4e</div></div></div>
+              <div class="flex gap-2"><button class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Send</button><button data-go="receive" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Receive</button><button data-go="convert" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Convert</button></div>
+            </div>
+            <div class="bg-surf border border-line rounded-2xl p-5">
+              <div class="flex items-center gap-3 mb-4"><span class="w-11 h-11 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-duotone ph-currency-btc text-[20px]"></i></span><div class="flex-1"><div class="text-[14px] font-bold">Bitcoin</div><div class="text-[11.5px] text-t3">0.0061 BTC</div></div><div class="text-[20px] font-extrabold num">$90.50</div></div>
+              <div class="grid grid-cols-1 gap-2 text-[12px] mb-4"><div class="bg-bg rounded-lg px-3 py-2"><div class="text-t3 text-[10.5px] font-semibold">BTC address</div><div class="font-bold num truncate">bc1q…k7v2</div></div></div>
+              <div class="flex gap-2"><button class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Send</button><button data-go="receive" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Receive</button><button data-go="convert" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Convert</button></div>
+            </div>
+            <div class="border-2 border-dashed border-line rounded-2xl p-5 flex flex-col items-center justify-center gap-2 text-center min-h-[180px] hover:border-mint transition-colors cursor-pointer">
+              <span class="w-11 h-11 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-plus text-[20px]"></i></span>
+              <div class="text-[13px] font-bold">Open a new account</div><div class="text-[11.5px] text-t3">EUR · GBP · more currencies</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ CARDS ============ -->
+        <section data-screen="cards" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-5 flex flex-col gap-4">
+            <div class="relative w-full max-w-[420px] aspect-[1.6/1] rounded-2xl p-5 overflow-hidden flex flex-col justify-between" style="background:linear-gradient(135deg,#16271E 0%,#0B130F 75%)">
+              <div class="absolute -right-8 -top-10 w-44 h-44 rounded-full" style="background:radial-gradient(circle,rgba(51,230,160,0.32),transparent 70%)"></div>
+              <div class="relative flex items-start justify-between"><div><div class="text-[11px] font-medium text-white/55">Virtual card</div><div class="text-white font-bold text-[15px] mt-0.5 flex items-center gap-1.5">PayerPay <span class="text-mint-bright">·</span> Visa</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[21px]"></i></div>
+              <div class="relative"><div class="text-white/90 num tracking-[0.14em] text-[16px] lg:text-[17px] font-semibold whitespace-nowrap">5421 •••• •••• 8830</div><div class="flex items-center justify-between mt-2.5 text-[11.5px] font-medium text-white/60"><span>I. Petrov</span><span class="num">VALID 09/29</span></div></div>
+            </div>
+            <div class="bg-surf border border-line rounded-2xl p-2 grid grid-cols-3 gap-1 text-center">
+              <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-snowflake text-[16px]"></i></span><span class="text-[11px] font-semibold">Freeze</span></button>
+              <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-eye text-[16px]"></i></span><span class="text-[11px] font-semibold">Details</span></button>
+              <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-sliders-horizontal text-[16px]"></i></span><span class="text-[11px] font-semibold">Limits</span></button>
+            </div>
+            <button class="bg-surf border border-line rounded-2xl py-3 text-[13px] font-bold flex items-center justify-center gap-2 hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Order physical card</button>
+          </div>
+          <div class="lg:col-span-7 flex flex-col gap-4">
+            <div class="bg-surf border border-line rounded-2xl p-5">
+              <div class="text-[14px] font-bold mb-1">Monthly spending limit</div>
+              <div class="flex items-end justify-between mb-2"><div class="text-[22px] font-extrabold num">$1,284 <span class="text-[13px] text-t3 font-semibold">/ $5,000</span></div><div class="text-[12px] font-semibold text-t3">26% used</div></div>
+              <div class="h-2.5 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:26%"></div></div>
+            </div>
+            <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+              <div class="px-5 py-3 text-[13px] font-bold">Card settings</div>
+              <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Online payments</div><div class="text-[11.5px] text-t3">Allow e-commerce transactions</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+              <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Contactless</div><div class="text-[11.5px] text-t3">Tap to pay</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+              <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">ATM withdrawals</div><div class="text-[11.5px] text-t3">Cash at ATMs</div></div><span class="toggle w-10 h-6 rounded-full p-0.5 bg-line transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+            </div>
+            <div class="bg-surf border border-line rounded-2xl overflow-hidden">
+              <div class="px-5 py-3 border-b border-line text-[13px] font-bold">Card transactions</div>
+              <div class="divide-y divide-line">
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Apple Store</div><div class="text-[11px] text-t3">Yesterday, 18:21</div></div><div class="text-[13px] font-bold num">−$129.00</div></div>
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-coffee text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Starbucks</div><div class="text-[11px] text-t3">Mar 11, 08:15</div></div><div class="text-[13px] font-bold num">−$6.40</div></div>
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-cart text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Amazon</div><div class="text-[11px] text-t3">Mar 8, 20:10</div></div><div class="text-[13px] font-bold num">−$58.30</div></div>
               </div>
             </div>
-            <div class="hidden sm:flex items-center gap-3 px-5 py-2 text-[10.5px] font-bold uppercase tracking-[0.08em] text-t3 border-b border-line bg-bg/40">
-              <div class="flex-1">Transaction</div><div class="w-32">Date</div><div class="w-24 text-center">Status</div><div class="w-28 text-right">Amount</div>
-            </div>
+          </div>
+        </section>
+
+        <!-- ============ CONVERT ============ -->
+        <section data-screen="convert" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-surf border border-line rounded-2xl p-5 lg:p-6">
+            <div class="text-[15px] font-bold mb-4">Convert</div>
+            <div class="bg-bg border border-line rounded-xl px-4 py-4 flex items-center justify-between"><div><div class="text-[11px] text-t3 font-semibold">You pay</div><div class="text-[24px] font-extrabold num">$500.00</div></div><button class="flex items-center gap-2 text-[14px] font-bold bg-surf border border-line rounded-xl px-3 py-2"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD <i class="ph ph-caret-down text-[12px] text-t3"></i></button></div>
+            <div class="flex justify-center -my-2.5 relative z-10"><button class="w-9 h-9 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrows-down-up text-[15px]"></i></button></div>
+            <div class="bg-bg border border-line rounded-xl px-4 py-4 flex items-center justify-between"><div><div class="text-[11px] text-t3 font-semibold">You get</div><div class="text-[24px] font-extrabold num">499.40</div></div><button class="flex items-center gap-2 text-[14px] font-bold bg-surf border border-line rounded-xl px-3 py-2"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC <i class="ph ph-caret-down text-[12px] text-t3"></i></button></div>
+            <div class="flex items-center justify-between text-[12px] mt-3 px-1"><span class="text-t3 font-medium">1 USD = 0.9988 USDC</span><span class="text-pos font-bold">No fee</span></div>
+            <div class="grid grid-cols-4 gap-2 mt-4"><button class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$100</button><button class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$500</button><button class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$1K</button><button class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">Max</button></div>
+            <button class="w-full mt-4 bg-mint text-ink rounded-xl py-3.5 text-[14px] font-bold hover:bg-mint-deep transition-colors">Convert now</button>
+          </div>
+          <div class="lg:col-span-5 flex flex-col gap-4">
+            <div class="bg-surf border border-line rounded-2xl overflow-hidden"><div class="px-5 py-3 border-b border-line text-[13px] font-bold">Recent conversions</div><div class="divide-y divide-line">
+              <div class="flex items-center justify-between px-5 py-3"><div class="text-[12.5px] font-semibold">USD → USDC</div><div class="text-right"><div class="text-[12.5px] font-bold num">$500.00</div><div class="text-[10.5px] text-t3">Mar 12</div></div></div>
+              <div class="flex items-center justify-between px-5 py-3"><div class="text-[12.5px] font-semibold">USD → BTC</div><div class="text-right"><div class="text-[12.5px] font-bold num">$120.00</div><div class="text-[10.5px] text-t3">Mar 5</div></div></div>
+              <div class="flex items-center justify-between px-5 py-3"><div class="text-[12.5px] font-semibold">EUR → USD</div><div class="text-right"><div class="text-[12.5px] font-bold num">€300.00</div><div class="text-[10.5px] text-t3">Feb 28</div></div></div>
+            </div></div>
+            <div class="bg-surf border border-line rounded-2xl p-5"><div class="text-[13px] font-bold mb-3">Supported</div><div class="flex flex-wrap gap-2 text-[12px] font-semibold">
+              <span class="bg-bg border border-line rounded-lg px-3 py-1.5">USD</span><span class="bg-bg border border-line rounded-lg px-3 py-1.5">EUR</span><span class="bg-bg border border-line rounded-lg px-3 py-1.5">GBP</span><span class="bg-bg border border-line rounded-lg px-3 py-1.5">USDC</span><span class="bg-bg border border-line rounded-lg px-3 py-1.5">USDT</span><span class="bg-bg border border-line rounded-lg px-3 py-1.5">BTC</span><span class="bg-bg border border-line rounded-lg px-3 py-1.5">ETH</span>
+            </div></div>
+          </div>
+        </section>
+
+        <!-- ============ ACTIVITY ============ -->
+        <section data-screen="activity" hidden class="flex flex-col gap-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex gap-1 text-[12.5px] font-semibold bg-surf border border-line rounded-xl p-1"><span class="px-3 py-1.5 rounded-lg bg-ink text-white">All</span><span class="px-3 py-1.5 rounded-lg text-t2">Money in</span><span class="px-3 py-1.5 rounded-lg text-t2">Money out</span><span class="px-3 py-1.5 rounded-lg text-t2">Card</span></div>
+            <div class="flex items-center gap-2 bg-surf border border-line rounded-xl px-3 py-2 text-[12.5px] text-t3 font-medium w-[220px]"><i class="ph ph-magnifying-glass text-[15px]"></i> Search transactions…</div>
+          </div>
+          <div class="bg-surf border border-line rounded-2xl overflow-hidden">
+            <div class="hidden sm:flex items-center gap-3 px-5 py-2 text-[10.5px] font-bold uppercase tracking-[0.08em] text-t3 border-b border-line bg-bg/40"><div class="flex-1">Transaction</div><div class="w-32">Date</div><div class="w-24 text-center">Status</div><div class="w-28 text-right">Amount</div></div>
             <div class="divide-y divide-line">
               <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Incoming transfer</div><div class="text-[11.5px] text-t3">USDC · Coinbase</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Today, 14:02</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$1,500.00</div></div>
               <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Apple Store</div><div class="text-[11.5px] text-t3">Shopping · Card ••8830</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Yesterday, 18:21</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$129.00</div></div>
@@ -175,41 +269,73 @@ tailwind.config={theme:{extend:{
               <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Payout · SEPA</div><div class="text-[11.5px] text-t3">Salary · Acme Inc</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 9, 16:30</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$2,300.00</div></div>
               <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-lightning text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Electric bill</div><div class="text-[11.5px] text-t3">Utilities · Direct debit</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 10, 12:00</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-amber-600 bg-amber-500/10 rounded-full px-2 py-0.5">Pending</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$84.20</div></div>
               <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-cart text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Amazon</div><div class="text-[11.5px] text-t3">Shopping · Card ••8830</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 8, 20:10</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$58.30</div></div>
+              <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-car text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Uber</div><div class="text-[11.5px] text-t3">Transport · Card ••8830</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 7, 22:05</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$18.90</div></div>
             </div>
           </div>
+        </section>
 
-          <!-- quick convert (card removed — evaluating) -->
-          <div class="lg:col-span-4 min-w-0 flex flex-col">
-            <div class="bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col flex-1">
-              <div class="flex items-center justify-between mb-3">
-                <div class="text-[14px] font-bold">Quick convert</div>
-                <span class="text-[10.5px] font-semibold text-pos bg-pos/10 rounded-full px-2 py-0.5">No fee</span>
-              </div>
-              <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">From</div><div class="text-[17px] font-bold num">$500.00</div></div><button class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0 bg-surf border border-line rounded-lg px-2.5 py-1.5"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD <i class="ph ph-caret-down text-[11px] text-t3"></i></button></div>
-              <div class="flex justify-center -my-2.5 relative z-10"><button class="w-8 h-8 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrows-down-up text-[13px]"></i></button></div>
-              <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">To</div><div class="text-[17px] font-bold num">499.40</div></div><button class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0 bg-surf border border-line rounded-lg px-2.5 py-1.5"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC <i class="ph ph-caret-down text-[11px] text-t3"></i></button></div>
-              <div class="text-[11px] text-t3 font-medium text-center mt-2.5">1 USD = 0.9988 USDC</div>
-              <div class="grid grid-cols-4 gap-2 mt-3">
-                <button class="bg-bg border border-line rounded-lg py-2 text-[11.5px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$100</button>
-                <button class="bg-bg border border-line rounded-lg py-2 text-[11.5px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$500</button>
-                <button class="bg-bg border border-line rounded-lg py-2 text-[11.5px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$1K</button>
-                <button class="bg-bg border border-line rounded-lg py-2 text-[11.5px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">Max</button>
-              </div>
-              <div class="mt-4 pt-4 border-t border-line space-y-2.5">
-                <div class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-t3">Recent</div>
-                <div class="flex items-center justify-between text-[12.5px]"><span class="font-semibold text-t2">USD → USDC</span><span class="num font-bold">$500.00</span></div>
-                <div class="flex items-center justify-between text-[12.5px]"><span class="font-semibold text-t2">USD → BTC</span><span class="num font-bold">$120.00</span></div>
-              </div>
-              <button class="w-full mt-auto bg-mint text-ink rounded-xl py-3 text-[13.5px] font-bold hover:bg-mint-deep transition-colors" style="margin-top:1rem">Convert now</button>
+        <!-- ============ WALLET (crypto) ============ -->
+        <section data-screen="wallet" hidden class="flex flex-col gap-4">
+          <div class="flex items-center justify-between"><div><div class="text-[12px] font-semibold text-t2">Crypto value</div><div class="text-[30px] font-extrabold num leading-none mt-1">$2,240.50</div></div><div class="flex gap-2"><button class="bg-mint text-ink rounded-xl px-4 py-2.5 text-[13px] font-bold hover:bg-mint-deep transition-colors">Send</button><button data-go="receive" class="bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold hover:border-mint transition-colors">Receive</button><button data-go="convert" class="bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold hover:border-mint transition-colors">Convert</button></div></div>
+          <div class="bg-surf border border-line rounded-2xl overflow-hidden">
+            <div class="px-5 py-3 border-b border-line text-[13px] font-bold">Holdings</div>
+            <div class="divide-y divide-line">
+              <div class="flex items-center gap-3 px-5 py-3.5"><span class="w-10 h-10 rounded-full bg-[#F7931A]/10 grid place-items-center text-[#F7931A]"><i class="ph-fill ph-currency-btc text-[18px]"></i></span><div class="flex-1"><div class="text-[13.5px] font-bold">Bitcoin</div><div class="text-[11.5px] text-t3">0.0061 BTC</div></div><div class="text-right"><div class="text-[14px] font-extrabold num">$90.50</div><div class="text-[11px] font-semibold text-pos num">+2.1%</div></div></div>
+              <div class="flex items-center gap-3 px-5 py-3.5"><span class="w-10 h-10 rounded-full bg-[#627EEA]/10 grid place-items-center text-[#627EEA]"><i class="ph-bold ph-diamond text-[17px]"></i></span><div class="flex-1"><div class="text-[13.5px] font-bold">Ethereum</div><div class="text-[11.5px] text-t3">0.00 ETH</div></div><div class="text-right"><div class="text-[14px] font-extrabold num">$0.00</div><div class="text-[11px] font-semibold text-pos num">+1.4%</div></div></div>
+              <div class="flex items-center gap-3 px-5 py-3.5"><span class="w-10 h-10 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-duotone ph-coins text-[17px]"></i></span><div class="flex-1"><div class="text-[13.5px] font-bold">USD Coin</div><div class="text-[11.5px] text-t3">2,150 USDC</div></div><div class="text-right"><div class="text-[14px] font-extrabold num">$2,150.00</div><div class="text-[11px] font-semibold text-t3 num">0.0%</div></div></div>
             </div>
           </div>
-        </div>
+        </section>
+
+        <!-- ============ RECEIVE ============ -->
+        <section data-screen="receive" hidden class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-4xl">
+          <div class="bg-surf border border-line rounded-2xl p-5">
+            <div class="flex items-center gap-2.5 mb-4"><span class="w-9 h-9 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-fill ph-bank text-[18px]"></i></span><div class="text-[14px] font-bold">Receive by bank</div></div>
+            <div class="space-y-2.5">
+              <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between"><div><div class="text-[10.5px] text-t3 font-semibold">Account holder</div><div class="text-[13px] font-bold">Igor Petrov</div></div></div>
+              <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between"><div><div class="text-[10.5px] text-t3 font-semibold">Account number</div><div class="text-[13px] font-bold num">8830 4821 0094</div></div><button class="text-mint-deep"><i class="ph-bold ph-copy text-[16px]"></i></button></div>
+              <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between"><div><div class="text-[10.5px] text-t3 font-semibold">Routing (ACH / Wire)</div><div class="text-[13px] font-bold num">021000021</div></div><button class="text-mint-deep"><i class="ph-bold ph-copy text-[16px]"></i></button></div>
+              <div class="bg-bg rounded-lg px-3.5 py-2.5"><div class="text-[10.5px] text-t3 font-semibold">EUR IBAN</div><div class="text-[13px] font-bold num">DE89 3704 0044 0532 0130 00</div></div>
+            </div>
+          </div>
+          <div class="bg-surf border border-line rounded-2xl p-5">
+            <div class="flex items-center gap-2.5 mb-4"><span class="w-9 h-9 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-duotone ph-coins text-[18px]"></i></span><div class="text-[14px] font-bold">Receive crypto</div></div>
+            <div class="flex justify-center my-4"><div class="w-36 h-36 rounded-xl bg-bg border border-line grid place-items-center text-t3"><i class="ph ph-qr-code text-[64px]"></i></div></div>
+            <div class="text-[11px] text-t3 font-semibold mb-1">USDC address (ERC-20)</div>
+            <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between gap-2"><div class="text-[12.5px] font-bold num truncate">0x7a2f4b9e…3c9C4e</div><button class="text-mint-deep shrink-0"><i class="ph-bold ph-copy text-[16px]"></i></button></div>
+            <div class="text-[10.5px] text-t3 mt-2.5">Send only USDC on Ethereum to this address.</div>
+          </div>
+        </section>
+
+        <!-- ============ SETTINGS ============ -->
+        <section data-screen="settings" hidden class="flex flex-col gap-4 max-w-3xl">
+          <div class="bg-surf border border-line rounded-2xl p-5 flex items-center gap-4">
+            <span class="w-14 h-14 rounded-full bg-ink text-white grid place-items-center text-[16px] font-bold">ИП</span>
+            <div class="flex-1"><div class="text-[15px] font-bold">Igor Petrov</div><div class="text-[12px] text-t3">igor@payerpay.io · Personal</div></div>
+            <button class="bg-bg border border-line rounded-lg px-4 py-2 text-[12.5px] font-bold hover:border-mint transition-colors">Edit profile</button>
+          </div>
+          <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+            <div class="px-5 py-3 text-[13px] font-bold">Preferences</div>
+            <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Theme</div><div class="text-[11.5px] text-t3">Light / Dark</div></div><div class="flex gap-1 bg-bg border border-line rounded-lg p-0.5 text-[12px] font-semibold"><span class="px-3 py-1 rounded-md bg-ink text-white">Light</span><span class="px-3 py-1 rounded-md text-t2">Dark</span></div></div>
+            <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Accent color</div><div class="text-[11.5px] text-t3">Personalize your theme</div></div><div class="flex gap-2">
+              <span class="w-6 h-6 rounded-full ring-2 ring-offset-2 ring-mint" style="background:#12B981"></span><span class="w-6 h-6 rounded-full" style="background:#6366f1"></span><span class="w-6 h-6 rounded-full" style="background:#f97316"></span><span class="w-6 h-6 rounded-full" style="background:#e54666"></span><span class="w-6 h-6 rounded-full bg-bg border border-line grid place-items-center text-t3"><i class="ph ph-dots-three text-[12px]"></i></span>
+            </div></div>
+            <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Language</div></div><span class="text-[12.5px] font-semibold text-t2">English ›</span></div>
+            <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Display currency</div></div><span class="text-[12.5px] font-semibold text-t2">USD ›</span></div>
+          </div>
+          <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+            <div class="px-5 py-3 text-[13px] font-bold">Security</div>
+            <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Two-factor authentication</div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+            <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Change password</div><i class="ph ph-caret-right text-t3"></i></div>
+            <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Trusted devices</div><i class="ph ph-caret-right text-t3"></i></div>
+          </div>
+          <button class="text-[13px] font-bold text-neg bg-surf border border-line rounded-2xl py-3 hover:border-neg transition-colors">Log out</button>
+        </section>
+
       </div>
 
-      <!-- MARKETS RAIL (xl screens) — fills full height -->
+      <!-- MARKETS RAIL (xl) -->
       <aside class="hidden xl:flex flex-col gap-4 w-[316px] shrink-0 border-l border-line bg-surf/40 p-4 self-start sticky top-14 overflow-hidden" style="height:calc(100vh - 3.5rem)">
-
-        <!-- Markets -->
         <div class="bg-surf border border-line rounded-2xl overflow-hidden shrink-0">
           <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">Markets</div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">See all</button></div>
           <div class="divide-y divide-line">
@@ -219,8 +345,6 @@ tailwind.config={theme:{extend:{
             <div class="flex items-center gap-2.5 px-4 py-2.5"><span class="w-8 h-8 rounded-full bg-[#23A8DF]/10 grid place-items-center text-[#23A8DF] shrink-0"><i class="ph-bold ph-drop text-[15px]"></i></span><div class="min-w-0 w-[54px]"><div class="text-[12.5px] font-bold leading-tight">XRP</div><div class="text-[10.5px] text-t3">Ripple</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path id="sp-xrp" fill="none" stroke="#12B981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/></svg><div class="text-right shrink-0 w-[66px]"><div class="text-[12.5px] font-bold num leading-tight">$0.62</div><div class="text-[10.5px] font-semibold text-pos num">+3.2%</div></div></div>
           </div>
         </div>
-
-        <!-- FX rates -->
         <div class="bg-surf border border-line rounded-2xl overflow-hidden shrink-0">
           <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">FX rates</div><span class="text-[10.5px] font-semibold text-t3">vs USD</span></div>
           <div class="divide-y divide-line">
@@ -229,8 +353,6 @@ tailwind.config={theme:{extend:{
             <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><span class="text-[14px]">🇯🇵</span><span class="text-[12.5px] font-bold">JPY</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">0.0067</span> <span class="text-[10.5px] font-semibold text-pos num">+0.4%</span></div></div>
           </div>
         </div>
-
-        <!-- News (fills remaining height; AI-autofilled later, full list on /news) -->
         <div class="bg-surf border border-line rounded-2xl flex flex-col flex-1 min-h-0 overflow-hidden">
           <div class="flex items-center justify-between px-4 py-3 border-b border-line shrink-0"><div class="flex items-center gap-2"><div class="text-[13px] font-bold">News</div><span class="w-1.5 h-1.5 rounded-full bg-mint animate-pulse"></span></div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">See all</button></div>
           <div class="scroll-y divide-y divide-line flex-1 min-h-0">
@@ -238,7 +360,6 @@ tailwind.config={theme:{extend:{
             <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Fed holds rates steady, signals patience on cuts</div><div class="text-[10.5px] text-t3 mt-1">Bloomberg · 4h ago</div></div></a>
             <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-[#627EEA] mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Ethereum's next network upgrade set for Q3</div><div class="text-[10.5px] text-t3 mt-1">Decrypt · 7h ago</div></div></a>
             <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">USDC reserves attestation published for Q2</div><div class="text-[10.5px] text-t3 mt-1">Circle · 11h ago</div></div></a>
-            <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-[#14F195] mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Solana network activity hits a new all-time high</div><div class="text-[10.5px] text-t3 mt-1">The Block · 1d ago</div></div></a>
             <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-[#23A8DF] mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Cross-border payments volume up 18% YoY</div><div class="text-[10.5px] text-t3 mt-1">Reuters · 1d ago</div></div></a>
           </div>
         </div>
@@ -249,35 +370,43 @@ tailwind.config={theme:{extend:{
 
 <script>
 (function(){
-  function smooth(p, close){
-    var d="M "+p[0][0]+" "+p[0][1];
-    for(var i=0;i<p.length-1;i++){
-      var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p[i+1];
-      var c1x=p1[0]+(p2[0]-p0[0])/6, c1y=p1[1]+(p2[1]-p0[1])/6;
-      var c2x=p2[0]-(p3[0]-p1[0])/6, c2y=p2[1]-(p3[1]-p1[1])/6;
-      d+=" C "+c1x+" "+c1y+" "+c2x+" "+c2y+" "+p2[0]+" "+p2[1];
-    }
-    return d;
-  }
-  function set(id, pts, area){
-    var el=document.getElementById(id); if(!el) return;
-    var l=smooth(pts);
-    el.setAttribute('d', area? l+" L 600 200 L 0 200 Z" : l);
-  }
-  set('cf-line', [[0,150],[50,138],[100,152],[150,116],[200,128],[250,92],[300,108],[350,78],[400,96],[450,62],[500,76],[550,48],[600,40]]);
-  set('cf-area', [[0,150],[50,138],[100,152],[150,116],[200,128],[250,92],[300,108],[350,78],[400,96],[450,62],[500,76],[550,48],[600,40]], true);
-  // mini sparklines (viewBox 0..100 x, 0..32 y)
-  set('sp-btc', [[0,24],[20,20],[40,22],[60,14],[80,16],[100,7]]);
-  set('sp-eth', [[0,22],[20,24],[40,18],[60,20],[80,12],[100,10]]);
-  set('sp-sol', [[0,10],[20,12],[40,9],[60,16],[80,15],[100,22]]);
-  set('sp-xrp', [[0,26],[20,22],[40,24],[60,16],[80,18],[100,8]]);
+  function smooth(p){var d="M "+p[0][0]+" "+p[0][1];for(var i=0;i<p.length-1;i++){var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p[i+1];var c1x=p1[0]+(p2[0]-p0[0])/6,c1y=p1[1]+(p2[1]-p0[1])/6,c2x=p2[0]-(p3[0]-p1[0])/6,c2y=p2[1]-(p3[1]-p1[1])/6;d+=" C "+c1x+" "+c1y+" "+c2x+" "+c2y+" "+p2[0]+" "+p2[1];}return d;}
+  function set(id,p,area){var el=document.getElementById(id);if(!el)return;var l=smooth(p);el.setAttribute('d',area?l+" L 600 200 L 0 200 Z":l);}
+  set('cf-line',[[0,150],[50,138],[100,152],[150,116],[200,128],[250,92],[300,108],[350,78],[400,96],[450,62],[500,76],[550,48],[600,40]]);
+  set('cf-area',[[0,150],[50,138],[100,152],[150,116],[200,128],[250,92],[300,108],[350,78],[400,96],[450,62],[500,76],[550,48],[600,40]],true);
+  set('sp-btc',[[0,24],[20,20],[40,22],[60,14],[80,16],[100,7]]);
+  set('sp-eth',[[0,22],[20,24],[40,18],[60,20],[80,12],[100,10]]);
+  set('sp-sol',[[0,10],[20,12],[40,9],[60,16],[80,15],[100,22]]);
+  set('sp-xrp',[[0,26],[20,22],[40,24],[60,16],[80,18],[100,8]]);
 
+  // ===== Screen navigation =====
+  var titles={home:'Home',accounts:'Accounts',cards:'Cards',convert:'Convert',activity:'Activity',wallet:'Crypto Wallet',receive:'Receive',settings:'Settings'};
+  var screens=document.querySelectorAll('[data-screen]');
+  var navis=document.querySelectorAll('[data-nav]');
   var sb=document.getElementById('sidebar'), bd=document.getElementById('backdrop');
-  function open(){ sb.classList.remove('-translate-x-full'); bd.classList.remove('opacity-0','pointer-events-none'); }
-  function close(){ sb.classList.add('-translate-x-full'); bd.classList.add('opacity-0','pointer-events-none'); }
-  document.getElementById('openSb').addEventListener('click',open);
-  document.getElementById('closeSb').addEventListener('click',close);
-  bd.addEventListener('click',close);
+  function closeDrawer(){ sb.classList.add('-translate-x-full'); bd.classList.add('opacity-0','pointer-events-none'); }
+  function go(name){
+    screens.forEach(function(s){ s.hidden = (s.getAttribute('data-screen')!==name); });
+    navis.forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-nav')===name); });
+    var t=document.getElementById('screen-title'); if(t) t.textContent = titles[name]||name;
+    window.scrollTo(0,0);
+    if(window.innerWidth<1024) closeDrawer();
+  }
+  navis.forEach(function(n){ n.addEventListener('click',function(e){ e.preventDefault(); go(n.getAttribute('data-nav')); }); });
+  // in-content shortcuts (cards/buttons with data-go)
+  document.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(e){ e.preventDefault(); go(b.getAttribute('data-go')); }); });
+
+  // ===== Personal / Business segment =====
+  document.querySelectorAll('[data-seg]').forEach(function(s){ s.addEventListener('click',function(){ document.querySelectorAll('[data-seg]').forEach(function(x){ x.classList.toggle('active', x===s); }); }); });
+
+  // ===== toggles =====
+  document.querySelectorAll('.toggle').forEach(function(t){ t.addEventListener('click',function(){ t.classList.toggle('toggle-on'); if(!t.classList.contains('toggle-on')) t.classList.add('bg-line'); else t.classList.remove('bg-line'); }); });
+
+  // ===== mobile drawer =====
+  function openDrawer(){ sb.classList.remove('-translate-x-full'); bd.classList.remove('opacity-0','pointer-events-none'); }
+  document.getElementById('openSb').addEventListener('click',openDrawer);
+  document.getElementById('closeSb').addEventListener('click',closeDrawer);
+  bd.addEventListener('click',closeDrawer);
 })();
 </script>
 </body>
