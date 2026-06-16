@@ -227,14 +227,12 @@ tailwind.config={theme:{extend:{
         <section data-screen="cards" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:h-[calc(100vh-5.5rem)] lg:overflow-hidden">
             <!-- LEFT: card + actions + details (all full col-4 width = aligned) -->
             <div class="lg:col-span-4 min-w-0 flex flex-col gap-3.5 lg:min-h-0 lg:overflow-y-auto scroll-y">
-              <div>
+              <div class="relative">
                 <div class="carousel" id="cardCarousel">
                   <div class="cslide"><div class="cardstage"><div class="cardflip">
                     <div class="pcard front"><div class="glow"></div><div class="pad">
                       <div class="flex items-start justify-between"><div><div class="text-[10px] text-white/55 font-medium">Virtual card</div><div class="text-white font-bold text-[14px] mt-0.5">PayerPay · Visa</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[18px]"></i></div>
-                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">5421 •••• •••• 8830</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 09/29</span></div></div>
-                      <span class="fhint">tap to flip</span>
-                    </div></div>
+                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">5421 •••• •••• 8830</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 09/29</span></div></div>                    </div></div>
                     <div class="pcard back"><div class="bpad"><div class="b-mag"></div><div class="b-body">
                       <div class="b-sig"><span class="text-[11px] italic font-semibold" style="color:#4A4136">I. Petrov</span><span class="b-cvv num">123</span></div>
                       <div class="text-white/85 num tracking-[0.1em] text-[13.5px] font-semibold">5421 0042 9918 8830</div>
@@ -245,9 +243,7 @@ tailwind.config={theme:{extend:{
                   <div class="cslide"><div class="cardstage v-bronze"><div class="cardflip">
                     <div class="pcard front"><div class="glow"></div><div class="pad">
                       <div class="flex items-start justify-between"><div><div class="text-[10px] text-white/55 font-medium">Virtual card</div><div class="text-white font-bold text-[14px] mt-0.5">PayerPay · Mastercard</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[18px]"></i></div>
-                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">5293 •••• •••• 2204</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 11/28</span></div></div>
-                      <span class="fhint">tap to flip</span>
-                    </div></div>
+                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">5293 •••• •••• 2204</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 11/28</span></div></div>                    </div></div>
                     <div class="pcard back"><div class="bpad"><div class="b-mag"></div><div class="b-body">
                       <div class="b-sig"><span class="text-[11px] italic font-semibold" style="color:#4A4136">I. Petrov</span><span class="b-cvv num">455</span></div>
                       <div class="text-white/85 num tracking-[0.1em] text-[13.5px] font-semibold">5293 0091 2244 2204</div>
@@ -258,9 +254,7 @@ tailwind.config={theme:{extend:{
                   <div class="cslide"><div class="cardstage v-ink"><div class="cardflip">
                     <div class="pcard front"><div class="glow"></div><div class="pad">
                       <div class="flex items-start justify-between"><div><div class="text-[10px] text-white/55 font-medium">Virtual · single-use</div><div class="text-white font-bold text-[14px] mt-0.5">PayerPay · Visa</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[18px]"></i></div>
-                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">4012 •••• •••• 1284</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 03/27</span></div></div>
-                      <span class="fhint">tap to flip</span>
-                    </div></div>
+                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">4012 •••• •••• 1284</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 03/27</span></div></div>                    </div></div>
                     <div class="pcard back"><div class="bpad"><div class="b-mag"></div><div class="b-body">
                       <div class="b-sig"><span class="text-[11px] italic font-semibold" style="color:#4A4136">I. Petrov</span><span class="b-cvv num">901</span></div>
                       <div class="text-white/85 num tracking-[0.1em] text-[13.5px] font-semibold">4012 8830 5567 1284</div>
@@ -270,6 +264,8 @@ tailwind.config={theme:{extend:{
                   </div></div></div>
                 </div>
                 <div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+                <button data-cprev aria-label="Previous card" class="absolute left-0 top-[42%] -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-surf shadow-lg border border-line grid place-items-center text-ink hover:bg-mint hover:text-white hover:border-mint transition-colors"><i class="ph-bold ph-caret-left text-[16px]"></i></button>
+                <button data-cnext aria-label="Next card" class="absolute right-0 top-[42%] -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-surf shadow-lg border border-line grid place-items-center text-ink hover:bg-mint hover:text-white hover:border-mint transition-colors"><i class="ph-bold ph-caret-right text-[16px]"></i></button>
               </div>
               <div class="grid grid-cols-3 gap-2">
                 <button class="bg-surf border border-line rounded-xl py-3 flex flex-col items-center gap-1.5 hover:border-mint transition-colors"><i class="ph-bold ph-snowflake text-[18px] text-mint-deep"></i><span class="text-[11px] font-semibold">Freeze</span></button>
@@ -512,6 +508,9 @@ tailwind.config={theme:{extend:{
       csl.forEach(function(sl,k){ if(k!==i){ var f=sl.querySelector('.cardflip'); if(f)f.classList.remove('flipped'); } });
     },{passive:true});
     dts.forEach(function(d,k){ d.addEventListener('click',function(){ cc.scrollTo({left:k*cc.clientWidth,behavior:'smooth'}); }); });
+    var cprev=document.querySelector('[data-cprev]'), cnext=document.querySelector('[data-cnext]');
+    if(cprev)cprev.addEventListener('click',function(){ cc.scrollBy({left:-cc.clientWidth,behavior:'smooth'}); });
+    if(cnext)cnext.addEventListener('click',function(){ cc.scrollBy({left:cc.clientWidth,behavior:'smooth'}); });
   }
 
   // ===== toggles =====
