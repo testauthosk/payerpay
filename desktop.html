@@ -224,9 +224,9 @@ tailwind.config={theme:{extend:{
         </section>
 
         <!-- ============ CARDS ============ -->
-        <section data-screen="cards" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+        <section data-screen="cards" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:h-[calc(100vh-5.5rem)] lg:overflow-hidden">
             <!-- LEFT: card + actions + details (all full col-4 width = aligned) -->
-            <div class="lg:col-span-4 min-w-0 flex flex-col gap-3.5">
+            <div class="lg:col-span-4 min-w-0 flex flex-col gap-3.5 lg:min-h-0 lg:overflow-y-auto scroll-y">
               <div>
                 <div class="carousel" id="cardCarousel">
                   <div class="cslide"><div class="cardstage"><div class="cardflip">
@@ -286,24 +286,24 @@ tailwind.config={theme:{extend:{
                 <div class="flex items-center justify-between px-4 py-2.5"><span class="text-[12px] text-t3 font-semibold">Expiry · CVV</span><span class="text-[12.5px] font-bold num">09/29 · •••</span></div>
                 <div class="flex items-center justify-between px-4 py-2.5"><span class="text-[12px] text-t3 font-semibold">Type</span><span class="text-[12.5px] font-bold">Virtual · Debit</span></div>
               </div>
-              <button class="bg-surf border border-line rounded-2xl py-3 text-[13px] font-bold flex items-center justify-center gap-2 hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Order physical card</button>
-            </div>
-
-            <!-- RIGHT: info stack -->
-            <div class="lg:col-span-8 min-w-0 flex flex-col gap-3.5">
-              <div class="bg-surf border border-line rounded-2xl p-5">
-                <div class="text-[14px] font-bold mb-1">Monthly spending limit</div>
-                <div class="flex items-end justify-between mb-2"><div class="text-[22px] font-extrabold num">$1,284 <span class="text-[13px] text-t3 font-semibold">/ $5,000</span></div><div class="text-[12px] font-semibold text-t3">26% used</div></div>
-                <div class="h-2.5 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:26%"></div></div>
-              </div>
-              <div class="bg-surf border border-line rounded-2xl p-5">
-                <div class="flex items-center justify-between mb-4"><div class="text-[14px] font-bold">Spending this month</div><span class="text-[11.5px] font-semibold text-t3">$696.40 on this card</span></div>
-                <div class="space-y-3">
+              <button class="bg-surf border border-line rounded-2xl py-3 text-[13px] font-bold flex items-center justify-center gap-2 hover:border-mint transition-colors shrink-0"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Order physical card</button>
+              <div class="bg-surf border border-line rounded-2xl p-5 lg:flex-1 lg:min-h-0 flex flex-col">
+                <div class="flex items-center justify-between mb-4 shrink-0"><div class="text-[14px] font-bold">Spending this month</div><span class="text-[11.5px] font-semibold text-t3">$696.40</span></div>
+                <div class="lg:flex-1 flex flex-col justify-between gap-3 min-h-0">
                   <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint"></span>Shopping</span><span class="num font-bold">$316.30</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:45%"></div></div></div>
                   <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint-bright"></span>Food &amp; drink</span><span class="num font-bold">$148.10</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint-bright rounded-full" style="width:21%"></div></div></div>
                   <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-ink"></span>Transport</span><span class="num font-bold">$94.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:14%"></div></div></div>
                   <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-t3"></span>Bills &amp; other</span><span class="num font-bold">$138.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-t3 rounded-full" style="width:20%"></div></div></div>
                 </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: info stack -->
+            <div class="lg:col-span-8 min-w-0 flex flex-col gap-3.5 lg:min-h-0">
+              <div class="bg-surf border border-line rounded-2xl p-5">
+                <div class="text-[14px] font-bold mb-1">Monthly spending limit</div>
+                <div class="flex items-end justify-between mb-2"><div class="text-[22px] font-extrabold num">$1,284 <span class="text-[13px] text-t3 font-semibold">/ $5,000</span></div><div class="text-[12px] font-semibold text-t3">26% used</div></div>
+                <div class="h-2.5 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:26%"></div></div>
               </div>
               <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
                 <div class="px-5 py-3 text-[13px] font-bold">Card settings</div>
@@ -311,13 +311,16 @@ tailwind.config={theme:{extend:{
                 <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">Contactless</div><div class="text-[11.5px] text-t3">Tap to pay</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
                 <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">ATM withdrawals</div><div class="text-[11.5px] text-t3">Cash at ATMs</div></div><span class="toggle w-10 h-6 rounded-full p-0.5 bg-line transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
               </div>
-              <div class="bg-surf border border-line rounded-2xl overflow-hidden">
-                <div class="px-5 py-3 border-b border-line text-[13px] font-bold">Card transactions</div>
-                <div class="divide-y divide-line">
+              <div class="bg-surf border border-line rounded-2xl overflow-hidden flex flex-col lg:flex-1 lg:min-h-0">
+                <div class="px-5 py-3 border-b border-line text-[13px] font-bold shrink-0">Card transactions</div>
+                <div class="divide-y divide-line lg:flex-1 lg:min-h-0 scroll-y overflow-y-auto">
                   <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Apple Store</div><div class="text-[11px] text-t3">Yesterday, 18:21</div></div><div class="text-[13px] font-bold num">−$129.00</div></div>
                   <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-coffee text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Starbucks</div><div class="text-[11px] text-t3">Mar 11, 08:15</div></div><div class="text-[13px] font-bold num">−$6.40</div></div>
                   <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-cart text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Amazon</div><div class="text-[11px] text-t3">Mar 8, 20:10</div></div><div class="text-[13px] font-bold num">−$58.30</div></div>
                   <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-car text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Uber</div><div class="text-[11px] text-t3">Mar 7, 22:05</div></div><div class="text-[13px] font-bold num">−$18.90</div></div>
+                  <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-television text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Netflix</div><div class="text-[11px] text-t3">Mar 6, 06:00</div></div><div class="text-[13px] font-bold num">−$15.99</div></div>
+                  <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-music-notes text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Spotify</div><div class="text-[11px] text-t3">Mar 5, 09:12</div></div><div class="text-[13px] font-bold num">−$10.99</div></div>
+                  <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-fork-knife text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Whole Foods</div><div class="text-[11px] text-t3">Mar 4, 17:48</div></div><div class="text-[13px] font-bold num">−$72.10</div></div>
                 </div>
               </div>
             </div>
