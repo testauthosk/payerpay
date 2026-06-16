@@ -27,12 +27,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#FAF8F4;--s1:#FFFFFF;--s2:#F4F1EA;--s3:#EFE9DD;
-  --ink:#1A1714;--ink2:#8A8175;--ink3:#B7B0A4;
-  --terra:#C85A2A;--terra-h:#A84820;--terra-tint:#FBEFE8;--terra-soft:#F2D9CC;
-  --green:#2A7A50;--red:#C0392B;
-  --line:#EBE4D9;--line2:#DDD5C7;
-  --esp1:#2E2823;--esp2:#211C18;--cream:#EFE6D8;
+  --bg:#F4F7F5;--s1:#FFFFFF;--s2:#EEF3F0;--s3:#E6EBE8;
+  --ink:#0F1A15;--ink2:#5C6862;--ink3:#9AA69F;
+  --terra:#12B981;--terra-h:#0E9E6E;--terra-tint:#E6F8F0;--terra-soft:#C7F0DE;
+  --green:#0E9E6E;--red:#E5533C;
+  --line:#E6EBE8;--line2:#D6DEDA;
+  --esp1:#16271E;--esp2:#0B130F;--cream:#E9F6EF;
   --serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -80,9 +80,9 @@ svg{display:block}
 .cardflip.flipped{transform:rotateY(180deg)}
 .pcard{position:absolute;inset:0;border-radius:22px;overflow:hidden;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-origin:center center;-webkit-transform-origin:center center;
-  background:radial-gradient(130% 150% at 100% 0%,#43382E 0%,transparent 50%),linear-gradient(150deg,#2E2823 0%,#241F1A 50%,#1A1612 100%);
+  background:radial-gradient(130% 150% at 100% 0%,#1F3A2C 0%,transparent 50%),linear-gradient(150deg,#16271E 0%,#112019 50%,#0B130F 100%);
   box-shadow:0 8px 22px -12px rgba(40,25,12,.34)}
-.pcard.back{transform:rotateY(180deg) translateZ(1px);-webkit-transform:rotateY(180deg) translateZ(1px);background:linear-gradient(150deg,#2B2620 0%,#211C17 60%,#1A1612 100%)}
+.pcard.back{transform:rotateY(180deg) translateZ(1px);-webkit-transform:rotateY(180deg) translateZ(1px);background:linear-gradient(150deg,#16271E 0%,#112019 60%,#0A120E 100%)}
 .pcard .pad,.bpad{position:absolute;inset:0;padding:24px}
 .fhint{position:absolute;right:9px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:9px;letter-spacing:.2em;color:#8C8174;text-transform:uppercase;font-family:var(--sans)}
 /* back face */
@@ -110,8 +110,8 @@ svg{display:block}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--line2);transition:width .3s,background .3s}
 .dot.on{width:22px;background:var(--terra)}
 /* card colour variants */
-.v-cognac .pcard{background:radial-gradient(130% 150% at 100% 0%,#A85A33 0%,transparent 52%),linear-gradient(150deg,#7C3F23 0%,#552A18 55%,#33190E 100%)}
-.v-cognac .pcard.back{background:linear-gradient(150deg,#5A2E1A 0%,#3E2011 60%,#2A160C 100%)}
+.v-cognac .pcard{background:radial-gradient(130% 150% at 100% 0%,#6A4F26 0%,transparent 52%),linear-gradient(150deg,#3A2E1A 0%,#241B10 55%,#120F0A 100%)}
+.v-cognac .pcard.back{background:linear-gradient(150deg,#2A2114 0%,#1A1410 60%,#120F0A 100%)}
 .v-ink .pcard{background:radial-gradient(130% 150% at 0% 0%,#3C424B 0%,transparent 50%),linear-gradient(150deg,#2B2E34 0%,#1D1F24 55%,#141518 100%)}
 .v-ink .pcard.back{background:linear-gradient(150deg,#26282E 0%,#1A1C20 60%,#131418 100%)}
 .mc{display:flex;align-items:center}
