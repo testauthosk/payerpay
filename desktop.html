@@ -98,7 +98,7 @@ tailwind.config={theme:{extend:{
       <div class="flex-1 min-w-0 px-4 lg:px-6 py-4">
 
         <!-- ============ HOME ============ -->
-        <section data-screen="home" class="flex flex-col gap-4">
+        <section data-screen="home" class="flex flex-col gap-3">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-end gap-5 min-w-0">
               <div><div class="text-[12px] font-semibold text-t2">Total balance</div>
@@ -129,7 +129,7 @@ tailwind.config={theme:{extend:{
                 </div></div>
               <div class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5 shrink-0 self-start"><span class="px-2.5 py-1 rounded-md text-t2">7D</span><span class="px-2.5 py-1 rounded-md bg-ink text-white">30D</span><span class="px-2.5 py-1 rounded-md text-t2">90D</span></div>
             </div>
-            <div class="relative h-[180px] xl:h-[200px] mt-3">
+            <div class="relative h-[140px] xl:h-[158px] mt-2.5">
               <div class="absolute top-1 right-1 z-10 flex items-center gap-1.5 bg-ink text-white rounded-lg px-2.5 py-1 text-[11px] font-bold shadow-sm">Now <span class="num text-mint-bright">$12,480</span></div>
               <svg class="w-full h-full" viewBox="0 0 600 200" preserveAspectRatio="none">
                 <defs><linearGradient id="cfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12B981" stop-opacity="0.28"/><stop offset="100%" stop-color="#12B981" stop-opacity="0"/></linearGradient></defs>
@@ -151,17 +151,16 @@ tailwind.config={theme:{extend:{
                 <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Incoming transfer</div><div class="text-[11.5px] text-t3">USDC · Coinbase</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Today, 14:02</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$1,500.00</div></div>
                 <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Apple Store</div><div class="text-[11.5px] text-t3">Shopping · Card ••8830</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Yesterday, 18:21</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$129.00</div></div>
                 <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-arrows-left-right text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Convert USD → USDC</div><div class="text-[11.5px] text-t3">Exchange</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 12, 09:40</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">$500.00</div></div>
-                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Payout · SEPA</div><div class="text-[11.5px] text-t3">Salary · Acme Inc</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 9, 16:30</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$2,300.00</div></div>
-                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-lightning text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Electric bill</div><div class="text-[11.5px] text-t3">Utilities · Direct debit</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 10, 12:00</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-amber-600 bg-amber-500/10 rounded-full px-2 py-0.5">Pending</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$84.20</div></div>
+                <div class="flex items-center gap-3 px-5 py-2"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Payout · SEPA</div><div class="text-[11.5px] text-t3">Salary · Acme Inc</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 9, 16:30</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$2,300.00</div></div>
               </div>
             </div>
-            <div class="lg:col-span-4 min-w-0 bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col">
-              <div class="text-[14px] font-bold mb-3">Quick convert</div>
-              <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">From</div><div class="text-[16px] font-bold num">$500.00</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD</div></div>
-              <div class="flex justify-center -my-2 relative z-10"><span class="w-8 h-8 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf"><i class="ph-bold ph-arrow-down text-[14px]"></i></span></div>
-              <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">To</div><div class="text-[16px] font-bold num">499.40</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC</div></div>
-              <div class="text-[11px] text-t3 font-medium text-center mt-2.5">1 USD = 0.9988 · no fee</div>
-              <button data-go="convert" class="w-full mt-3 bg-mint text-ink rounded-xl py-3 text-[13.5px] font-bold hover:bg-mint-deep transition-colors">Convert now</button>
+            <div class="lg:col-span-4 min-w-0 bg-surf border border-line rounded-2xl p-4 flex flex-col">
+              <div class="text-[14px] font-bold mb-2.5">Quick convert</div>
+              <div class="bg-bg border border-line rounded-xl px-3.5 py-2.5 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">From</div><div class="text-[15px] font-bold num">$500.00</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD</div></div>
+              <div class="flex justify-center -my-2 relative z-10"><span class="w-7 h-7 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf"><i class="ph-bold ph-arrow-down text-[13px]"></i></span></div>
+              <div class="bg-bg border border-line rounded-xl px-3.5 py-2.5 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">To</div><div class="text-[15px] font-bold num">499.40</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC</div></div>
+              <div class="text-[11px] text-t3 font-medium text-center mt-2">1 USD = 0.9988 · no fee</div>
+              <button data-go="convert" class="w-full mt-auto bg-mint text-ink rounded-xl py-2.5 text-[13.5px] font-bold hover:bg-mint-deep transition-colors" style="margin-top:0.625rem">Convert now</button>
             </div>
           </div>
         </section>
@@ -195,15 +194,21 @@ tailwind.config={theme:{extend:{
         <!-- ============ CARDS ============ -->
         <section data-screen="cards" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <div class="lg:col-span-5 flex flex-col gap-4">
-            <div class="relative w-full max-w-[420px] aspect-[1.6/1] rounded-2xl p-5 overflow-hidden flex flex-col justify-between" style="background:linear-gradient(135deg,#16271E 0%,#0B130F 75%)">
+            <div class="relative w-full aspect-[1.6/1] rounded-2xl p-5 overflow-hidden flex flex-col justify-between" style="background:linear-gradient(135deg,#16271E 0%,#0B130F 75%)">
               <div class="absolute -right-8 -top-10 w-44 h-44 rounded-full" style="background:radial-gradient(circle,rgba(51,230,160,0.32),transparent 70%)"></div>
               <div class="relative flex items-start justify-between"><div><div class="text-[11px] font-medium text-white/55">Virtual card</div><div class="text-white font-bold text-[15px] mt-0.5 flex items-center gap-1.5">PayerPay <span class="text-mint-bright">·</span> Visa</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[21px]"></i></div>
-              <div class="relative"><div class="text-white/90 num tracking-[0.14em] text-[16px] lg:text-[17px] font-semibold whitespace-nowrap">5421 •••• •••• 8830</div><div class="flex items-center justify-between mt-2.5 text-[11.5px] font-medium text-white/60"><span>I. Petrov</span><span class="num">VALID 09/29</span></div></div>
+              <div class="relative"><div class="text-white/90 num tracking-[0.14em] text-[17px] xl:text-[19px] font-semibold whitespace-nowrap">5421 •••• •••• 8830</div><div class="flex items-center justify-between mt-2.5 text-[11.5px] font-medium text-white/60"><span>I. Petrov</span><span class="num">VALID 09/29</span></div></div>
             </div>
             <div class="bg-surf border border-line rounded-2xl p-2 grid grid-cols-3 gap-1 text-center">
               <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-snowflake text-[16px]"></i></span><span class="text-[11px] font-semibold">Freeze</span></button>
               <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-eye text-[16px]"></i></span><span class="text-[11px] font-semibold">Details</span></button>
               <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-sliders-horizontal text-[16px]"></i></span><span class="text-[11px] font-semibold">Limits</span></button>
+            </div>
+            <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+              <div class="px-5 py-3 text-[13px] font-bold flex items-center justify-between">Card details <button class="text-[11.5px] text-mint-deep font-semibold flex items-center gap-1"><i class="ph ph-eye text-[13px]"></i> Reveal</button></div>
+              <div class="flex items-center justify-between px-5 py-2.5"><span class="text-[12px] text-t3 font-semibold">Card number</span><span class="text-[13px] font-bold num">5421 •••• •••• 8830</span></div>
+              <div class="flex items-center justify-between px-5 py-2.5"><span class="text-[12px] text-t3 font-semibold">Expiry · CVV</span><span class="text-[13px] font-bold num">09/29 · •••</span></div>
+              <div class="flex items-center justify-between px-5 py-2.5"><span class="text-[12px] text-t3 font-semibold">Type</span><span class="text-[13px] font-bold">Virtual · Visa Debit</span></div>
             </div>
             <button class="bg-surf border border-line rounded-2xl py-3 text-[13px] font-bold flex items-center justify-center gap-2 hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Order physical card</button>
           </div>
@@ -213,11 +218,20 @@ tailwind.config={theme:{extend:{
               <div class="flex items-end justify-between mb-2"><div class="text-[22px] font-extrabold num">$1,284 <span class="text-[13px] text-t3 font-semibold">/ $5,000</span></div><div class="text-[12px] font-semibold text-t3">26% used</div></div>
               <div class="h-2.5 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:26%"></div></div>
             </div>
+            <div class="bg-surf border border-line rounded-2xl p-5">
+              <div class="flex items-center justify-between mb-4"><div class="text-[14px] font-bold">Spending this month</div><span class="text-[11.5px] font-semibold text-t3">$696.40 on this card</span></div>
+              <div class="space-y-3">
+                <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint"></span>Shopping</span><span class="num font-bold">$316.30</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:45%"></div></div></div>
+                <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint-bright"></span>Food &amp; drink</span><span class="num font-bold">$148.10</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint-bright rounded-full" style="width:21%"></div></div></div>
+                <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-ink"></span>Transport</span><span class="num font-bold">$94.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:14%"></div></div></div>
+                <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-t3"></span>Bills &amp; other</span><span class="num font-bold">$138.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-t3 rounded-full" style="width:20%"></div></div></div>
+              </div>
+            </div>
             <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
               <div class="px-5 py-3 text-[13px] font-bold">Card settings</div>
-              <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Online payments</div><div class="text-[11.5px] text-t3">Allow e-commerce transactions</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
-              <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Contactless</div><div class="text-[11.5px] text-t3">Tap to pay</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
-              <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">ATM withdrawals</div><div class="text-[11.5px] text-t3">Cash at ATMs</div></div><span class="toggle w-10 h-6 rounded-full p-0.5 bg-line transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+              <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">Online payments</div><div class="text-[11.5px] text-t3">Allow e-commerce transactions</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+              <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">Contactless</div><div class="text-[11.5px] text-t3">Tap to pay</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+              <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">ATM withdrawals</div><div class="text-[11.5px] text-t3">Cash at ATMs</div></div><span class="toggle w-10 h-6 rounded-full p-0.5 bg-line transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
             </div>
             <div class="bg-surf border border-line rounded-2xl overflow-hidden">
               <div class="px-5 py-3 border-b border-line text-[13px] font-bold">Card transactions</div>
@@ -225,6 +239,7 @@ tailwind.config={theme:{extend:{
                 <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Apple Store</div><div class="text-[11px] text-t3">Yesterday, 18:21</div></div><div class="text-[13px] font-bold num">−$129.00</div></div>
                 <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-coffee text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Starbucks</div><div class="text-[11px] text-t3">Mar 11, 08:15</div></div><div class="text-[13px] font-bold num">−$6.40</div></div>
                 <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-cart text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Amazon</div><div class="text-[11px] text-t3">Mar 8, 20:10</div></div><div class="text-[13px] font-bold num">−$58.30</div></div>
+                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-car text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Uber</div><div class="text-[11px] text-t3">Mar 7, 22:05</div></div><div class="text-[13px] font-bold num">−$18.90</div></div>
               </div>
             </div>
           </div>
