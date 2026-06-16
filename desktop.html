@@ -29,6 +29,34 @@ tailwind.config={theme:{extend:{
  .seg.active{background:#0F1A15;color:#fff}
  .toggle-on{background:#12B981}
  .toggle-on .knob{transform:translateX(16px)}
+ /* card carousel + 3D flip (ported from mobile app) */
+ .carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+ .carousel::-webkit-scrollbar{display:none}
+ .cslide{flex:0 0 100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:8px 4px 14px}
+ .cardstage{position:relative;perspective:1100px;perspective-origin:50% 45%;width:100%;max-width:340px;aspect-ratio:1.6/1;margin:0 auto}
+ .cardstage::after{content:"";position:absolute;left:8%;right:8%;bottom:-9px;height:24px;border-radius:50%;background:radial-gradient(ellipse,rgba(15,26,21,.4),transparent 72%);opacity:0;transition:opacity .35s;pointer-events:none;z-index:-1}
+ .cardstage.lift::after{opacity:1}
+ .cardflip{position:relative;width:100%;height:100%;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.34,1.2,.5,1);will-change:transform;cursor:pointer}
+ .cardflip.flipped{transform:rotateY(180deg)}
+ .pcard{position:absolute;inset:0;border-radius:18px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(135deg,#16271E 0%,#0B130F 75%);box-shadow:0 12px 30px -16px rgba(15,26,21,.55)}
+ .pcard.back{transform:rotateY(180deg) translateZ(1px);-webkit-transform:rotateY(180deg) translateZ(1px);background:linear-gradient(150deg,#13201A 0%,#0A120E 70%)}
+ .pcard .glow{position:absolute;right:-30px;top:-40px;width:158px;height:158px;border-radius:50%;background:radial-gradient(circle,rgba(51,230,160,.30),transparent 70%);pointer-events:none}
+ .pad{position:absolute;inset:0;padding:clamp(14px,5.2%,20px);display:flex;flex-direction:column;justify-content:space-between}
+ .fhint{position:absolute;right:6px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:8px;letter-spacing:.22em;color:rgba(255,255,255,.4);text-transform:uppercase;font-weight:600}
+ .bpad{position:absolute;inset:0;display:flex;flex-direction:column}
+ .b-mag{height:26%;background:#0A0D0B;margin-top:13px}
+ .b-body{flex:1;padding:9px clamp(14px,5.2%,20px) clamp(12px,5%,18px);display:flex;flex-direction:column;justify-content:flex-end;gap:7px}
+ .b-sig{height:24px;border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 6px 0 10px;background:repeating-linear-gradient(45deg,#EBE3D5,#EBE3D5 6px,#DCD3C2 6px,#DCD3C2 12px)}
+ .b-cvv{background:#fff;color:#13201A;font-weight:700;font-size:11px;padding:2px 9px;border-radius:3px;letter-spacing:.06em}
+ .dots{display:flex;justify-content:center;gap:7px;margin-top:2px}
+ .dot{width:7px;height:7px;border-radius:50%;background:#D6DEDA;transition:width .3s,background .3s;cursor:pointer}
+ .dot.on{width:22px;background:#12B981}
+ .v-bronze .pcard{background:linear-gradient(135deg,#3A2E1A 0%,#120F0A 75%)}
+ .v-bronze .pcard.back{background:linear-gradient(150deg,#2A2114 0%,#120F0A 70%)}
+ .v-bronze .pcard .glow{background:radial-gradient(circle,rgba(220,170,90,.26),transparent 70%)}
+ .v-ink .pcard{background:linear-gradient(135deg,#2B2E34 0%,#141518 75%)}
+ .v-ink .pcard.back{background:linear-gradient(150deg,#24262C 0%,#131418 70%)}
+ .v-ink .pcard .glow{background:radial-gradient(circle,rgba(150,160,180,.20),transparent 70%)}
 </style>
 </head>
 <body class="font-sans bg-bg text-ink overflow-x-hidden">
@@ -192,57 +220,103 @@ tailwind.config={theme:{extend:{
         </section>
 
         <!-- ============ CARDS ============ -->
-        <section data-screen="cards" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div class="lg:col-span-5 flex flex-col gap-4">
-            <div class="relative w-full aspect-[1.6/1] rounded-2xl p-5 overflow-hidden flex flex-col justify-between" style="background:linear-gradient(135deg,#16271E 0%,#0B130F 75%)">
-              <div class="absolute -right-8 -top-10 w-44 h-44 rounded-full" style="background:radial-gradient(circle,rgba(51,230,160,0.32),transparent 70%)"></div>
-              <div class="relative flex items-start justify-between"><div><div class="text-[11px] font-medium text-white/55">Virtual card</div><div class="text-white font-bold text-[15px] mt-0.5 flex items-center gap-1.5">PayerPay <span class="text-mint-bright">·</span> Visa</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[21px]"></i></div>
-              <div class="relative"><div class="text-white/90 num tracking-[0.14em] text-[17px] xl:text-[19px] font-semibold whitespace-nowrap">5421 •••• •••• 8830</div><div class="flex items-center justify-between mt-2.5 text-[11.5px] font-medium text-white/60"><span>I. Petrov</span><span class="num">VALID 09/29</span></div></div>
+        <section data-screen="cards" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+            <!-- LEFT: card + actions + details (all full col-4 width = aligned) -->
+            <div class="lg:col-span-4 min-w-0 flex flex-col gap-3.5">
+              <div>
+                <div class="carousel" id="cardCarousel">
+                  <div class="cslide"><div class="cardstage"><div class="cardflip">
+                    <div class="pcard front"><div class="glow"></div><div class="pad">
+                      <div class="flex items-start justify-between"><div><div class="text-[10px] text-white/55 font-medium">Virtual card</div><div class="text-white font-bold text-[14px] mt-0.5">PayerPay · Visa</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[18px]"></i></div>
+                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">5421 •••• •••• 8830</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 09/29</span></div></div>
+                      <span class="fhint">tap to flip</span>
+                    </div></div>
+                    <div class="pcard back"><div class="bpad"><div class="b-mag"></div><div class="b-body">
+                      <div class="b-sig"><span class="text-[11px] italic font-semibold" style="color:#4A4136">I. Petrov</span><span class="b-cvv num">123</span></div>
+                      <div class="text-white/85 num tracking-[0.1em] text-[13.5px] font-semibold">5421 0042 9918 8830</div>
+                      <div class="flex gap-6 text-[11px] text-white/70 num"><span><span class="block text-[8px] uppercase tracking-wide text-white/45 mb-0.5">Valid</span>09/29</span><span><span class="block text-[8px] uppercase tracking-wide text-white/45 mb-0.5">CVV</span>123</span></div>
+                      <div class="flex items-center justify-between text-white font-bold text-[13px]">PayerPay <span class="italic">VISA</span></div>
+                    </div></div></div>
+                  </div></div></div>
+                  <div class="cslide"><div class="cardstage v-bronze"><div class="cardflip">
+                    <div class="pcard front"><div class="glow"></div><div class="pad">
+                      <div class="flex items-start justify-between"><div><div class="text-[10px] text-white/55 font-medium">Virtual card</div><div class="text-white font-bold text-[14px] mt-0.5">PayerPay · Mastercard</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[18px]"></i></div>
+                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">5293 •••• •••• 2204</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 11/28</span></div></div>
+                      <span class="fhint">tap to flip</span>
+                    </div></div>
+                    <div class="pcard back"><div class="bpad"><div class="b-mag"></div><div class="b-body">
+                      <div class="b-sig"><span class="text-[11px] italic font-semibold" style="color:#4A4136">I. Petrov</span><span class="b-cvv num">455</span></div>
+                      <div class="text-white/85 num tracking-[0.1em] text-[13.5px] font-semibold">5293 0091 2244 2204</div>
+                      <div class="flex gap-6 text-[11px] text-white/70 num"><span><span class="block text-[8px] uppercase tracking-wide text-white/45 mb-0.5">Valid</span>11/28</span><span><span class="block text-[8px] uppercase tracking-wide text-white/45 mb-0.5">CVV</span>455</span></div>
+                      <div class="flex items-center justify-between text-white font-bold text-[13px]">PayerPay <span class="italic">Mastercard</span></div>
+                    </div></div></div>
+                  </div></div></div>
+                  <div class="cslide"><div class="cardstage v-ink"><div class="cardflip">
+                    <div class="pcard front"><div class="glow"></div><div class="pad">
+                      <div class="flex items-start justify-between"><div><div class="text-[10px] text-white/55 font-medium">Virtual · single-use</div><div class="text-white font-bold text-[14px] mt-0.5">PayerPay · Visa</div></div><i class="ph-duotone ph-wifi-high text-white/70 text-[18px]"></i></div>
+                      <div><div class="text-white/90 num tracking-[0.1em] text-[14px] font-semibold whitespace-nowrap">4012 •••• •••• 1284</div><div class="flex items-center justify-between mt-2 text-[10.5px] text-white/55 font-medium"><span>I. Petrov</span><span class="num">VALID 03/27</span></div></div>
+                      <span class="fhint">tap to flip</span>
+                    </div></div>
+                    <div class="pcard back"><div class="bpad"><div class="b-mag"></div><div class="b-body">
+                      <div class="b-sig"><span class="text-[11px] italic font-semibold" style="color:#4A4136">I. Petrov</span><span class="b-cvv num">901</span></div>
+                      <div class="text-white/85 num tracking-[0.1em] text-[13.5px] font-semibold">4012 8830 5567 1284</div>
+                      <div class="flex gap-6 text-[11px] text-white/70 num"><span><span class="block text-[8px] uppercase tracking-wide text-white/45 mb-0.5">Valid</span>03/27</span><span><span class="block text-[8px] uppercase tracking-wide text-white/45 mb-0.5">CVV</span>901</span></div>
+                      <div class="flex items-center justify-between text-white font-bold text-[13px]">PayerPay <span class="italic">VISA</span></div>
+                    </div></div></div>
+                  </div></div></div>
+                </div>
+                <div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <button class="bg-surf border border-line rounded-xl py-3 flex flex-col items-center gap-1.5 hover:border-mint transition-colors"><i class="ph-bold ph-snowflake text-[18px] text-mint-deep"></i><span class="text-[11px] font-semibold">Freeze</span></button>
+                <button class="bg-surf border border-line rounded-xl py-3 flex flex-col items-center gap-1.5 hover:border-mint transition-colors"><i class="ph-bold ph-eye text-[18px] text-mint-deep"></i><span class="text-[11px] font-semibold">Details</span></button>
+                <button class="bg-surf border border-line rounded-xl py-3 flex flex-col items-center gap-1.5 hover:border-mint transition-colors"><i class="ph-bold ph-sliders-horizontal text-[18px] text-mint-deep"></i><span class="text-[11px] font-semibold">Limits</span></button>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <button class="bg-ink text-white rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity"><i class="ph-fill ph-apple-logo text-[15px]"></i> Apple Pay</button>
+                <button class="bg-surf border border-line rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-1.5 hover:border-mint transition-colors"><i class="ph-fill ph-google-logo text-[14px]"></i> Google Pay</button>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+                <div class="px-4 py-3 text-[13px] font-bold flex items-center justify-between">Card details <button class="text-[11.5px] text-mint-deep font-semibold flex items-center gap-1"><i class="ph ph-eye text-[13px]"></i> Reveal</button></div>
+                <div class="flex items-center justify-between px-4 py-2.5"><span class="text-[12px] text-t3 font-semibold">Card number</span><span class="text-[12.5px] font-bold num">5421 •••• •••• 8830</span></div>
+                <div class="flex items-center justify-between px-4 py-2.5"><span class="text-[12px] text-t3 font-semibold">Expiry · CVV</span><span class="text-[12.5px] font-bold num">09/29 · •••</span></div>
+                <div class="flex items-center justify-between px-4 py-2.5"><span class="text-[12px] text-t3 font-semibold">Type</span><span class="text-[12.5px] font-bold">Virtual · Debit</span></div>
+              </div>
+              <button class="bg-surf border border-line rounded-2xl py-3 text-[13px] font-bold flex items-center justify-center gap-2 hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Order physical card</button>
             </div>
-            <div class="bg-surf border border-line rounded-2xl p-2 grid grid-cols-3 gap-1 text-center">
-              <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-snowflake text-[16px]"></i></span><span class="text-[11px] font-semibold">Freeze</span></button>
-              <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-eye text-[16px]"></i></span><span class="text-[11px] font-semibold">Details</span></button>
-              <button class="flex flex-col items-center gap-1 py-2 rounded-xl hover:bg-bg transition-colors"><span class="w-9 h-9 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-sliders-horizontal text-[16px]"></i></span><span class="text-[11px] font-semibold">Limits</span></button>
-            </div>
-            <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
-              <div class="px-5 py-3 text-[13px] font-bold flex items-center justify-between">Card details <button class="text-[11.5px] text-mint-deep font-semibold flex items-center gap-1"><i class="ph ph-eye text-[13px]"></i> Reveal</button></div>
-              <div class="flex items-center justify-between px-5 py-2.5"><span class="text-[12px] text-t3 font-semibold">Card number</span><span class="text-[13px] font-bold num">5421 •••• •••• 8830</span></div>
-              <div class="flex items-center justify-between px-5 py-2.5"><span class="text-[12px] text-t3 font-semibold">Expiry · CVV</span><span class="text-[13px] font-bold num">09/29 · •••</span></div>
-              <div class="flex items-center justify-between px-5 py-2.5"><span class="text-[12px] text-t3 font-semibold">Type</span><span class="text-[13px] font-bold">Virtual · Visa Debit</span></div>
-            </div>
-            <button class="bg-surf border border-line rounded-2xl py-3 text-[13px] font-bold flex items-center justify-center gap-2 hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Order physical card</button>
-          </div>
-          <div class="lg:col-span-7 flex flex-col gap-4">
-            <div class="bg-surf border border-line rounded-2xl p-5">
-              <div class="text-[14px] font-bold mb-1">Monthly spending limit</div>
-              <div class="flex items-end justify-between mb-2"><div class="text-[22px] font-extrabold num">$1,284 <span class="text-[13px] text-t3 font-semibold">/ $5,000</span></div><div class="text-[12px] font-semibold text-t3">26% used</div></div>
-              <div class="h-2.5 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:26%"></div></div>
-            </div>
-            <div class="bg-surf border border-line rounded-2xl p-5">
-              <div class="flex items-center justify-between mb-4"><div class="text-[14px] font-bold">Spending this month</div><span class="text-[11.5px] font-semibold text-t3">$696.40 on this card</span></div>
-              <div class="space-y-3">
-                <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint"></span>Shopping</span><span class="num font-bold">$316.30</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:45%"></div></div></div>
-                <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint-bright"></span>Food &amp; drink</span><span class="num font-bold">$148.10</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint-bright rounded-full" style="width:21%"></div></div></div>
-                <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-ink"></span>Transport</span><span class="num font-bold">$94.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:14%"></div></div></div>
-                <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-t3"></span>Bills &amp; other</span><span class="num font-bold">$138.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-t3 rounded-full" style="width:20%"></div></div></div>
+
+            <!-- RIGHT: info stack -->
+            <div class="lg:col-span-8 min-w-0 flex flex-col gap-3.5">
+              <div class="bg-surf border border-line rounded-2xl p-5">
+                <div class="text-[14px] font-bold mb-1">Monthly spending limit</div>
+                <div class="flex items-end justify-between mb-2"><div class="text-[22px] font-extrabold num">$1,284 <span class="text-[13px] text-t3 font-semibold">/ $5,000</span></div><div class="text-[12px] font-semibold text-t3">26% used</div></div>
+                <div class="h-2.5 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:26%"></div></div>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-4"><div class="text-[14px] font-bold">Spending this month</div><span class="text-[11.5px] font-semibold text-t3">$696.40 on this card</span></div>
+                <div class="space-y-3">
+                  <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint"></span>Shopping</span><span class="num font-bold">$316.30</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:45%"></div></div></div>
+                  <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint-bright"></span>Food &amp; drink</span><span class="num font-bold">$148.10</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint-bright rounded-full" style="width:21%"></div></div></div>
+                  <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-ink"></span>Transport</span><span class="num font-bold">$94.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:14%"></div></div></div>
+                  <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-t3"></span>Bills &amp; other</span><span class="num font-bold">$138.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-t3 rounded-full" style="width:20%"></div></div></div>
+                </div>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+                <div class="px-5 py-3 text-[13px] font-bold">Card settings</div>
+                <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">Online payments</div><div class="text-[11.5px] text-t3">Allow e-commerce transactions</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+                <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">Contactless</div><div class="text-[11.5px] text-t3">Tap to pay</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+                <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">ATM withdrawals</div><div class="text-[11.5px] text-t3">Cash at ATMs</div></div><span class="toggle w-10 h-6 rounded-full p-0.5 bg-line transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl overflow-hidden">
+                <div class="px-5 py-3 border-b border-line text-[13px] font-bold">Card transactions</div>
+                <div class="divide-y divide-line">
+                  <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Apple Store</div><div class="text-[11px] text-t3">Yesterday, 18:21</div></div><div class="text-[13px] font-bold num">−$129.00</div></div>
+                  <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-coffee text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Starbucks</div><div class="text-[11px] text-t3">Mar 11, 08:15</div></div><div class="text-[13px] font-bold num">−$6.40</div></div>
+                  <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-cart text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Amazon</div><div class="text-[11px] text-t3">Mar 8, 20:10</div></div><div class="text-[13px] font-bold num">−$58.30</div></div>
+                  <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-car text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Uber</div><div class="text-[11px] text-t3">Mar 7, 22:05</div></div><div class="text-[13px] font-bold num">−$18.90</div></div>
+                </div>
               </div>
             </div>
-            <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
-              <div class="px-5 py-3 text-[13px] font-bold">Card settings</div>
-              <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">Online payments</div><div class="text-[11.5px] text-t3">Allow e-commerce transactions</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
-              <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">Contactless</div><div class="text-[11.5px] text-t3">Tap to pay</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
-              <div class="flex items-center justify-between px-5 py-3"><div><div class="text-[13px] font-semibold">ATM withdrawals</div><div class="text-[11.5px] text-t3">Cash at ATMs</div></div><span class="toggle w-10 h-6 rounded-full p-0.5 bg-line transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
-            </div>
-            <div class="bg-surf border border-line rounded-2xl overflow-hidden">
-              <div class="px-5 py-3 border-b border-line text-[13px] font-bold">Card transactions</div>
-              <div class="divide-y divide-line">
-                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Apple Store</div><div class="text-[11px] text-t3">Yesterday, 18:21</div></div><div class="text-[13px] font-bold num">−$129.00</div></div>
-                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-coffee text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Starbucks</div><div class="text-[11px] text-t3">Mar 11, 08:15</div></div><div class="text-[13px] font-bold num">−$6.40</div></div>
-                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-shopping-cart text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Amazon</div><div class="text-[11px] text-t3">Mar 8, 20:10</div></div><div class="text-[13px] font-bold num">−$58.30</div></div>
-                <div class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink"><i class="ph-duotone ph-car text-[15px]"></i></span><div class="flex-1"><div class="text-[13px] font-semibold">Uber</div><div class="text-[11px] text-t3">Mar 7, 22:05</div></div><div class="text-[13px] font-bold num">−$18.90</div></div>
-              </div>
-            </div>
-          </div>
         </section>
 
         <!-- ============ CONVERT ============ -->
@@ -413,6 +487,25 @@ tailwind.config={theme:{extend:{
 
   // ===== Personal / Business segment =====
   document.querySelectorAll('[data-seg]').forEach(function(s){ s.addEventListener('click',function(){ document.querySelectorAll('[data-seg]').forEach(function(x){ x.classList.toggle('active', x===s); }); }); });
+
+  // ===== card flip + carousel (ported from mobile app) =====
+  var fanim={};
+  document.querySelectorAll('.cardflip').forEach(function(cf,idx){
+    cf.addEventListener('click',function(){
+      cf.classList.toggle('flipped');
+      var st=cf.parentNode; if(st){ st.classList.add('lift'); if(fanim[idx])clearTimeout(fanim[idx]); fanim[idx]=setTimeout(function(){ st.classList.remove('lift'); },1120); }
+    });
+  });
+  var cc=document.getElementById('cardCarousel');
+  if(cc){
+    var dts=document.querySelectorAll('.dots .dot'), csl=cc.querySelectorAll('.cslide');
+    cc.addEventListener('scroll',function(){
+      var i=Math.round(cc.scrollLeft/cc.clientWidth);
+      dts.forEach(function(d,k){ d.classList.toggle('on',k===i); });
+      csl.forEach(function(sl,k){ if(k!==i){ var f=sl.querySelector('.cardflip'); if(f)f.classList.remove('flipped'); } });
+    },{passive:true});
+    dts.forEach(function(d,k){ d.addEventListener('click',function(){ cc.scrollTo({left:k*cc.clientWidth,behavior:'smooth'}); }); });
+  }
 
   // ===== toggles =====
   document.querySelectorAll('.toggle').forEach(function(t){ t.addEventListener('click',function(){ t.classList.toggle('toggle-on'); if(!t.classList.contains('toggle-on')) t.classList.add('bg-line'); else t.classList.remove('bg-line'); }); });
