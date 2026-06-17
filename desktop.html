@@ -53,6 +53,9 @@ tailwind.config={theme:{extend:{
  [data-screen][hidden]{display:none}
  .mkt-rail{width:0;opacity:0;overflow:hidden;border-left:1px solid transparent;transition:width .42s cubic-bezier(.4,0,.2,1),opacity .32s ease,border-color .42s}
  @media(min-width:1280px){.mkt-rail{width:317px;opacity:1;border-left-color:rgb(var(--line));background:rgb(var(--surf) / .5)}}
+ .rail-collapsed .mkt-rail{width:0 !important;opacity:0 !important;border-left-color:transparent !important}
+ #railToggle .rt-chev{transition:transform .3s ease}
+ .rail-collapsed #railToggle .rt-chev{transform:rotate(180deg)}
  #cf-dot,#cf-tip,#cf-guide{transition:opacity .14s ease}
  line[stroke-dasharray="4 5"]{stroke:rgb(var(--line))}
  #cf-line{stroke:rgb(var(--mint))}
@@ -179,6 +182,7 @@ tailwind.config={theme:{extend:{
       </div>
       <div class="flex items-center gap-2">
         <div class="hidden md:flex items-center gap-2 bg-bg border border-line rounded-xl px-3 py-1.5 text-[12.5px] text-t3 font-medium w-[200px] xl:w-[240px]"><i class="ph ph-magnifying-glass text-[15px]"></i> Search…</div>
+        <button id="railToggle" type="button" class="hidden xl:grid w-9 h-9 rounded-xl bg-bg border border-line place-items-center hover:border-mint transition-colors" title="Hide side panel"><i class="ph-bold ph-sidebar-simple rt-chev text-[16px]"></i></button>
         <button id="themeToggle" class="hidden sm:grid w-9 h-9 rounded-xl bg-bg border border-line place-items-center hover:border-mint transition-colors" title="Toggle theme"><i class="ph ph-moon text-[16px]"></i></button>
         <div class="relative" id="notifWrap">
           <button id="notifBtn" type="button" class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative hover:border-mint transition-colors"><i class="ph ph-bell text-[16px]"></i><span id="notifDot" class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
@@ -315,7 +319,8 @@ tailwind.config={theme:{extend:{
         <!-- ============ CARDS ============ -->
         <section data-screen="cards" hidden class="home-shell grid grid-cols-1 lg:grid-cols-12 gap-4">
             <!-- LEFT: card + actions + details (all full col-4 width = aligned) -->
-            <div class="lg:col-span-4 min-w-0 flex flex-col gap-3.5 lg:min-h-0 lg:overflow-y-auto scroll-y">
+            <div class="lg:col-span-4 min-w-0 flex flex-col gap-3.5 lg:min-h-0">
+              <div class="shrink-0 flex flex-col gap-3.5">
               <div class="relative">
                 <div class="carousel" id="cardCarousel">
                   <div class="cslide"><div class="cardstage"><div class="cardflip">
@@ -372,9 +377,10 @@ tailwind.config={theme:{extend:{
                 <div class="flex items-center justify-between px-4 py-2.5"><span class="text-[12px] text-t3 font-semibold">Type</span><span class="text-[12.5px] font-bold">Virtual · Debit</span></div>
               </div>
               <button class="bg-surf border border-line rounded-2xl py-3 text-[13px] font-bold flex items-center justify-center gap-2 hover:border-mint transition-colors shrink-0"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i> Order physical card</button>
+              </div>
               <div class="bg-surf border border-line rounded-2xl p-5 lg:flex-1 lg:min-h-0 flex flex-col">
                 <div class="flex items-center justify-between mb-4 shrink-0"><div class="text-[14px] font-bold">Spending this month</div><span class="text-[11.5px] font-semibold text-t3">$696.40</span></div>
-                <div class="lg:flex-1 flex flex-col justify-between gap-3 min-h-0">
+                <div class="lg:flex-1 flex flex-col gap-3 min-h-0 overflow-y-auto scroll-y">
                   <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint"></span>Shopping</span><span class="num font-bold">$316.30</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint rounded-full" style="width:45%"></div></div></div>
                   <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-mint-bright"></span>Food &amp; drink</span><span class="num font-bold">$148.10</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-mint-bright rounded-full" style="width:21%"></div></div></div>
                   <div><div class="flex items-center justify-between text-[12.5px] mb-1.5"><span class="font-semibold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-ink"></span>Transport</span><span class="num font-bold">$94.00</span></div><div class="h-2 bg-bg rounded-full overflow-hidden"><div class="h-full bg-ink rounded-full" style="width:14%"></div></div></div>
@@ -682,7 +688,7 @@ tailwind.config={theme:{extend:{
         <div class="bg-surf border border-line rounded-2xl overflow-hidden shrink-0">
           <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">FX rates</div><span class="text-[10.5px] font-semibold text-t3">vs USD</span></div>
           <div class="divide-y divide-line">
-            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/eu.svg" alt="" class="w-[18px] h-[18px] rounded-full"><span class="text-[12.5px] font-bold">EUR</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.0845</span> <span class="text-[10.5px] font-semibold text-pos num">+0.2%</span></div></div>
+            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/european_union.svg" alt="" class="w-[18px] h-[18px] rounded-full"><span class="text-[12.5px] font-bold">EUR</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.0845</span> <span class="text-[10.5px] font-semibold text-pos num">+0.2%</span></div></div>
             <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/gb.svg" alt="" class="w-[18px] h-[18px] rounded-full"><span class="text-[12.5px] font-bold">GBP</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.2710</span> <span class="text-[10.5px] font-semibold text-neg num">−0.1%</span></div></div>
             <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/jp.svg" alt="" class="w-[18px] h-[18px] rounded-full"><span class="text-[12.5px] font-bold">JPY</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">0.0067</span> <span class="text-[10.5px] font-semibold text-pos num">+0.4%</span></div></div>
           </div>
@@ -862,7 +868,7 @@ tailwind.config={theme:{extend:{
   function fmt(n,c){ if(!isFinite(n)||n<0)n=0; return n.toLocaleString('en-US',{minimumFractionDigits:dpOf(c),maximumFractionDigits:dpOf(c)}); }
   function val(inp){ return parseFloat((inp.value||'').replace(/[^0-9.]/g,''))||0; }
   function rateStr(a,b){ var hi=PRICE[a]>=PRICE[b]?a:b, lo=hi===a?b:a, r=PRICE[hi]/PRICE[lo]; return '1 '+hi+' = '+r.toLocaleString('en-US',{maximumFractionDigits:r>=100?2:(r>=1?4:6)})+' '+lo; }
-  function ico(c){ var F={USD:'us',EUR:'eu',GBP:'gb',JPY:'jp'}; var src=F[c]?'https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/'+F[c]+'.svg':'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+c.toLowerCase()+'.svg'; return '<img src="'+src+'" class="w-[18px] h-[18px] rounded-full shrink-0" alt="">'; }
+  function ico(c){ var F={USD:'us',EUR:'european_union',GBP:'gb',JPY:'jp'}; var src=F[c]?'https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/'+F[c]+'.svg':'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+c.toLowerCase()+'.svg'; return '<img src="'+src+'" class="w-[18px] h-[18px] rounded-full shrink-0" alt="">'; }
   function selBtn(c){ return '<button type="button" class="cv-selbtn flex items-center gap-2 w-[120px] text-[13.5px] font-bold bg-surf border border-line rounded-xl pl-2.5 pr-2 py-2 hover:border-mint transition-colors">'+ico(c)+'<span class="cv-code flex-1 text-left">'+c+'</span><i class="ph ph-caret-down text-[12px] text-t3 shrink-0"></i></button>'; }
   function menu(cur){ var h='<div class="cv-menu absolute right-0 top-[calc(100%+6px)] z-50 w-[220px] max-h-[256px] overflow-y-auto scroll-y bg-surf border border-line rounded-xl shadow-xl p-1 hidden">'; ORDER.forEach(function(c){ h+='<button type="button" data-cv-pick="'+c+'" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left hover:bg-bg transition-colors'+(c===cur?' bg-bg':'')+'">'+ico(c)+'<span class="text-[13px] font-bold w-9">'+c+'</span><span class="text-[11.5px] text-t3 truncate">'+NAME[c]+'</span></button>'; }); return h+'</div>'; }
 
@@ -912,6 +918,8 @@ tailwind.config={theme:{extend:{
   document.querySelectorAll('[data-cv]').forEach(init);
   var cfCard=document.querySelector('.cfcard'), cfBtn=document.querySelector('[data-cf-toggle]');
   if(cfCard&&cfBtn) cfBtn.addEventListener('click',function(){ cfCard.classList.toggle('cf-collapsed'); cfBtn.setAttribute('title', cfCard.classList.contains('cf-collapsed')?'Expand chart':'Collapse chart'); });
+  var railBtn=document.getElementById('railToggle');
+  if(railBtn) railBtn.addEventListener('click',function(){ var c=document.documentElement.classList.toggle('rail-collapsed'); railBtn.setAttribute('title', c?'Show side panel':'Hide side panel'); });
 })();
 </script>
 <script>
