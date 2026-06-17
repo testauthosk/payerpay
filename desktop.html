@@ -67,6 +67,12 @@ tailwind.config={theme:{extend:{
  #wp-line{stroke:rgb(var(--mint))}
  #wpg stop{stop-color:rgb(var(--mint))}
  .wallet-hide .wbal{filter:blur(8px);-webkit-filter:blur(8px);user-select:none}
+ .ppm{pointer-events:none}
+ .ppm.show{pointer-events:auto}
+ .ppm-bd{opacity:0;transition:opacity .3s ease}
+ .ppm-card{opacity:0;transform:translateY(12px) scale(.96);transition:opacity .3s ease,transform .34s cubic-bezier(.34,1.28,.5,1)}
+ .ppm.show .ppm-bd{opacity:1}
+ .ppm.show .ppm-card{opacity:1;transform:none}
  #cf-guide{stroke:rgb(var(--ink))}
  .navi.active{background:rgb(var(--mint-tint));color:rgb(var(--mint-deep))}
  .navi.active i{color:rgb(var(--mint-deep))}
@@ -252,27 +258,7 @@ tailwind.config={theme:{extend:{
         <!-- ============ ACCOUNTS ============ -->
         <section data-screen="accounts" hidden class="flex flex-col gap-4">
           <div class="flex items-center justify-between"><div><div class="text-[12px] font-semibold text-t2">Total across accounts</div><div class="text-[30px] font-extrabold num leading-none mt-1">$12,480.50</div></div><button class="flex items-center gap-2 bg-mint text-ink rounded-xl px-4 py-2.5 text-[13px] font-bold hover:bg-mint-deep transition-colors"><i class="ph-bold ph-plus text-[15px]"></i> Add account</button></div>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div class="bg-surf border border-line rounded-2xl p-5">
-              <div class="flex items-center gap-3 mb-4"><span class="w-11 h-11 rounded-xl bg-line text-ink grid place-items-center"><i class="ph-fill ph-currency-dollar text-[20px]"></i></span><div class="flex-1"><div class="text-[14px] font-bold">US Dollar</div><div class="text-[11.5px] text-t3">Checking · USD</div></div><div class="text-[20px] font-extrabold num">$10,240.00</div></div>
-              <div class="grid grid-cols-2 gap-2 text-[12px] mb-4"><div class="bg-bg rounded-lg px-3 py-2"><div class="text-t3 text-[10.5px] font-semibold">Account number</div><div class="font-bold num">•••• 4821</div></div><div class="bg-bg rounded-lg px-3 py-2"><div class="text-t3 text-[10.5px] font-semibold">Routing</div><div class="font-bold num">021000021</div></div></div>
-              <div class="flex gap-2"><button class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Send</button><button data-go="receive" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Receive</button><button data-go="convert" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Convert</button></div>
-            </div>
-            <div class="bg-surf border border-line rounded-2xl p-5">
-              <div class="flex items-center gap-3 mb-4"><span class="w-11 h-11 rounded-xl bg-line text-ink grid place-items-center"><i class="ph-duotone ph-coins text-[20px]"></i></span><div class="flex-1"><div class="text-[14px] font-bold">USD Coin</div><div class="text-[11.5px] text-t3">2,150.00 USDC</div></div><div class="text-[20px] font-extrabold num">$2,150.00</div></div>
-              <div class="grid grid-cols-1 gap-2 text-[12px] mb-4"><div class="bg-bg rounded-lg px-3 py-2"><div class="text-t3 text-[10.5px] font-semibold">Wallet address</div><div class="font-bold num truncate">0x7a2f…9C4e</div></div></div>
-              <div class="flex gap-2"><button class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Send</button><button data-go="receive" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Receive</button><button data-go="convert" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Convert</button></div>
-            </div>
-            <div class="bg-surf border border-line rounded-2xl p-5">
-              <div class="flex items-center gap-3 mb-4"><span class="w-11 h-11 rounded-xl bg-line text-ink grid place-items-center"><i class="ph-duotone ph-currency-btc text-[20px]"></i></span><div class="flex-1"><div class="text-[14px] font-bold">Bitcoin</div><div class="text-[11.5px] text-t3">0.0061 BTC</div></div><div class="text-[20px] font-extrabold num">$90.50</div></div>
-              <div class="grid grid-cols-1 gap-2 text-[12px] mb-4"><div class="bg-bg rounded-lg px-3 py-2"><div class="text-t3 text-[10.5px] font-semibold">BTC address</div><div class="font-bold num truncate">bc1q…k7v2</div></div></div>
-              <div class="flex gap-2"><button class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Send</button><button data-go="receive" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Receive</button><button data-go="convert" class="flex-1 bg-bg border border-line rounded-lg py-2 text-[12px] font-bold hover:border-mint transition-colors">Convert</button></div>
-            </div>
-            <div class="border-2 border-dashed border-line rounded-2xl p-5 flex flex-col items-center justify-center gap-2 text-center min-h-[180px] hover:border-mint transition-colors cursor-pointer">
-              <span class="w-11 h-11 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-plus text-[20px]"></i></span>
-              <div class="text-[13px] font-bold">Open a new account</div><div class="text-[11.5px] text-t3">EUR · GBP · more currencies</div>
-            </div>
-          </div>
+          <div id="acctGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
         </section>
 
         <!-- ============ CARDS ============ -->
@@ -941,6 +927,64 @@ tailwind.config={theme:{extend:{
   sec.querySelectorAll('#wTabs [data-wp]').forEach(function(t){ t.addEventListener('click',function(){ sec.querySelectorAll('#wTabs [data-wp]').forEach(function(x){ x.className='px-2.5 py-1 rounded-md transition-colors '+(x===t?'bg-chip text-white':'text-t2'); }); setPeriod(t.getAttribute('data-wp')); }); });
   setPeriod('24H');
   var eye=sec.querySelector('#wEye'); if(eye) eye.addEventListener('click',function(){ var hid=sec.classList.toggle('wallet-hide'); eye.querySelector('i').className='ph '+(hid?'ph-eye-slash':'ph-eye')+' text-[15px]'; });
+})();
+</script>
+<div id="acctModal" class="ppm fixed inset-0 z-[60] flex items-center justify-center p-4">
+  <div class="ppm-bd absolute inset-0 bg-black/30 backdrop-blur-md" data-acct-close></div>
+  <div class="ppm-card relative w-full max-w-[440px] bg-surf border border-line rounded-2xl shadow-2xl p-6">
+    <button type="button" data-acct-close class="absolute top-3.5 right-3.5 w-8 h-8 grid place-items-center rounded-lg text-t2 hover:bg-bg transition-colors"><i class="ph-bold ph-x text-[15px]"></i></button>
+    <div class="flex items-center gap-3"><span id="amIcon"></span><div><div id="amName" class="text-[15px] font-bold">Account</div><div id="amType" class="text-[12px] text-t3"></div></div></div>
+    <div class="mt-4"><div class="text-[11px] text-t3 font-semibold">Balance</div><div id="amBalance" class="text-[28px] font-extrabold num leading-none mt-0.5">$0.00</div><div id="amSub" class="text-[12px] text-t3 num mt-0.5"></div></div>
+    <div class="grid grid-cols-4 gap-2 mt-5 text-[11.5px] font-bold">
+      <button type="button" class="flex flex-col items-center gap-1 bg-bg border border-line rounded-xl py-2.5 hover:border-mint transition-colors"><i class="ph-bold ph-plus text-[15px] text-mint-deep"></i>Add</button>
+      <button type="button" class="flex flex-col items-center gap-1 bg-bg border border-line rounded-xl py-2.5 hover:border-mint transition-colors"><i class="ph-bold ph-arrow-up-right text-[15px] text-mint-deep"></i>Send</button>
+      <button type="button" data-acct-go="convert" class="flex flex-col items-center gap-1 bg-bg border border-line rounded-xl py-2.5 hover:border-mint transition-colors"><i class="ph-bold ph-arrows-left-right text-[15px] text-mint-deep"></i>Convert</button>
+      <button type="button" class="flex flex-col items-center gap-1 bg-bg border border-line rounded-xl py-2.5 hover:border-mint transition-colors"><i class="ph-bold ph-file-text text-[15px] text-mint-deep"></i>Statement</button>
+    </div>
+    <div id="amFields" class="mt-5 border-t border-line pt-4 space-y-2.5 text-[12.5px]"></div>
+    <div class="mt-5"><div class="text-[12px] font-bold mb-2.5">Recent activity</div><div id="amRecent" class="space-y-2.5"></div></div>
+  </div>
+</div>
+<script>
+(function(){
+  var grid=document.getElementById('acctGrid'); if(!grid)return;
+  function chip(ic,col){ return '<span class="w-11 h-11 rounded-xl grid place-items-center shrink-0" style="background:'+col+'1f;color:'+col+'"><i class="'+ic+' text-[20px]"></i></span>'; }
+  function coin(c){ return '<img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+c+'.svg" class="w-11 h-11 shrink-0" alt="'+c+'">'; }
+  var ACC=[
+    {code:'USD',name:'US Dollar',type:'Checking · USD',bal:'$10,240.00',sub:'',refL:'Account',refV:'•••• 4821',icon:chip('ph-fill ph-currency-dollar','#12B981'),
+      fields:[['IBAN','GB29 NWBK 6016 1331 9268 19'],['Account number','5571 0042 4821'],['Routing','021000021'],['BIC / SWIFT','PAYRGB2LXXX']],
+      recent:[['Payout · SEPA','Salary · Acme Inc','+$2,300.00',1],['Electric bill','Utilities · Direct debit','−$84.20',0]]},
+    {code:'USDC',name:'USD Coin',type:'Crypto · USDC',bal:'$2,150.00',sub:'2,150.00 USDC',refL:'Address',refV:'0x7a2f…9C4e',icon:coin('usdc'),
+      fields:[['Wallet address','0x7a2f4b9e3d8c1A5b2F0e3c9C4e'],['Network','Ethereum (ERC-20)']],
+      recent:[['Convert USD → USDC','Exchange','+$500.00',1]]},
+    {code:'BTC',name:'Bitcoin',type:'Crypto · BTC',bal:'$90.50',sub:'0.0061 BTC',refL:'Address',refV:'bc1q…k7v2',icon:coin('btc'),
+      fields:[['BTC address','bc1q9zk3l7m4xq8p2v0n6sahk7v2'],['Network','Bitcoin']],
+      recent:[['Buy Bitcoin','Card ••8830','+$120.00',1]]}
+  ];
+  var byCode={}, html='';
+  ACC.forEach(function(a){ byCode[a.code]=a;
+    html+='<div data-acct="'+a.code+'" class="bg-surf border border-line rounded-2xl p-5 cursor-pointer hover:border-mint hover:shadow-md transition-all">'+
+      '<div class="flex items-center gap-3">'+a.icon+'<div class="flex-1 min-w-0"><div class="text-[14px] font-bold">'+a.name+'</div><div class="text-[11.5px] text-t3">'+a.type+'</div></div><i class="ph-bold ph-caret-right text-t3 text-[15px]"></i></div>'+
+      '<div class="mt-4 flex items-end justify-between gap-3"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">Balance</div><div class="text-[22px] font-extrabold num leading-tight">'+a.bal+'</div>'+(a.sub?'<div class="text-[11.5px] text-t3 num">'+a.sub+'</div>':'')+'</div><div class="text-right shrink-0"><div class="text-[10.5px] text-t3 font-semibold">'+a.refL+'</div><div class="text-[12.5px] font-bold num">'+a.refV+'</div></div></div></div>';
+  });
+  html+='<div class="border-2 border-dashed border-line rounded-2xl p-5 flex flex-col items-center justify-center gap-2 text-center min-h-[150px] hover:border-mint transition-colors cursor-pointer"><span class="w-11 h-11 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-plus text-[20px]"></i></span><div class="text-[13px] font-bold">Open a new account</div><div class="text-[11.5px] text-t3">EUR · GBP · more currencies</div></div>';
+  grid.innerHTML=html;
+
+  var modal=document.getElementById('acctModal'); if(!modal)return;
+  var M={icon:document.getElementById('amIcon'),name:document.getElementById('amName'),type:document.getElementById('amType'),bal:document.getElementById('amBalance'),sub:document.getElementById('amSub'),fields:document.getElementById('amFields'),recent:document.getElementById('amRecent')};
+  function open(code){
+    var a=byCode[code]; if(!a)return;
+    M.icon.innerHTML=a.icon; M.name.textContent=a.name; M.type.textContent=a.type; M.bal.textContent=a.bal; M.sub.textContent=a.sub||'';
+    M.fields.innerHTML=a.fields.map(function(f){ return '<div class="flex items-center justify-between gap-3"><span class="text-t3 font-medium shrink-0">'+f[0]+'</span><span class="flex items-center gap-2 min-w-0"><span class="font-semibold num truncate">'+f[1]+'</span><button type="button" data-copy="'+f[1]+'" class="text-t3 hover:text-mint-deep shrink-0" title="Copy"><i class="ph ph-copy text-[14px]"></i></button></span></div>'; }).join('');
+    M.recent.innerHTML=a.recent.map(function(r){ return '<div class="flex items-center justify-between gap-3"><div class="min-w-0"><div class="text-[12.5px] font-semibold truncate">'+r[0]+'</div><div class="text-[11px] text-t3 truncate">'+r[1]+'</div></div><div class="text-[12.5px] font-bold num shrink-0 '+(r[3]?'text-pos':'')+'">'+r[2]+'</div></div>'; }).join('');
+    modal.classList.add('show');
+  }
+  function close(){ modal.classList.remove('show'); }
+  grid.addEventListener('click',function(e){ var c=e.target.closest('[data-acct]'); if(c) open(c.getAttribute('data-acct')); });
+  modal.querySelectorAll('[data-acct-close]').forEach(function(x){ x.addEventListener('click',close); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+  M.fields.addEventListener('click',function(e){ var btn=e.target.closest('[data-copy]'); if(!btn)return; try{navigator.clipboard.writeText(btn.getAttribute('data-copy'));}catch(_){ } var i=btn.querySelector('i'), o=i.className; i.className='ph-bold ph-check text-[14px] text-pos'; setTimeout(function(){ i.className=o; },1200); });
+  modal.querySelectorAll('[data-acct-go]').forEach(function(b){ b.addEventListener('click',function(){ close(); var nav=document.querySelector('[data-nav="'+b.getAttribute('data-acct-go')+'"]'); if(nav) nav.click(); }); });
 })();
 </script>
 </body>
