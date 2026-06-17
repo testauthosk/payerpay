@@ -64,6 +64,9 @@ tailwind.config={theme:{extend:{
  #txCard{opacity:0;transform:translateY(12px) scale(.96);transition:opacity .3s ease,transform .34s cubic-bezier(.34,1.28,.5,1)}
  #txModal.show #txBackdrop{opacity:1}
  #txModal.show #txCard{opacity:1;transform:none}
+ #wp-line{stroke:rgb(var(--mint))}
+ #wpg stop{stop-color:rgb(var(--mint))}
+ .wallet-hide .wbal{filter:blur(8px);-webkit-filter:blur(8px);user-select:none}
  #cf-guide{stroke:rgb(var(--ink))}
  .navi.active{background:rgb(var(--mint-tint));color:rgb(var(--mint-deep))}
  .navi.active i{color:rgb(var(--mint-deep))}
@@ -459,13 +462,45 @@ tailwind.config={theme:{extend:{
 
         <!-- ============ WALLET (crypto) ============ -->
         <section data-screen="wallet" hidden class="flex flex-col gap-4">
-          <div class="flex items-center justify-between"><div><div class="text-[12px] font-semibold text-t2">Crypto value</div><div class="text-[30px] font-extrabold num leading-none mt-1">$2,240.50</div></div><div class="flex gap-2"><button class="bg-mint text-ink rounded-xl px-4 py-2.5 text-[13px] font-bold hover:bg-mint-deep transition-colors">Send</button><button data-go="receive" class="bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold hover:border-mint transition-colors">Receive</button><button data-go="convert" class="bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold hover:border-mint transition-colors">Convert</button></div></div>
-          <div class="bg-surf border border-line rounded-2xl overflow-hidden">
-            <div class="px-5 py-3 border-b border-line text-[13px] font-bold">Holdings</div>
-            <div class="divide-y divide-line">
-              <div class="flex items-center gap-3 px-5 py-3.5"><img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/btc.svg" alt="BTC" class="w-10 h-10 shrink-0"><div class="flex-1"><div class="text-[13.5px] font-bold">Bitcoin</div><div class="text-[11.5px] text-t3">0.0061 BTC</div></div><div class="text-right"><div class="text-[14px] font-extrabold num">$90.50</div><div class="text-[11px] font-semibold text-pos num">+2.1%</div></div></div>
-              <div class="flex items-center gap-3 px-5 py-3.5"><img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/eth.svg" alt="ETH" class="w-10 h-10 shrink-0"><div class="flex-1"><div class="text-[13.5px] font-bold">Ethereum</div><div class="text-[11.5px] text-t3">0.00 ETH</div></div><div class="text-right"><div class="text-[14px] font-extrabold num">$0.00</div><div class="text-[11px] font-semibold text-pos num">+1.4%</div></div></div>
-              <div class="flex items-center gap-3 px-5 py-3.5"><span class="w-10 h-10 rounded-full bg-line text-ink grid place-items-center"><i class="ph-duotone ph-coins text-[17px]"></i></span><div class="flex-1"><div class="text-[13.5px] font-bold">USD Coin</div><div class="text-[11.5px] text-t3">2,150 USDC</div></div><div class="text-right"><div class="text-[14px] font-extrabold num">$2,150.00</div><div class="text-[11px] font-semibold text-t3 num">0.0%</div></div></div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div class="lg:col-span-8 flex flex-col gap-4">
+              <div class="bg-surf border border-line rounded-2xl p-5 lg:p-6">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="flex items-center gap-2"><div class="text-[12px] font-semibold text-t2">Portfolio value</div><button id="wEye" type="button" class="text-t3 hover:text-ink transition-colors" title="Hide balances"><i class="ph ph-eye text-[15px]"></i></button></div>
+                    <div id="wTotal" class="wbal text-[32px] font-extrabold num leading-none mt-1.5">$0.00</div>
+                    <div class="text-[12.5px] font-bold mt-1.5"><span id="wChg" class="text-pos num">+0.0%</span> <span class="text-t3 font-medium">· <span id="wPeriodLbl">24h</span></span></div>
+                  </div>
+                  <div class="flex gap-2 shrink-0">
+                    <button type="button" class="bg-mint text-ink rounded-xl px-4 py-2.5 text-[13px] font-bold hover:bg-mint-deep transition-colors">Send</button>
+                    <button data-go="receive" class="bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold hover:border-mint transition-colors">Receive</button>
+                    <button type="button" class="hidden sm:block bg-surf border border-line rounded-xl px-4 py-2.5 text-[13px] font-bold hover:border-mint transition-colors">Buy</button>
+                  </div>
+                </div>
+                <div class="flex justify-end mt-3"><div id="wTabs" class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5"><button type="button" data-wp="24H" class="px-2.5 py-1 rounded-md bg-chip text-white transition-colors">24H</button><button type="button" data-wp="1W" class="px-2.5 py-1 rounded-md text-t2 transition-colors">1W</button><button type="button" data-wp="1M" class="px-2.5 py-1 rounded-md text-t2 transition-colors">1M</button><button type="button" data-wp="1Y" class="px-2.5 py-1 rounded-md text-t2 transition-colors">1Y</button></div></div>
+                <div class="relative h-[150px] xl:h-[170px] mt-2">
+                  <svg class="w-full h-full" viewBox="0 0 600 160" preserveAspectRatio="none">
+                    <defs><linearGradient id="wpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12B981" stop-opacity="0.22"/><stop offset="100%" stop-color="#12B981" stop-opacity="0"/></linearGradient></defs>
+                    <path id="wp-area" fill="url(#wpg)" d=""/>
+                    <path id="wp-line" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/>
+                  </svg>
+                </div>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl overflow-hidden">
+                <div class="px-5 py-3 border-b border-line text-[13px] font-bold flex items-center justify-between">Holdings <span class="text-[11px] text-t3 font-semibold" id="wCount">5 assets</span></div>
+                <div id="wHoldings" class="divide-y divide-line"></div>
+              </div>
+            </div>
+            <div class="lg:col-span-4 flex flex-col gap-4">
+              <div class="bg-surf border border-line rounded-2xl p-5">
+                <div class="text-[13px] font-bold mb-4">Allocation</div>
+                <div id="wAlloc" class="space-y-3.5"></div>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl p-5">
+                <div class="flex items-center gap-2.5 mb-2"><span class="w-9 h-9 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-fill ph-rocket-launch text-[17px]"></i></span><div class="text-[13.5px] font-bold">Buy crypto</div></div>
+                <div class="text-[12px] text-t3 leading-snug">Top up with card or bank — 0% fee on your first purchase.</div>
+                <button type="button" class="w-full mt-3 bg-mint text-ink rounded-xl py-2.5 text-[12.5px] font-bold hover:bg-mint-deep transition-colors">Buy now</button>
+              </div>
             </div>
           </div>
         </section>
@@ -852,6 +887,60 @@ tailwind.config={theme:{extend:{
   document.getElementById('txBackdrop').addEventListener('click',close);
   document.getElementById('txClose').addEventListener('click',close);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+})();
+</script>
+<script>
+(function(){
+  var sec=document.querySelector('section[data-screen="wallet"]'); if(!sec)return;
+  var PRICE={BTC:64820,ETH:3180,SOL:148.20,XRP:0.62,USDC:1.0012};
+  var NAME={BTC:'Bitcoin',ETH:'Ethereum',SOL:'Solana',XRP:'Ripple',USDC:'USD Coin'};
+  var COL={BTC:'#F7931A',ETH:'#627EEA',SOL:'#14F195',XRP:'#23A8DF',USDC:'#2775CA'};
+  var CHG={BTC:2.1,ETH:1.4,SOL:-0.8,XRP:3.2,USDC:0.0};
+  var DPC={BTC:6,ETH:4,SOL:2,XRP:2,USDC:2};
+  var SPARK={BTC:[24,20,22,14,16,7],ETH:[22,24,18,20,12,10],SOL:[10,12,9,16,15,22],XRP:[26,22,24,16,18,8],USDC:[16,16,16,16,16,16]};
+  var H=[{c:'BTC',a:0.0061},{c:'ETH',a:0.42},{c:'SOL',a:3.5},{c:'USDC',a:2150},{c:'XRP',a:600}];
+  var PER={'24H':{lbl:'24h',chg:null},'1W':{lbl:'7d',chg:5.2},'1M':{lbl:'30d',chg:12.4},'1Y':{lbl:'1y',chg:148.0}};
+  var CURVE={'24H':[100,96,104,92,98,88,94,86,90,82,88,84,80],'1W':[110,104,108,96,100,90,94,84,90,78,82,72,68],'1M':[124,118,120,108,112,100,96,88,84,76,70,62,56],'1Y':[140,134,128,120,108,112,96,88,76,70,58,48,40]};
+  var wchg24=0;
+  function usd(n){ return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function img(c){ return '<img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+c.toLowerCase()+'.svg" class="w-10 h-10 shrink-0" alt="'+c+'">'; }
+  function smooth(p){var d="M "+p[0][0]+" "+p[0][1];for(var i=0;i<p.length-1;i++){var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p[i+1];d+=" C "+(p1[0]+(p2[0]-p0[0])/6)+" "+(p1[1]+(p2[1]-p0[1])/6)+" "+(p2[0]-(p3[0]-p1[0])/6)+" "+(p2[1]-(p3[1]-p1[1])/6)+" "+p2[0]+" "+p2[1];}return d;}
+  function chgSpan(v){ var cls=v>0?'text-pos':(v<0?'text-neg':'text-t3'); return '<span class="'+cls+' num">'+(v>0?'+':'')+v.toFixed(1)+'%</span>'; }
+  function render(){
+    var total=0; H.forEach(function(h){ total+=h.a*PRICE[h.c]; });
+    wchg24=0; H.forEach(function(h){ wchg24+=(h.a*PRICE[h.c]/total)*CHG[h.c]; });
+    sec.querySelector('#wTotal').textContent=usd(total);
+    sec.querySelector('#wCount').textContent=H.length+' assets';
+    var rows='';
+    H.forEach(function(h){
+      var val=h.a*PRICE[h.c], spk=SPARK[h.c], col=CHG[h.c]<0?'#E5533C':'#12B981';
+      var d=smooth(spk.map(function(y,i){return [i*(100/(spk.length-1)), y];}));
+      rows+='<div class="flex items-center gap-3 px-5 py-3.5">'+img(h.c)+
+        '<div class="min-w-0 w-[96px] shrink-0"><div class="text-[13.5px] font-bold">'+NAME[h.c]+'</div><div class="text-[11.5px] text-t3 wbal">'+h.a.toLocaleString("en-US",{maximumFractionDigits:DPC[h.c]})+' '+h.c+'</div></div>'+
+        '<svg class="flex-1 h-8 min-w-0" viewBox="0 0 100 32" preserveAspectRatio="none"><path fill="none" stroke="'+col+'" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d="'+d+'"/></svg>'+
+        '<div class="text-right shrink-0 w-[96px]"><div class="text-[14px] font-extrabold num wbal">'+usd(val)+'</div><div class="text-[11px] font-semibold">'+chgSpan(CHG[h.c])+'</div></div></div>';
+    });
+    sec.querySelector('#wHoldings').innerHTML=rows;
+    var al='';
+    H.slice().sort(function(a,b){return b.a*PRICE[b.c]-a.a*PRICE[a.c];}).forEach(function(h){
+      var pct=h.a*PRICE[h.c]/total*100;
+      al+='<div><div class="flex items-center justify-between text-[12px] mb-1"><span class="flex items-center gap-1.5 font-semibold"><span class="w-2.5 h-2.5 rounded-full" style="background:'+COL[h.c]+'"></span>'+h.c+'</span><span class="text-t2 font-semibold num">'+pct.toFixed(1)+'%</span></div><div class="h-2 rounded-full bg-bg overflow-hidden"><div class="h-full rounded-full" style="width:'+pct.toFixed(1)+'%;background:'+COL[h.c]+'"></div></div></div>';
+    });
+    sec.querySelector('#wAlloc').innerHTML=al;
+  }
+  function setPeriod(p){
+    var ys=CURVE[p], ln=sec.querySelector('#wp-line'), ar=sec.querySelector('#wp-area');
+    var d=smooth(ys.map(function(y,i){return [i*(600/(ys.length-1)), y];}));
+    ln.setAttribute('d',d); ar.setAttribute('d',d+' L 600 160 L 0 160 Z');
+    [ln,ar].forEach(function(el){ el.style.transition='none'; el.style.opacity=0; el.getBoundingClientRect(); el.style.transition='opacity .4s ease'; el.style.opacity=1; });
+    var v=PER[p].chg==null?wchg24:PER[p].chg, ce=sec.querySelector('#wChg');
+    ce.textContent=(v>=0?'+':'')+v.toFixed(1)+'%'; ce.classList.toggle('text-pos',v>=0); ce.classList.toggle('text-neg',v<0);
+    sec.querySelector('#wPeriodLbl').textContent=PER[p].lbl;
+  }
+  render();
+  sec.querySelectorAll('#wTabs [data-wp]').forEach(function(t){ t.addEventListener('click',function(){ sec.querySelectorAll('#wTabs [data-wp]').forEach(function(x){ x.className='px-2.5 py-1 rounded-md transition-colors '+(x===t?'bg-chip text-white':'text-t2'); }); setPeriod(t.getAttribute('data-wp')); }); });
+  setPeriod('24H');
+  var eye=sec.querySelector('#wEye'); if(eye) eye.addEventListener('click',function(){ var hid=sec.classList.toggle('wallet-hide'); eye.querySelector('i').className='ph '+(hid?'ph-eye-slash':'ph-eye')+' text-[15px]'; });
 })();
 </script>
 </body>
