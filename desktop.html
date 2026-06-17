@@ -67,6 +67,7 @@ tailwind.config={theme:{extend:{
  #wp-line{stroke:rgb(var(--mint))}
  #wpg stop{stop-color:rgb(var(--mint))}
  .wallet-hide .wbal{filter:blur(8px);-webkit-filter:blur(8px);user-select:none}
+ @media (min-width:1024px) and (min-height:840px){ .home-shell{height:calc(100vh - 5.5rem);overflow:hidden} }
  .ppm{pointer-events:none}
  .ppm.show{pointer-events:auto}
  .ppm-bd{opacity:0;transition:opacity .3s ease}
@@ -191,7 +192,7 @@ tailwind.config={theme:{extend:{
       <div class="flex-1 min-w-0 px-4 lg:px-6 py-4">
 
         <!-- ============ HOME ============ -->
-        <section data-screen="home" class="flex flex-col gap-3.5 lg:min-h-[calc(100vh-5.5rem)]">
+        <section data-screen="home" class="home-shell flex flex-col gap-3.5">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-end gap-5 min-w-0">
               <div><div class="text-[12px] font-semibold text-t2">Total balance</div>
@@ -207,9 +208,9 @@ tailwind.config={theme:{extend:{
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div data-go="accounts" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><span class="w-10 h-10 rounded-xl bg-line text-ink grid place-items-center shrink-0"><i class="ph-fill ph-currency-dollar text-[18px]"></i></span><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">US Dollar</div><div class="text-[20px] font-extrabold num leading-tight">$10,240.00</div></div><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+0.4%</span></div>
-            <div data-go="accounts" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><span class="w-10 h-10 rounded-xl bg-line text-ink grid place-items-center shrink-0"><i class="ph-duotone ph-coins text-[18px]"></i></span><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">USD Coin · 2,150</div><div class="text-[20px] font-extrabold num leading-tight">$2,150.00</div></div><span class="text-[10.5px] font-bold text-t3 bg-bg rounded-full px-2 py-0.5 num shrink-0">0.0%</span></div>
-            <div data-go="wallet" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><span class="w-10 h-10 rounded-xl bg-line text-ink grid place-items-center shrink-0"><i class="ph-duotone ph-currency-btc text-[18px]"></i></span><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">Bitcoin · 0.0061</div><div class="text-[20px] font-extrabold num leading-tight">$90.50</div></div><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+2.1%</span></div>
+            <div data-go="accounts" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/us.svg" alt="USD" class="w-10 h-10 rounded-full shrink-0"><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">US Dollar</div><div class="text-[20px] font-extrabold num leading-tight">$10,240.00</div></div><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+0.4%</span></div>
+            <div data-go="accounts" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/usdc.svg" alt="USDC" class="w-10 h-10 rounded-full shrink-0"><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">USD Coin · 2,150</div><div class="text-[20px] font-extrabold num leading-tight">$2,150.00</div></div><span class="text-[10.5px] font-bold text-t3 bg-bg rounded-full px-2 py-0.5 num shrink-0">0.0%</span></div>
+            <div data-go="wallet" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/btc.svg" alt="BTC" class="w-10 h-10 rounded-full shrink-0"><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">Bitcoin · 0.0061</div><div class="text-[20px] font-extrabold num leading-tight">$90.50</div></div><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+2.1%</span></div>
           </div>
 
           <div class="bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col">
@@ -222,7 +223,7 @@ tailwind.config={theme:{extend:{
                 </div></div>
               <div id="cf-tabs" class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5 shrink-0 self-start"><button data-range="7" class="px-2.5 py-1 rounded-md text-t2 transition-colors">7D</button><button data-range="30" class="px-2.5 py-1 rounded-md bg-chip text-white transition-colors">30D</button><button data-range="90" class="px-2.5 py-1 rounded-md text-t2 transition-colors">90D</button></div>
             </div>
-            <div class="relative h-[172px] xl:h-[192px] mt-3">
+            <div class="relative h-[148px] xl:h-[168px] mt-3">
               <div class="absolute top-1 right-1 z-10 flex items-center gap-1.5 bg-chip text-white rounded-lg px-2.5 py-1 text-[11px] font-bold shadow-sm">Now <span class="num text-mint-bright">$12,480</span></div>
               <svg class="w-full h-full" viewBox="0 0 600 200" preserveAspectRatio="none">
                 <defs><linearGradient id="cfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12B981" stop-opacity="0.28"/><stop offset="100%" stop-color="#12B981" stop-opacity="0"/></linearGradient><clipPath id="cf-clip"><rect id="cf-clip-r" x="0" y="-6" width="600" height="212"/></clipPath></defs>
@@ -273,7 +274,29 @@ tailwind.config={theme:{extend:{
         <!-- ============ ACCOUNTS ============ -->
         <section data-screen="accounts" hidden class="flex flex-col gap-4">
           <div class="flex items-center justify-between"><div><div class="text-[12px] font-semibold text-t2">Total across accounts</div><div class="text-[30px] font-extrabold num leading-none mt-1">$12,480.50</div></div><button class="flex items-center gap-2 bg-mint text-ink rounded-xl px-4 py-2.5 text-[13px] font-bold hover:bg-mint-deep transition-colors"><i class="ph-bold ph-plus text-[15px]"></i> Add account</button></div>
-          <div id="acctGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div id="acctGrid" class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            <div class="lg:col-span-4 flex flex-col gap-4">
+              <div class="bg-surf border border-line rounded-2xl p-5"><div class="text-[13px] font-bold mb-4">Balances</div><div id="acctBreak" class="space-y-3.5"></div></div>
+              <div class="bg-surf border border-line rounded-2xl p-5">
+                <div class="text-[13px] font-bold mb-3">This month</div>
+                <div class="flex items-center justify-between text-[12.5px] mb-2"><span class="text-t3 font-medium">Money in</span><span class="font-bold num text-pos">+$4,650.00</span></div>
+                <div class="flex items-center justify-between text-[12.5px] mb-2.5"><span class="text-t3 font-medium">Money out</span><span class="font-bold num">−$1,522.78</span></div>
+                <div class="flex items-center justify-between text-[12.5px] pt-2.5 border-t border-line"><span class="text-t2 font-semibold">Net</span><span class="font-extrabold num text-pos">+$3,127.22</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-surf border border-line rounded-2xl overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-3 border-b border-line"><div class="text-[13px] font-bold">Recent activity</div><button data-go="activity" class="text-[12.5px] font-semibold text-mint-deep hover:underline">View all</button></div>
+            <div id="acctRecent" class="divide-y divide-line">
+              <div data-type="in" data-amt="1500" data-search="incoming transfer usdc coinbase" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Incoming transfer</div><div class="text-[11.5px] text-t3">USDC · Coinbase</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Today, 14:02</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$1,500.00</div></div>
+              <div data-type="card" data-amt="-129" data-search="apple store shopping card 8830" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Apple Store</div><div class="text-[11.5px] text-t3">Shopping · Card ••8830</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Yesterday, 18:21</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$129.00</div></div>
+              <div data-type="exchange" data-amt="0" data-search="convert usd usdc exchange" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-arrows-left-right text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Convert USD → USDC</div><div class="text-[11.5px] text-t3">Exchange</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 12, 09:40</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">$500.00</div></div>
+              <div data-type="in" data-amt="2300" data-search="payout sepa salary acme inc" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Payout · SEPA</div><div class="text-[11.5px] text-t3">Salary · Acme Inc</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 9, 16:30</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$2,300.00</div></div>
+              <div data-type="out" data-amt="-84.20" data-search="electric bill utilities direct debit" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-lightning text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Electric bill</div><div class="text-[11.5px] text-t3">Utilities · Direct debit</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 10, 12:00</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-amber-600 bg-amber-500/10 rounded-full px-2 py-0.5">Pending</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$84.20</div></div>
+              <div data-type="card" data-amt="-58.30" data-search="amazon shopping card 8830" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-cart text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Amazon</div><div class="text-[11.5px] text-t3">Shopping · Card ••8830</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 8, 20:10</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$58.30</div></div>
+            </div>
+          </div>
         </section>
 
         <!-- ============ CARDS ============ -->
@@ -794,9 +817,9 @@ tailwind.config={theme:{extend:{
   function fmt(n,c){ if(!isFinite(n)||n<0)n=0; return n.toLocaleString('en-US',{minimumFractionDigits:dpOf(c),maximumFractionDigits:dpOf(c)}); }
   function val(inp){ return parseFloat((inp.value||'').replace(/[^0-9.]/g,''))||0; }
   function rateStr(a,b){ var hi=PRICE[a]>=PRICE[b]?a:b, lo=hi===a?b:a, r=PRICE[hi]/PRICE[lo]; return '1 '+hi+' = '+r.toLocaleString('en-US',{maximumFractionDigits:r>=100?2:(r>=1?4:6)})+' '+lo; }
-  function dot(c){ return '<span class="cv-dot w-4 h-4 rounded-full shrink-0" style="background:'+COL[c]+'"></span>'; }
-  function selBtn(c){ return '<button type="button" class="cv-selbtn flex items-center gap-2 text-[13.5px] font-bold bg-surf border border-line rounded-xl px-3 py-2 hover:border-mint transition-colors">'+dot(c)+'<span class="cv-code">'+c+'</span><i class="ph ph-caret-down text-[12px] text-t3"></i></button>'; }
-  function menu(cur){ var h='<div class="cv-menu absolute right-0 top-[calc(100%+6px)] z-50 w-[210px] max-h-[256px] overflow-y-auto scroll-y bg-surf border border-line rounded-xl shadow-xl p-1 hidden">'; ORDER.forEach(function(c){ h+='<button type="button" data-cv-pick="'+c+'" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left hover:bg-bg transition-colors'+(c===cur?' bg-bg':'')+'">'+dot(c)+'<span class="text-[13px] font-bold w-9">'+c+'</span><span class="text-[11.5px] text-t3 truncate">'+NAME[c]+'</span></button>'; }); return h+'</div>'; }
+  function ico(c){ var F={USD:'us',EUR:'eu',GBP:'gb',JPY:'jp'}; var src=F[c]?'https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/'+F[c]+'.svg':'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+c.toLowerCase()+'.svg'; return '<img src="'+src+'" class="w-[18px] h-[18px] rounded-full shrink-0" alt="">'; }
+  function selBtn(c){ return '<button type="button" class="cv-selbtn flex items-center gap-2 w-[120px] text-[13.5px] font-bold bg-surf border border-line rounded-xl pl-2.5 pr-2 py-2 hover:border-mint transition-colors">'+ico(c)+'<span class="cv-code flex-1 text-left">'+c+'</span><i class="ph ph-caret-down text-[12px] text-t3 shrink-0"></i></button>'; }
+  function menu(cur){ var h='<div class="cv-menu absolute right-0 top-[calc(100%+6px)] z-50 w-[220px] max-h-[256px] overflow-y-auto scroll-y bg-surf border border-line rounded-xl shadow-xl p-1 hidden">'; ORDER.forEach(function(c){ h+='<button type="button" data-cv-pick="'+c+'" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left hover:bg-bg transition-colors'+(c===cur?' bg-bg':'')+'">'+ico(c)+'<span class="text-[13px] font-bold w-9">'+c+'</span><span class="text-[11.5px] text-t3 truncate">'+NAME[c]+'</span></button>'; }); return h+'</div>'; }
 
   function init(root){
     var st={from:root.getAttribute('data-cv-from')||'USD', to:root.getAttribute('data-cv-to')||'USDC', last:'from'};
@@ -929,7 +952,7 @@ tailwind.config={theme:{extend:{
     modal.classList.add('show');
   }
   function close(){ modal.classList.remove('show'); }
-  var rows=document.querySelectorAll('[data-act-list] [data-amt], section[data-screen="home"] .scroll-y.overflow-y-auto > div');
+  var rows=document.querySelectorAll('[data-act-list] [data-amt], section[data-screen="home"] .scroll-y.overflow-y-auto > div, #acctRecent > div');
   [].forEach.call(rows,function(row){ if(!row.children||row.children.length<3) return; row.classList.add('cursor-pointer','transition-colors','hover:bg-bg'); row.addEventListener('click',function(){ open(row); }); });
   document.getElementById('txBackdrop').addEventListener('click',close);
   document.getElementById('txClose').addEventListener('click',close);
@@ -1012,13 +1035,13 @@ tailwind.config={theme:{extend:{
   function chip(ic,col){ return '<span class="w-11 h-11 rounded-xl grid place-items-center shrink-0" style="background:'+col+'1f;color:'+col+'"><i class="'+ic+' text-[20px]"></i></span>'; }
   function coin(c){ return '<img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+c+'.svg" class="w-11 h-11 shrink-0" alt="'+c+'">'; }
   var ACC=[
-    {code:'USD',name:'US Dollar',type:'Checking · USD',bal:'$10,240.00',sub:'',refL:'Account',refV:'•••• 4821',icon:chip('ph-fill ph-currency-dollar','#12B981'),
+    {code:'USD',usd:10240,bcol:'#12B981',name:'US Dollar',type:'Checking · USD',bal:'$10,240.00',sub:'',refL:'Account',refV:'•••• 4821',icon:'<img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/us.svg" class="w-11 h-11 rounded-full shrink-0" alt="USD">',
       fields:[['IBAN','GB29 NWBK 6016 1331 9268 19'],['Account number','5571 0042 4821'],['Routing','021000021'],['BIC / SWIFT','PAYRGB2LXXX']],
       recent:[['Payout · SEPA','Salary · Acme Inc','+$2,300.00',1],['Electric bill','Utilities · Direct debit','−$84.20',0]]},
-    {code:'USDC',name:'USD Coin',type:'Crypto · USDC',bal:'$2,150.00',sub:'2,150.00 USDC',refL:'Address',refV:'0x7a2f…9C4e',icon:coin('usdc'),
+    {code:'USDC',usd:2150,bcol:'#2775CA',name:'USD Coin',type:'Crypto · USDC',bal:'$2,150.00',sub:'2,150.00 USDC',refL:'Address',refV:'0x7a2f…9C4e',icon:coin('usdc'),
       fields:[['Wallet address','0x7a2f4b9e3d8c1A5b2F0e3c9C4e'],['Network','Ethereum (ERC-20)']],
       recent:[['Convert USD → USDC','Exchange','+$500.00',1]]},
-    {code:'BTC',name:'Bitcoin',type:'Crypto · BTC',bal:'$90.50',sub:'0.0061 BTC',refL:'Address',refV:'bc1q…k7v2',icon:coin('btc'),
+    {code:'BTC',usd:90.50,bcol:'#F7931A',name:'Bitcoin',type:'Crypto · BTC',bal:'$90.50',sub:'0.0061 BTC',refL:'Address',refV:'bc1q…k7v2',icon:coin('btc'),
       fields:[['BTC address','bc1q9zk3l7m4xq8p2v0n6sahk7v2'],['Network','Bitcoin']],
       recent:[['Buy Bitcoin','Card ••8830','+$120.00',1]]}
   ];
@@ -1030,6 +1053,7 @@ tailwind.config={theme:{extend:{
   });
   html+='<div class="border-2 border-dashed border-line rounded-2xl p-5 flex flex-col items-center justify-center gap-2 text-center min-h-[150px] hover:border-mint transition-colors cursor-pointer"><span class="w-11 h-11 rounded-full bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-bold ph-plus text-[20px]"></i></span><div class="text-[13px] font-bold">Open a new account</div><div class="text-[11.5px] text-t3">EUR · GBP · more currencies</div></div>';
   grid.innerHTML=html;
+  (function(){ var be=document.getElementById('acctBreak'); if(!be)return; var total=ACC.reduce(function(s,a){return s+(a.usd||0);},0)||1; be.innerHTML=ACC.slice().sort(function(a,b){return (b.usd||0)-(a.usd||0);}).map(function(a){ var pct=(a.usd||0)/total*100; return '<div><div class="flex items-center justify-between text-[12px] mb-1"><span class="flex items-center gap-1.5 font-semibold"><span class="w-2.5 h-2.5 rounded-full" style="background:'+a.bcol+'"></span>'+a.code+'</span><span class="text-t2 font-semibold num">'+pct.toFixed(1)+'%</span></div><div class="h-2 rounded-full bg-bg overflow-hidden"><div class="h-full rounded-full" style="width:'+pct.toFixed(1)+'%;background:'+a.bcol+'"></div></div></div>'; }).join(''); })();
 
   var modal=document.getElementById('acctModal'); if(!modal)return;
   var M={icon:document.getElementById('amIcon'),name:document.getElementById('amName'),type:document.getElementById('amType'),bal:document.getElementById('amBalance'),sub:document.getElementById('amSub'),fields:document.getElementById('amFields'),recent:document.getElementById('amRecent')};
