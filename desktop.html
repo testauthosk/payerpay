@@ -73,6 +73,8 @@ tailwind.config={theme:{extend:{
  .ppm-card{opacity:0;transform:translateY(12px) scale(.96);transition:opacity .3s ease,transform .34s cubic-bezier(.34,1.28,.5,1)}
  .ppm.show .ppm-bd{opacity:1}
  .ppm.show .ppm-card{opacity:1;transform:none}
+ #notifPanel{opacity:0;transform:translateY(-6px) scale(.98);transform-origin:top right;transition:opacity .18s ease,transform .18s ease;pointer-events:none}
+ #notifPanel.show{opacity:1;transform:none;pointer-events:auto}
  #cf-guide{stroke:rgb(var(--ink))}
  .navi.active{background:rgb(var(--mint-tint));color:rgb(var(--mint-deep))}
  .navi.active i{color:rgb(var(--mint-deep))}
@@ -164,7 +166,20 @@ tailwind.config={theme:{extend:{
       <div class="flex items-center gap-2">
         <div class="hidden md:flex items-center gap-2 bg-bg border border-line rounded-xl px-3 py-1.5 text-[12.5px] text-t3 font-medium w-[200px] xl:w-[240px]"><i class="ph ph-magnifying-glass text-[15px]"></i> Search…</div>
         <button id="themeToggle" class="hidden sm:grid w-9 h-9 rounded-xl bg-bg border border-line place-items-center hover:border-mint transition-colors" title="Toggle theme"><i class="ph ph-moon text-[16px]"></i></button>
-        <button class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative"><i class="ph ph-bell text-[16px]"></i><span class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
+        <div class="relative" id="notifWrap">
+          <button id="notifBtn" type="button" class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative hover:border-mint transition-colors"><i class="ph ph-bell text-[16px]"></i><span id="notifDot" class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
+          <div id="notifPanel" class="absolute right-0 top-[calc(100%+8px)] z-[55] w-[340px] bg-surf border border-line rounded-2xl shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">Notifications</div><button id="notifRead" type="button" class="text-[11.5px] font-semibold text-mint-deep hover:underline">Mark all read</button></div>
+            <div class="max-h-[360px] overflow-y-auto scroll-y divide-y divide-line">
+              <div class="flex gap-3 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[12.5px] font-semibold">Payment received</div><div class="text-[11.5px] text-t3 truncate">+$1,500.00 from Coinbase</div></div><div class="flex flex-col items-end gap-1 shrink-0"><span class="text-[10.5px] text-t3">2m</span><span class="ndot w-1.5 h-1.5 rounded-full bg-mint"></span></div></div>
+              <div class="flex gap-3 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[12.5px] font-semibold">Card payment</div><div class="text-[11.5px] text-t3 truncate">Apple Store · −$129.00</div></div><div class="flex flex-col items-end gap-1 shrink-0"><span class="text-[10.5px] text-t3">18m</span><span class="ndot w-1.5 h-1.5 rounded-full bg-mint"></span></div></div>
+              <div class="flex gap-3 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-arrows-left-right text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[12.5px] font-semibold">Conversion completed</div><div class="text-[11.5px] text-t3 truncate">USD → USDC · $500.00</div></div><div class="flex flex-col items-end gap-1 shrink-0"><span class="text-[10.5px] text-t3">1h</span></div></div>
+              <div class="flex gap-3 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-9 h-9 rounded-full bg-amber-500/10 grid place-items-center text-amber-600 shrink-0"><i class="ph-bold ph-shield-check text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[12.5px] font-semibold">New device sign-in</div><div class="text-[11.5px] text-t3 truncate">Chrome · Berlin, DE</div></div><div class="flex flex-col items-end gap-1 shrink-0"><span class="text-[10.5px] text-t3">3h</span></div></div>
+              <div class="flex gap-3 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-file-text text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[12.5px] font-semibold">Statement ready</div><div class="text-[11.5px] text-t3 truncate">February 2026 statement</div></div><div class="flex flex-col items-end gap-1 shrink-0"><span class="text-[10.5px] text-t3">1d</span></div></div>
+            </div>
+            <div class="px-4 py-2.5 border-t border-line text-center"><button data-go="activity" type="button" class="text-[12px] font-semibold text-mint-deep hover:underline">See all activity</button></div>
+          </div>
+        </div>
         <button class="flex items-center gap-2 bg-mint text-ink rounded-xl px-3 sm:px-3.5 py-2 text-[13px] font-bold shrink-0 hover:bg-mint-deep transition-colors"><i class="ph-bold ph-plus text-[15px]"></i> <span class="hidden sm:inline">Add money</span></button>
       </div>
     </header>
@@ -533,6 +548,30 @@ tailwind.config={theme:{extend:{
           </div>
         </section>
 
+        <!-- ============ NEWS ============ -->
+        <section data-screen="news" hidden class="flex flex-col gap-4">
+          <div id="newsCats" class="flex flex-wrap gap-1.5 text-[12.5px] font-semibold">
+            <button type="button" data-ncat="all" class="px-3 py-1.5 rounded-lg cursor-pointer transition-colors bg-chip text-white">All</button>
+            <button type="button" data-ncat="crypto" class="px-3 py-1.5 rounded-lg cursor-pointer transition-colors bg-surf border border-line text-t2">Crypto</button>
+            <button type="button" data-ncat="markets" class="px-3 py-1.5 rounded-lg cursor-pointer transition-colors bg-surf border border-line text-t2">Markets</button>
+            <button type="button" data-ncat="company" class="px-3 py-1.5 rounded-lg cursor-pointer transition-colors bg-surf border border-line text-t2">Company</button>
+          </div>
+          <a data-cat="crypto" class="bg-surf border border-line rounded-2xl overflow-hidden hover:border-mint transition-colors cursor-pointer grid grid-cols-1 sm:grid-cols-2">
+            <div class="min-h-[180px] relative" style="background:linear-gradient(135deg,#F7931A,#0E9E6E)"><span class="absolute top-3 left-3 text-[10.5px] font-bold bg-black/30 text-white rounded-full px-2.5 py-1">Crypto</span><i class="ph-fill ph-currency-btc absolute right-4 bottom-3 text-white/30 text-[80px]"></i></div>
+            <div class="p-5 sm:p-6 flex flex-col justify-center"><div class="text-[11px] font-bold text-mint-deep uppercase tracking-[0.08em]">Featured</div><div class="text-[19px] font-extrabold leading-snug mt-1.5">Bitcoin tops $64K as ETF inflows accelerate</div><div class="text-[12.5px] text-t3 mt-2 leading-relaxed">Institutional demand pushed Bitcoin past $64,000 this week as spot-ETF net inflows reached a multi-month high, with analysts pointing to renewed risk appetite.</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">CoinDesk</span> · 2h ago</div></div>
+          </a>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <a data-cat="markets" class="bg-surf border border-line rounded-2xl p-5 hover:border-mint transition-colors cursor-pointer flex flex-col"><div class="flex items-center gap-2 text-[10.5px] font-bold"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span><span class="text-t2 uppercase tracking-[0.08em]">Markets</span></div><div class="text-[14px] font-bold leading-snug mt-2 flex-1">Fed holds rates steady, signals patience on cuts</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">Bloomberg</span> · 4h ago</div></a>
+            <a data-cat="crypto" class="bg-surf border border-line rounded-2xl p-5 hover:border-mint transition-colors cursor-pointer flex flex-col"><div class="flex items-center gap-2 text-[10.5px] font-bold"><span class="w-2 h-2 rounded-full" style="background:#627EEA"></span><span class="text-t2 uppercase tracking-[0.08em]">Crypto</span></div><div class="text-[14px] font-bold leading-snug mt-2 flex-1">Ethereum's next network upgrade set for Q3</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">Decrypt</span> · 7h ago</div></a>
+            <a data-cat="crypto" class="bg-surf border border-line rounded-2xl p-5 hover:border-mint transition-colors cursor-pointer flex flex-col"><div class="flex items-center gap-2 text-[10.5px] font-bold"><span class="w-2 h-2 rounded-full" style="background:#2775CA"></span><span class="text-t2 uppercase tracking-[0.08em]">Crypto</span></div><div class="text-[14px] font-bold leading-snug mt-2 flex-1">USDC reserves attestation published for Q2</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">Circle</span> · 11h ago</div></a>
+            <a data-cat="markets" class="bg-surf border border-line rounded-2xl p-5 hover:border-mint transition-colors cursor-pointer flex flex-col"><div class="flex items-center gap-2 text-[10.5px] font-bold"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span><span class="text-t2 uppercase tracking-[0.08em]">Markets</span></div><div class="text-[14px] font-bold leading-snug mt-2 flex-1">Cross-border payments volume up 18% year over year</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">Reuters</span> · 1d ago</div></a>
+            <a data-cat="company" class="bg-surf border border-line rounded-2xl p-5 hover:border-mint transition-colors cursor-pointer flex flex-col"><div class="flex items-center gap-2 text-[10.5px] font-bold"><span class="w-2 h-2 rounded-full" style="background:#12B981"></span><span class="text-t2 uppercase tracking-[0.08em]">Company</span></div><div class="text-[14px] font-bold leading-snug mt-2 flex-1">PayerPay launches instant SEPA transfers in 12 markets</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">PayerPay</span> · 1d ago</div></a>
+            <a data-cat="crypto" class="bg-surf border border-line rounded-2xl p-5 hover:border-mint transition-colors cursor-pointer flex flex-col"><div class="flex items-center gap-2 text-[10.5px] font-bold"><span class="w-2 h-2 rounded-full" style="background:#14F195"></span><span class="text-t2 uppercase tracking-[0.08em]">Crypto</span></div><div class="text-[14px] font-bold leading-snug mt-2 flex-1">Solana sees record daily active addresses</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">The Block</span> · 1d ago</div></a>
+            <a data-cat="crypto" class="bg-surf border border-line rounded-2xl p-5 hover:border-mint transition-colors cursor-pointer flex flex-col"><div class="flex items-center gap-2 text-[10.5px] font-bold"><span class="w-2 h-2 rounded-full" style="background:#F7931A"></span><span class="text-t2 uppercase tracking-[0.08em]">Crypto</span></div><div class="text-[14px] font-bold leading-snug mt-2 flex-1">Stablecoin market cap reaches a new all-time high</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">CoinDesk</span> · 2d ago</div></a>
+            <a data-cat="markets" class="bg-surf border border-line rounded-2xl p-5 hover:border-mint transition-colors cursor-pointer flex flex-col"><div class="flex items-center gap-2 text-[10.5px] font-bold"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span><span class="text-t2 uppercase tracking-[0.08em]">Markets</span></div><div class="text-[14px] font-bold leading-snug mt-2 flex-1">ECB outlines digital euro rollout timeline</div><div class="text-[11.5px] text-t3 mt-3"><span class="font-semibold text-t2">Financial Times</span> · 2d ago</div></a>
+          </div>
+        </section>
+
         <!-- ============ SETTINGS ============ -->
         <section data-screen="settings" hidden class="flex flex-col gap-4 max-w-3xl">
           <div class="bg-surf border border-line rounded-2xl p-5 flex items-center gap-4">
@@ -581,7 +620,7 @@ tailwind.config={theme:{extend:{
           </div>
         </div>
         <div class="bg-surf border border-line rounded-2xl flex flex-col flex-1 min-h-0 overflow-hidden">
-          <div class="flex items-center justify-between px-4 py-3 border-b border-line shrink-0"><div class="flex items-center gap-2"><div class="text-[13px] font-bold">News</div><span class="w-1.5 h-1.5 rounded-full bg-mint animate-pulse"></span></div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">See all</button></div>
+          <div class="flex items-center justify-between px-4 py-3 border-b border-line shrink-0"><div class="flex items-center gap-2"><div class="text-[13px] font-bold">News</div><span class="w-1.5 h-1.5 rounded-full bg-mint animate-pulse"></span></div><button data-go="news" class="text-[11.5px] font-semibold text-mint-deep hover:underline">See all</button></div>
           <div class="scroll-y overflow-y-auto divide-y divide-line flex-1 min-h-0">
             <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-[#F7931A] mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Bitcoin tops $64K as ETF inflows accelerate</div><div class="text-[10.5px] text-t3 mt-1">CoinDesk · 2h ago</div></div></a>
             <a class="flex gap-2.5 px-4 py-3 hover:bg-bg transition-colors cursor-pointer"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div class="min-w-0"><div class="text-[12.5px] font-semibold leading-snug">Fed holds rates steady, signals patience on cuts</div><div class="text-[10.5px] text-t3 mt-1">Bloomberg · 4h ago</div></div></a>
@@ -667,7 +706,7 @@ tailwind.config={theme:{extend:{
   set('sp-xrp',[[0,26],[20,22],[40,24],[60,16],[80,18],[100,8]]);
 
   // ===== Screen navigation =====
-  var titles={home:'Home',accounts:'Accounts',cards:'Cards',convert:'Convert',activity:'Activity',wallet:'Crypto Wallet',receive:'Receive',settings:'Settings'};
+  var titles={home:'Home',accounts:'Accounts',cards:'Cards',convert:'Convert',activity:'Activity',wallet:'Crypto Wallet',receive:'Receive',settings:'Settings',news:'Newsroom'};
   var screens=document.querySelectorAll('[data-screen]');
   var navis=document.querySelectorAll('[data-nav]');
   var sb=document.getElementById('sidebar'), bd=document.getElementById('backdrop');
@@ -1039,6 +1078,28 @@ tailwind.config={theme:{extend:{
   sec.querySelectorAll('#bkFields [data-copy]').forEach(function(b){ b.addEventListener('click',function(){ cp(b,b.getAttribute('data-copy')); }); });
   var all=sec.querySelector('#bkCopyAll'); if(all) all.addEventListener('click',function(){ var t=[].map.call(sec.querySelectorAll('#bkFields [data-copy]'),function(b){return b.getAttribute('data-copy');}).join('\n'); cp(all,t,'Copied ✓'); });
   rqRender(); rcRender();
+})();
+</script>
+<script>
+(function(){
+  // Notifications dropdown
+  var btn=document.getElementById('notifBtn'), panel=document.getElementById('notifPanel'), dot=document.getElementById('notifDot'), readBtn=document.getElementById('notifRead');
+  if(btn&&panel){
+    btn.addEventListener('click',function(e){ e.stopPropagation(); panel.classList.toggle('show'); });
+    panel.addEventListener('click',function(e){ e.stopPropagation(); });
+    document.addEventListener('click',function(){ panel.classList.remove('show'); });
+    if(readBtn) readBtn.addEventListener('click',function(){ panel.querySelectorAll('.ndot').forEach(function(d){ d.style.display='none'; }); if(dot) dot.style.display='none'; });
+    panel.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ panel.classList.remove('show'); }); });
+  }
+  // News category filter
+  var nsec=document.querySelector('section[data-screen="news"]');
+  if(nsec){
+    var chips=nsec.querySelectorAll('[data-ncat]'), cards=nsec.querySelectorAll('[data-cat]');
+    chips.forEach(function(ch){ ch.addEventListener('click',function(){ var cat=ch.getAttribute('data-ncat');
+      chips.forEach(function(x){ x.className='px-3 py-1.5 rounded-lg cursor-pointer transition-colors '+(x===ch?'bg-chip text-white':'bg-surf border border-line text-t2'); });
+      cards.forEach(function(c){ c.classList.toggle('hidden', cat!=='all' && c.getAttribute('data-cat')!==cat); });
+    }); });
+  }
 })();
 </script>
 </body>
