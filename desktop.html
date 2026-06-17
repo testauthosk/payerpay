@@ -227,10 +227,12 @@ tailwind.config={theme:{extend:{
             </div>
             <div class="lg:col-span-4 min-w-0 bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col">
               <div class="text-[14px] font-bold mb-3">Quick convert</div>
-              <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">From</div><div class="text-[16px] font-bold num">$500.00</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD</div></div>
-              <div class="flex justify-center -my-2 relative z-10"><span class="w-8 h-8 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf"><i class="ph-bold ph-arrow-down text-[14px]"></i></span></div>
-              <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">To</div><div class="text-[16px] font-bold num">499.40</div></div><div class="flex items-center gap-1.5 text-[12.5px] font-bold shrink-0"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC</div></div>
-              <div class="text-[11px] text-t3 font-medium text-center mt-2.5">1 USD = 0.9988 · no fee</div>
+              <div data-cv data-cv-from="USD" data-cv-to="USDC">
+                <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between gap-2"><div class="min-w-0 flex-1"><div class="text-[10.5px] text-t3 font-semibold">From</div><input data-cv-amt="from" inputmode="decimal" value="500" class="w-full bg-transparent outline-none text-[16px] font-bold num text-ink"></div><div class="cv-sel relative shrink-0" data-cv-side="from"></div></div>
+                <div class="flex justify-center -my-2 relative z-10"><button data-cv-swap type="button" class="w-8 h-8 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf hover:bg-mint-deep transition-colors" title="Swap"><i class="ph-bold ph-arrows-down-up text-[13px]"></i></button></div>
+                <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center justify-between gap-2"><div class="min-w-0 flex-1"><div class="text-[10.5px] text-t3 font-semibold">To</div><input data-cv-amt="to" inputmode="decimal" value="499.40" class="w-full bg-transparent outline-none text-[16px] font-bold num text-ink"></div><div class="cv-sel relative shrink-0" data-cv-side="to"></div></div>
+                <div data-cv-rate class="text-[11px] text-t3 font-medium text-center mt-2.5">1 USDC = 1.0012 USD · no fee</div>
+              </div>
               <button data-go="convert" class="w-full mt-auto bg-mint text-ink rounded-xl py-3 text-[13.5px] font-bold hover:bg-mint-deep transition-colors">Convert now</button>
             </div>
           </div>
@@ -365,12 +367,14 @@ tailwind.config={theme:{extend:{
         <section data-screen="convert" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <div class="lg:col-span-7 bg-surf border border-line rounded-2xl p-5 lg:p-6">
             <div class="text-[15px] font-bold mb-4">Convert</div>
-            <div class="bg-bg border border-line rounded-xl px-4 py-4 flex items-center justify-between"><div><div class="text-[11px] text-t3 font-semibold">You pay</div><div class="text-[24px] font-extrabold num">$500.00</div></div><button class="flex items-center gap-2 text-[14px] font-bold bg-surf border border-line rounded-xl px-3 py-2"><i class="ph-fill ph-currency-dollar text-mint-deep"></i> USD <i class="ph ph-caret-down text-[12px] text-t3"></i></button></div>
-            <div class="flex justify-center -my-2.5 relative z-10"><button class="w-9 h-9 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrows-down-up text-[15px]"></i></button></div>
-            <div class="bg-bg border border-line rounded-xl px-4 py-4 flex items-center justify-between"><div><div class="text-[11px] text-t3 font-semibold">You get</div><div class="text-[24px] font-extrabold num">499.40</div></div><button class="flex items-center gap-2 text-[14px] font-bold bg-surf border border-line rounded-xl px-3 py-2"><i class="ph-duotone ph-coins text-mint-deep"></i> USDC <i class="ph ph-caret-down text-[12px] text-t3"></i></button></div>
-            <div class="flex items-center justify-between text-[12px] mt-3 px-1"><span class="text-t3 font-medium">1 USD = 0.9988 USDC</span><span class="text-pos font-bold">No fee</span></div>
-            <div class="grid grid-cols-4 gap-2 mt-4"><button class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$100</button><button class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$500</button><button class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$1K</button><button class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">Max</button></div>
-            <button class="w-full mt-4 bg-mint text-ink rounded-xl py-3.5 text-[14px] font-bold hover:bg-mint-deep transition-colors">Convert now</button>
+            <div data-cv data-cv-from="USD" data-cv-to="USDC">
+              <div class="bg-bg border border-line rounded-xl px-4 py-4 flex items-center justify-between gap-3"><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">You pay</div><input data-cv-amt="from" inputmode="decimal" value="500" class="w-full bg-transparent outline-none text-[24px] font-extrabold num text-ink"></div><div class="cv-sel relative shrink-0" data-cv-side="from"></div></div>
+              <div class="flex justify-center -my-2.5 relative z-10"><button data-cv-swap type="button" class="w-9 h-9 rounded-full bg-mint grid place-items-center text-ink border-4 border-surf hover:bg-mint-deep transition-colors" title="Swap currencies"><i class="ph-bold ph-arrows-down-up text-[15px]"></i></button></div>
+              <div class="bg-bg border border-line rounded-xl px-4 py-4 flex items-center justify-between gap-3"><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">You get</div><input data-cv-amt="to" inputmode="decimal" value="499.40" class="w-full bg-transparent outline-none text-[24px] font-extrabold num text-ink"></div><div class="cv-sel relative shrink-0" data-cv-side="to"></div></div>
+              <div class="flex items-center justify-between text-[12px] mt-3 px-1"><span data-cv-rate class="text-t3 font-medium">1 USDC = 1.0012 USD</span><span data-cv-fee class="text-pos font-bold">No fee</span></div>
+              <div class="grid grid-cols-4 gap-2 mt-4"><button data-cv-quick="100" class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$100</button><button data-cv-quick="500" class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$500</button><button data-cv-quick="1000" class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$1K</button><button data-cv-quick="max" class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">Max</button></div>
+              <button data-cv-go type="button" class="w-full mt-4 bg-mint text-ink rounded-xl py-3.5 text-[14px] font-bold hover:bg-mint-deep transition-colors">Convert now</button>
+            </div>
           </div>
           <div class="lg:col-span-5 flex flex-col gap-4">
             <div class="bg-surf border border-line rounded-2xl overflow-hidden"><div class="px-5 py-3 border-b border-line text-[13px] font-bold">Recent conversions</div><div class="divide-y divide-line">
@@ -644,6 +648,58 @@ tailwind.config={theme:{extend:{
   function paintAccent(){ var cur=(window.ppAccent||'#12B981').toLowerCase(); sw.forEach(function(x){ var on=x.getAttribute('data-accent').toLowerCase()===cur; x.style.outline=on?'2px solid rgb(var(--mint))':'2px solid transparent'; x.style.outlineOffset='2px'; x.style.transform=on?'scale(1.14)':'none'; x.style.transition='transform .15s ease'; }); }
   sw.forEach(function(x){ x.addEventListener('click',function(){ if(window.ppSetAccent) window.ppSetAccent(x.getAttribute('data-accent')); paintAccent(); }); });
   reflect(); paintAccent();
+})();
+</script>
+<script>
+(function(){
+  var PRICE={USD:1,EUR:1.0845,GBP:1.2710,JPY:0.0067,USDC:1.0012,USDT:1.0005,BTC:64820,ETH:3180,SOL:148.20,XRP:0.62};
+  var DP={USD:2,EUR:2,GBP:2,JPY:0,USDC:2,USDT:2,BTC:6,ETH:5,SOL:3,XRP:2};
+  var SYM={USD:'$',EUR:'€',GBP:'£',JPY:'¥'};
+  var NAME={USD:'US Dollar',EUR:'Euro',GBP:'British Pound',JPY:'Japanese Yen',USDC:'USD Coin',USDT:'Tether',BTC:'Bitcoin',ETH:'Ethereum',SOL:'Solana',XRP:'Ripple'};
+  var COL={USD:'#12B981',EUR:'#3B82F6',GBP:'#6366F1',JPY:'#EF4444',USDC:'#2775CA',USDT:'#26A17B',BTC:'#F7931A',ETH:'#627EEA',SOL:'#14F195',XRP:'#23A8DF'};
+  var ORDER=['USD','EUR','GBP','JPY','USDC','USDT','BTC','ETH','SOL','XRP'];
+  var VOL={BTC:1,ETH:1,SOL:1,XRP:1};
+  function feeOf(a,b){ return (VOL[a]||VOL[b])?0.005:0; }
+  function dpOf(c){ return DP[c]==null?2:DP[c]; }
+  function fmt(n,c){ if(!isFinite(n)||n<0)n=0; return n.toLocaleString('en-US',{minimumFractionDigits:dpOf(c),maximumFractionDigits:dpOf(c)}); }
+  function val(inp){ return parseFloat((inp.value||'').replace(/[^0-9.]/g,''))||0; }
+  function rateStr(a,b){ var hi=PRICE[a]>=PRICE[b]?a:b, lo=hi===a?b:a, r=PRICE[hi]/PRICE[lo]; return '1 '+hi+' = '+r.toLocaleString('en-US',{maximumFractionDigits:r>=100?2:(r>=1?4:6)})+' '+lo; }
+  function dot(c){ return '<span class="cv-dot w-4 h-4 rounded-full shrink-0" style="background:'+COL[c]+'"></span>'; }
+  function selBtn(c){ return '<button type="button" class="cv-selbtn flex items-center gap-2 text-[13.5px] font-bold bg-surf border border-line rounded-xl px-3 py-2 hover:border-mint transition-colors">'+dot(c)+'<span class="cv-code">'+c+'</span><i class="ph ph-caret-down text-[12px] text-t3"></i></button>'; }
+  function menu(cur){ var h='<div class="cv-menu absolute right-0 top-[calc(100%+6px)] z-50 w-[210px] max-h-[256px] overflow-y-auto scroll-y bg-surf border border-line rounded-xl shadow-xl p-1 hidden">'; ORDER.forEach(function(c){ h+='<button type="button" data-cv-pick="'+c+'" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left hover:bg-bg transition-colors'+(c===cur?' bg-bg':'')+'">'+dot(c)+'<span class="text-[13px] font-bold w-9">'+c+'</span><span class="text-[11.5px] text-t3 truncate">'+NAME[c]+'</span></button>'; }); return h+'</div>'; }
+
+  function init(root){
+    var st={from:root.getAttribute('data-cv-from')||'USD', to:root.getAttribute('data-cv-to')||'USDC', last:'from'};
+    var fromIn=root.querySelector('[data-cv-amt="from"]'), toIn=root.querySelector('[data-cv-amt="to"]');
+    var rateEl=root.querySelector('[data-cv-rate]'), feeEl=root.querySelector('[data-cv-fee]');
+    function closeMenus(){ root.querySelectorAll('.cv-menu').forEach(function(m){m.classList.add('hidden');}); }
+    function compute(){
+      var fee=feeOf(st.from,st.to);
+      if(st.last==='to' && toIn){ fromIn.value=fmt(val(toIn)*(PRICE[st.to]/PRICE[st.from])/(1-fee), st.from); }
+      else if(fromIn && toIn){ toIn.value=fmt(val(fromIn)*(PRICE[st.from]/PRICE[st.to])*(1-fee), st.to); }
+      var rt=rateStr(st.from,st.to);
+      if(feeEl){ if(rateEl) rateEl.textContent=rt; feeEl.textContent=fee>0?(fee*100)+'% fee':'No fee'; feeEl.classList.toggle('text-pos',fee===0); feeEl.classList.toggle('text-t2',fee>0); }
+      else if(rateEl){ rateEl.textContent=rt+(fee>0?' · '+(fee*100)+'% fee':' · no fee'); }
+    }
+    function quick(){ root.querySelectorAll('[data-cv-quick]').forEach(function(q){ var v=q.getAttribute('data-cv-quick'); q.textContent = v==='max'?'Max':((SYM[st.from]||'')+(v==='1000'?'1K':v)); }); }
+    function renderSel(){
+      root.querySelectorAll('.cv-sel').forEach(function(sel){
+        var side=sel.getAttribute('data-cv-side');
+        sel.innerHTML=selBtn(st[side])+menu(st[side]);
+        var btn=sel.querySelector('.cv-selbtn'), m=sel.querySelector('.cv-menu');
+        btn.addEventListener('click',function(e){ e.stopPropagation(); var open=!m.classList.contains('hidden'); closeMenus(); if(!open) m.classList.remove('hidden'); });
+        m.querySelectorAll('[data-cv-pick]').forEach(function(it){ it.addEventListener('click',function(e){ e.stopPropagation(); var c=it.getAttribute('data-cv-pick'), other=side==='from'?'to':'from'; if(c===st[other]) st[other]=st[side]; st[side]=c; renderSel(); quick(); st.last='from'; compute(); }); });
+      });
+    }
+    if(fromIn) fromIn.addEventListener('input',function(){ st.last='from'; compute(); });
+    if(toIn) toIn.addEventListener('input',function(){ st.last='to'; compute(); });
+    var sw=root.querySelector('[data-cv-swap]'); if(sw) sw.addEventListener('click',function(){ var a=st.from; st.from=st.to; st.to=a; renderSel(); quick(); st.last='from'; compute(); });
+    root.querySelectorAll('[data-cv-quick]').forEach(function(q){ q.addEventListener('click',function(){ if(!fromIn)return; fromIn.value = q.getAttribute('data-cv-quick')==='max'?'10240':q.getAttribute('data-cv-quick'); st.last='from'; compute(); }); });
+    var go=root.querySelector('[data-cv-go]'); if(go) go.addEventListener('click',function(){ var o=go.textContent; go.textContent='Converted ✓'; go.disabled=true; setTimeout(function(){ go.textContent=o; go.disabled=false; },1400); });
+    renderSel(); quick(); compute();
+  }
+  document.addEventListener('click',function(){ document.querySelectorAll('.cv-menu').forEach(function(m){m.classList.add('hidden');}); });
+  document.querySelectorAll('[data-cv]').forEach(init);
 })();
 </script>
 </body>
