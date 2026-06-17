@@ -56,6 +56,8 @@ tailwind.config={theme:{extend:{
  line[stroke-dasharray="4 5"]{stroke:rgb(var(--line))}
  #cf-line{stroke:rgb(var(--mint))}
  #cfg stop{stop-color:rgb(var(--mint))}
+ #rc-line{stroke:rgb(var(--mint))}
+ #rcg stop{stop-color:rgb(var(--mint))}
  #cf-guide{stroke:rgb(var(--ink))}
  .navi.active{background:rgb(var(--mint-tint));color:rgb(var(--mint-deep))}
  .navi.active i{color:rgb(var(--mint-deep))}
@@ -365,7 +367,8 @@ tailwind.config={theme:{extend:{
 
         <!-- ============ CONVERT ============ -->
         <section data-screen="convert" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div class="lg:col-span-7 bg-surf border border-line rounded-2xl p-5 lg:p-6">
+          <div class="lg:col-span-7 flex flex-col gap-4">
+            <div class="bg-surf border border-line rounded-2xl p-5 lg:p-6">
             <div class="text-[15px] font-bold mb-4">Convert</div>
             <div data-cv data-cv-from="USD" data-cv-to="USDC">
               <div class="bg-bg border border-line rounded-xl px-4 py-4 flex items-center justify-between gap-3"><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">You pay</div><input data-cv-amt="from" inputmode="decimal" value="500" class="w-full bg-transparent outline-none text-[24px] font-extrabold num text-ink"></div><div class="cv-sel relative shrink-0" data-cv-side="from"></div></div>
@@ -375,8 +378,36 @@ tailwind.config={theme:{extend:{
               <div class="grid grid-cols-4 gap-2 mt-4"><button data-cv-quick="100" class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$100</button><button data-cv-quick="500" class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$500</button><button data-cv-quick="1000" class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">$1K</button><button data-cv-quick="max" class="bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold text-t2 hover:border-mint hover:text-mint-deep transition-colors">Max</button></div>
               <button data-cv-go type="button" class="w-full mt-4 bg-mint text-ink rounded-xl py-3.5 text-[14px] font-bold hover:bg-mint-deep transition-colors">Convert now</button>
             </div>
+            </div>
+            <div class="bg-surf border border-line rounded-2xl p-5 lg:p-6">
+              <div class="flex items-start justify-between">
+                <div><div class="text-[13.5px] font-bold" data-cvchart-pair>USD → USDC</div><div class="text-[11px] text-t3 mt-0.5">Exchange rate · last 30 days</div></div>
+                <div class="text-right"><div class="text-[18px] font-extrabold num" data-cvchart-rate>0.9988</div><div class="text-[11px] font-bold text-pos num" data-cvchart-chg>+0.00%</div></div>
+              </div>
+              <div class="relative h-[160px] xl:h-[180px] mt-3">
+                <svg class="w-full h-full" viewBox="0 0 600 170" preserveAspectRatio="none">
+                  <defs><linearGradient id="rcg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12B981" stop-opacity="0.22"/><stop offset="100%" stop-color="#12B981" stop-opacity="0"/></linearGradient></defs>
+                  <line x1="0" y1="42" x2="600" y2="42" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+                  <line x1="0" y1="92" x2="600" y2="92" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+                  <line x1="0" y1="142" x2="600" y2="142" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+                  <path id="rc-area" fill="url(#rcg)" d=""/>
+                  <path id="rc-line" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d=""/>
+                </svg>
+              </div>
+              <div class="flex justify-between text-[10px] text-t3 font-semibold mt-1.5 px-0.5"><span>Feb 14</span><span>Feb 22</span><span>Mar 1</span><span>Mar 8</span><span>Mar 15</span></div>
+            </div>
           </div>
           <div class="lg:col-span-5 flex flex-col gap-4">
+            <div class="bg-surf border border-line rounded-2xl overflow-hidden">
+              <div class="px-5 py-3 border-b border-line text-[13px] font-bold flex items-center justify-between">Popular pairs <span class="flex items-center gap-1.5 text-[10.5px] text-t3 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-mint animate-pulse"></span>live</span></div>
+              <div class="divide-y divide-line">
+                <button type="button" data-cvpair="EUR,USD" class="w-full flex items-center justify-between px-5 py-2.5 hover:bg-bg transition-colors"><span class="text-[12.5px] font-bold">EUR → USD</span><span class="text-right"><span class="text-[12.5px] font-bold num">1.0845</span> <span class="text-[10.5px] font-bold text-pos num">+0.2%</span></span></button>
+                <button type="button" data-cvpair="GBP,USD" class="w-full flex items-center justify-between px-5 py-2.5 hover:bg-bg transition-colors"><span class="text-[12.5px] font-bold">GBP → USD</span><span class="text-right"><span class="text-[12.5px] font-bold num">1.2710</span> <span class="text-[10.5px] font-bold text-neg num">−0.1%</span></span></button>
+                <button type="button" data-cvpair="BTC,USD" class="w-full flex items-center justify-between px-5 py-2.5 hover:bg-bg transition-colors"><span class="text-[12.5px] font-bold">BTC → USD</span><span class="text-right"><span class="text-[12.5px] font-bold num">64,820</span> <span class="text-[10.5px] font-bold text-pos num">+2.1%</span></span></button>
+                <button type="button" data-cvpair="ETH,USD" class="w-full flex items-center justify-between px-5 py-2.5 hover:bg-bg transition-colors"><span class="text-[12.5px] font-bold">ETH → USD</span><span class="text-right"><span class="text-[12.5px] font-bold num">3,180</span> <span class="text-[10.5px] font-bold text-pos num">+1.4%</span></span></button>
+                <button type="button" data-cvpair="USD,USDC" class="w-full flex items-center justify-between px-5 py-2.5 hover:bg-bg transition-colors"><span class="text-[12.5px] font-bold">USD → USDC</span><span class="text-right"><span class="text-[12.5px] font-bold num">0.9988</span> <span class="text-[10.5px] font-bold text-t3 num">0.0%</span></span></button>
+              </div>
+            </div>
             <div class="bg-surf border border-line rounded-2xl overflow-hidden"><div class="px-5 py-3 border-b border-line text-[13px] font-bold">Recent conversions</div><div class="divide-y divide-line">
               <div class="flex items-center justify-between px-5 py-3"><div class="text-[12.5px] font-semibold">USD → USDC</div><div class="text-right"><div class="text-[12.5px] font-bold num">$500.00</div><div class="text-[10.5px] text-t3">Mar 12</div></div></div>
               <div class="flex items-center justify-between px-5 py-3"><div class="text-[12.5px] font-semibold">USD → BTC</div><div class="text-right"><div class="text-[12.5px] font-bold num">$120.00</div><div class="text-[10.5px] text-t3">Mar 5</div></div></div>
@@ -670,6 +701,7 @@ tailwind.config={theme:{extend:{
 
   function init(root){
     var st={from:root.getAttribute('data-cv-from')||'USD', to:root.getAttribute('data-cv-to')||'USDC', last:'from'};
+    var isConvert=!!root.closest('section[data-screen="convert"]');
     var fromIn=root.querySelector('[data-cv-amt="from"]'), toIn=root.querySelector('[data-cv-amt="to"]');
     var rateEl=root.querySelector('[data-cv-rate]'), feeEl=root.querySelector('[data-cv-fee]');
     function closeMenus(){ root.querySelectorAll('.cv-menu').forEach(function(m){m.classList.add('hidden');}); }
@@ -680,6 +712,7 @@ tailwind.config={theme:{extend:{
       var rt=rateStr(st.from,st.to);
       if(feeEl){ if(rateEl) rateEl.textContent=rt; feeEl.textContent=fee>0?(fee*100)+'% fee':'No fee'; feeEl.classList.toggle('text-pos',fee===0); feeEl.classList.toggle('text-t2',fee>0); }
       else if(rateEl){ rateEl.textContent=rt+(fee>0?' · '+(fee*100)+'% fee':' · no fee'); }
+      if(isConvert && window.cvSyncChart) window.cvSyncChart(st.from,st.to);
     }
     function quick(){ root.querySelectorAll('[data-cv-quick]').forEach(function(q){ var v=q.getAttribute('data-cv-quick'); q.textContent = v==='max'?'Max':((SYM[st.from]||'')+(v==='1000'?'1K':v)); }); }
     function renderSel(){
@@ -696,8 +729,18 @@ tailwind.config={theme:{extend:{
     var sw=root.querySelector('[data-cv-swap]'); if(sw) sw.addEventListener('click',function(){ var a=st.from; st.from=st.to; st.to=a; renderSel(); quick(); st.last='from'; compute(); });
     root.querySelectorAll('[data-cv-quick]').forEach(function(q){ q.addEventListener('click',function(){ if(!fromIn)return; fromIn.value = q.getAttribute('data-cv-quick')==='max'?'10240':q.getAttribute('data-cv-quick'); st.last='from'; compute(); }); });
     var go=root.querySelector('[data-cv-go]'); if(go) go.addEventListener('click',function(){ var o=go.textContent; go.textContent='Converted ✓'; go.disabled=true; setTimeout(function(){ go.textContent=o; go.disabled=false; },1400); });
+    if(isConvert) document.querySelectorAll('[data-cvpair]').forEach(function(pp){ pp.addEventListener('click',function(){ var pr=pp.getAttribute('data-cvpair').split(','); st.from=pr[0]; st.to=pr[1]; renderSel(); quick(); st.last='from'; compute(); }); });
     renderSel(); quick(); compute();
   }
+  function smoothPath(p){var d="M "+p[0][0]+" "+p[0][1];for(var i=0;i<p.length-1;i++){var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p[i+1];d+=" C "+(p1[0]+(p2[0]-p0[0])/6)+" "+(p1[1]+(p2[1]-p0[1])/6)+" "+(p2[0]-(p3[0]-p1[0])/6)+" "+(p2[1]-(p3[1]-p1[1])/6)+" "+p2[0]+" "+p2[1];}return d;}
+  (function(){ var ln=document.getElementById('rc-line'), ar=document.getElementById('rc-area'); if(!ln)return; var P=[[0,118],[50,110],[100,122],[150,96],[200,106],[250,78],[300,88],[350,64],[400,74],[450,50],[500,58],[550,38],[600,32]]; var d=smoothPath(P); ln.setAttribute('d',d); ar.setAttribute('d',d+' L 600 170 L 0 170 Z'); })();
+  var CHG={USD:0,EUR:0.2,GBP:-0.1,JPY:0.4,USDC:0,USDT:0,BTC:2.1,ETH:1.4,SOL:-0.8,XRP:3.2};
+  window.cvSyncChart=function(from,to){
+    var pe=document.querySelector('[data-cvchart-pair]'), re=document.querySelector('[data-cvchart-rate]'), ce=document.querySelector('[data-cvchart-chg]');
+    if(pe) pe.textContent=from+' → '+to;
+    if(re){ var r=PRICE[from]/PRICE[to]; re.textContent=r.toLocaleString('en-US',{maximumFractionDigits:r>=100?2:(r>=1?4:6)}); }
+    if(ce){ var ch=(CHG[from]||0)-(CHG[to]||0); ce.textContent=(ch>=0?'+':'')+ch.toFixed(2)+'%'; ce.classList.toggle('text-pos',ch>=0); ce.classList.toggle('text-neg',ch<0); }
+  };
   document.addEventListener('click',function(){ document.querySelectorAll('.cv-menu').forEach(function(m){m.classList.add('hidden');}); });
   document.querySelectorAll('[data-cv]').forEach(init);
 })();
