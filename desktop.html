@@ -492,22 +492,44 @@ tailwind.config={theme:{extend:{
         </section>
 
         <!-- ============ RECEIVE ============ -->
-        <section data-screen="receive" hidden class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-4xl">
-          <div class="bg-surf border border-line rounded-2xl p-5">
-            <div class="flex items-center gap-2.5 mb-4"><span class="w-9 h-9 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-fill ph-bank text-[18px]"></i></span><div class="text-[14px] font-bold">Receive by bank</div></div>
-            <div class="space-y-2.5">
-              <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between"><div><div class="text-[10.5px] text-t3 font-semibold">Account holder</div><div class="text-[13px] font-bold">Igor Petrov</div></div></div>
-              <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between"><div><div class="text-[10.5px] text-t3 font-semibold">Account number</div><div class="text-[13px] font-bold num">8830 4821 0094</div></div><button class="text-mint-deep"><i class="ph-bold ph-copy text-[16px]"></i></button></div>
-              <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between"><div><div class="text-[10.5px] text-t3 font-semibold">Routing (ACH / Wire)</div><div class="text-[13px] font-bold num">021000021</div></div><button class="text-mint-deep"><i class="ph-bold ph-copy text-[16px]"></i></button></div>
-              <div class="bg-bg rounded-lg px-3.5 py-2.5"><div class="text-[10.5px] text-t3 font-semibold">EUR IBAN</div><div class="text-[13px] font-bold num">DE89 3704 0044 0532 0130 00</div></div>
+        <section data-screen="receive" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-surf border border-line rounded-2xl p-5 lg:p-6">
+            <div class="flex items-center gap-2.5 mb-4"><span class="w-9 h-9 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-fill ph-hand-coins text-[18px]"></i></span><div class="text-[14px] font-bold">Request a payment</div></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <div class="text-[11px] text-t3 font-semibold mb-1.5">Amount</div>
+                <div class="bg-bg border border-line rounded-xl px-3.5 py-3 flex items-center gap-2"><span id="rqSym" class="text-[18px] font-extrabold">$</span><input id="rqAmt" inputmode="decimal" value="100.00" class="bg-transparent outline-none text-[18px] font-extrabold num w-full text-ink"></div>
+                <div class="text-[11px] text-t3 font-semibold mt-4 mb-1.5">Currency</div>
+                <div id="rqCur" class="flex flex-wrap gap-1.5"><button type="button" data-cur="USD" class="px-3 py-1.5 rounded-lg text-[12px] font-bold cursor-pointer transition-colors bg-chip text-white">USD</button><button type="button" data-cur="EUR" class="px-3 py-1.5 rounded-lg text-[12px] font-bold cursor-pointer transition-colors bg-bg border border-line text-t2">EUR</button><button type="button" data-cur="GBP" class="px-3 py-1.5 rounded-lg text-[12px] font-bold cursor-pointer transition-colors bg-bg border border-line text-t2">GBP</button><button type="button" data-cur="USDC" class="px-3 py-1.5 rounded-lg text-[12px] font-bold cursor-pointer transition-colors bg-bg border border-line text-t2">USDC</button></div>
+                <div class="text-[11px] text-t3 font-semibold mt-4 mb-1.5">Note (optional)</div>
+                <input id="rqNote" placeholder="What's it for?" class="bg-bg border border-line rounded-xl px-3.5 py-2.5 text-[12.5px] w-full outline-none text-ink placeholder:text-t3">
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="bg-white rounded-2xl p-3 border border-line"><img id="rqQR" class="w-[150px] h-[150px] block" alt="Payment QR"></div>
+                <div class="text-[11px] text-t3 mt-3 text-center">Scan to pay, or share the link</div>
+                <div class="w-full bg-bg border border-line rounded-lg px-3 py-2 mt-3 flex items-center justify-between gap-2"><span id="rqLink" class="text-[11.5px] font-semibold num truncate">pay.payerpay.io/r/igor</span><button id="rqCopy" type="button" class="text-mint-deep shrink-0" title="Copy link"><i class="ph-bold ph-copy text-[15px]"></i></button></div>
+                <button id="rqShare" type="button" class="w-full mt-2 flex items-center justify-center gap-1.5 bg-mint text-ink rounded-xl py-2.5 text-[12.5px] font-bold hover:bg-mint-deep transition-colors"><i class="ph-bold ph-share-network text-[14px]"></i> Share request</button>
+              </div>
             </div>
           </div>
-          <div class="bg-surf border border-line rounded-2xl p-5">
-            <div class="flex items-center gap-2.5 mb-4"><span class="w-9 h-9 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-duotone ph-coins text-[18px]"></i></span><div class="text-[14px] font-bold">Receive crypto</div></div>
-            <div class="flex justify-center my-4"><div class="w-36 h-36 rounded-xl bg-bg border border-line grid place-items-center text-t3"><i class="ph ph-qr-code text-[64px]"></i></div></div>
-            <div class="text-[11px] text-t3 font-semibold mb-1">USDC address (ERC-20)</div>
-            <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between gap-2"><div class="text-[12.5px] font-bold num truncate">0x7a2f4b9e…3c9C4e</div><button class="text-mint-deep shrink-0"><i class="ph-bold ph-copy text-[16px]"></i></button></div>
-            <div class="text-[10.5px] text-t3 mt-2.5">Send only USDC on Ethereum to this address.</div>
+          <div class="lg:col-span-5 flex flex-col gap-4">
+            <div class="bg-surf border border-line rounded-2xl p-5">
+              <div class="flex items-center gap-2.5 mb-3"><span class="w-9 h-9 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-duotone ph-coins text-[18px]"></i></span><div class="text-[14px] font-bold">Receive crypto</div></div>
+              <div id="rcCur" class="flex gap-1.5 mb-3"><button type="button" data-cur="USDC" class="px-3 py-1.5 rounded-lg text-[12px] font-bold cursor-pointer transition-colors bg-chip text-white">USDC</button><button type="button" data-cur="BTC" class="px-3 py-1.5 rounded-lg text-[12px] font-bold cursor-pointer transition-colors bg-bg border border-line text-t2">BTC</button><button type="button" data-cur="ETH" class="px-3 py-1.5 rounded-lg text-[12px] font-bold cursor-pointer transition-colors bg-bg border border-line text-t2">ETH</button></div>
+              <div class="flex items-center gap-4">
+                <div class="bg-white rounded-xl p-2 border border-line shrink-0"><img id="rcQR" class="w-[96px] h-[96px] block" alt="Address QR"></div>
+                <div class="min-w-0"><div class="text-[11px] text-t3 font-semibold" id="rcLabel">USDC address (ERC-20)</div><div class="bg-bg rounded-lg px-3 py-2 mt-1 flex items-center justify-between gap-2"><span id="rcAddr" class="text-[12px] font-bold num truncate">0x…</span><button id="rcCopy" type="button" class="text-mint-deep shrink-0" title="Copy address"><i class="ph-bold ph-copy text-[15px]"></i></button></div><div class="text-[10.5px] text-t3 mt-2" id="rcNote">Send only USDC on Ethereum.</div></div>
+              </div>
+            </div>
+            <div class="bg-surf border border-line rounded-2xl p-5">
+              <div class="flex items-center justify-between mb-3"><div class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-xl bg-mint-tint grid place-items-center text-mint-deep"><i class="ph-fill ph-bank text-[18px]"></i></span><div class="text-[14px] font-bold">Receive by bank</div></div><button id="bkCopyAll" type="button" class="text-[11.5px] font-bold text-mint-deep">Copy all</button></div>
+              <div id="bkFields" class="space-y-2">
+                <div class="bg-bg rounded-lg px-3.5 py-2.5"><div class="text-[10.5px] text-t3 font-semibold">Account holder</div><div class="text-[12.5px] font-bold">Igor Petrov</div></div>
+                <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">Account number</div><div class="text-[12.5px] font-bold num">8830 4821 0094</div></div><button type="button" data-copy="8830 4821 0094" class="text-mint-deep shrink-0"><i class="ph-bold ph-copy text-[15px]"></i></button></div>
+                <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">Routing (ACH / Wire)</div><div class="text-[12.5px] font-bold num">021000021</div></div><button type="button" data-copy="021000021" class="text-mint-deep shrink-0"><i class="ph-bold ph-copy text-[15px]"></i></button></div>
+                <div class="bg-bg rounded-lg px-3.5 py-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-[10.5px] text-t3 font-semibold">EUR IBAN</div><div class="text-[12.5px] font-bold num truncate">DE89 3704 0044 0532 0130 00</div></div><button type="button" data-copy="DE89 3704 0044 0532 0130 00" class="text-mint-deep shrink-0"><i class="ph-bold ph-copy text-[15px]"></i></button></div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -985,6 +1007,38 @@ tailwind.config={theme:{extend:{
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
   M.fields.addEventListener('click',function(e){ var btn=e.target.closest('[data-copy]'); if(!btn)return; try{navigator.clipboard.writeText(btn.getAttribute('data-copy'));}catch(_){ } var i=btn.querySelector('i'), o=i.className; i.className='ph-bold ph-check text-[14px] text-pos'; setTimeout(function(){ i.className=o; },1200); });
   modal.querySelectorAll('[data-acct-go]').forEach(function(b){ b.addEventListener('click',function(){ close(); var nav=document.querySelector('[data-nav="'+b.getAttribute('data-acct-go')+'"]'); if(nav) nav.click(); }); });
+})();
+</script>
+<script>
+(function(){
+  var sec=document.querySelector('section[data-screen="receive"]'); if(!sec)return;
+  function QR(data,size){ return 'https://api.qrserver.com/v1/create-qr-code/?size='+size+'x'+size+'&margin=0&qzone=1&data='+encodeURIComponent(data); }
+  function chipCls(on){ return 'px-3 py-1.5 rounded-lg text-[12px] font-bold cursor-pointer transition-colors '+(on?'bg-chip text-white':'bg-bg border border-line text-t2'); }
+  function cp(btn,val,okText){ try{navigator.clipboard.writeText(val);}catch(e){} var i=btn.querySelector('i'); if(i){ var o=i.className; i.className='ph-bold ph-check text-[15px] text-pos'; setTimeout(function(){i.className=o;},1200);} else if(okText){ var o2=btn.textContent; btn.textContent=okText; setTimeout(function(){btn.textContent=o2;},1200);} }
+  var SYM={USD:'$',EUR:'€',GBP:'£',USDC:'$'};
+  // ---- Request payment ----
+  var rqAmt=sec.querySelector('#rqAmt'), rqSym=sec.querySelector('#rqSym'), rqLink=sec.querySelector('#rqLink'), rqQR=sec.querySelector('#rqQR'), rqNote=sec.querySelector('#rqNote'), rqCur='USD';
+  function rqRender(){
+    rqSym.textContent=SYM[rqCur]||'';
+    var amt=(rqAmt.value||'').replace(/[^0-9.]/g,'')||'0';
+    var note=(rqNote.value||'').trim();
+    var link='pay.payerpay.io/r/igor?amt='+amt+'&cur='+rqCur+(note?'&note='+encodeURIComponent(note):'');
+    rqLink.textContent=link; rqQR.src=QR('https://'+link,170);
+  }
+  sec.querySelectorAll('#rqCur [data-cur]').forEach(function(c){ c.addEventListener('click',function(){ rqCur=c.getAttribute('data-cur'); sec.querySelectorAll('#rqCur [data-cur]').forEach(function(x){ x.className=chipCls(x===c); }); rqRender(); }); });
+  rqAmt.addEventListener('input',rqRender); if(rqNote) rqNote.addEventListener('input',rqRender);
+  sec.querySelector('#rqCopy').addEventListener('click',function(){ cp(this,'https://'+rqLink.textContent); });
+  var sh=sec.querySelector('#rqShare'); if(sh) sh.addEventListener('click',function(){ var url='https://'+rqLink.textContent; if(navigator.share){ navigator.share({title:'Payment request',text:'Pay me via PayerPay',url:url}).catch(function(){}); } else { cp(sh,url,''); } });
+  // ---- Receive crypto ----
+  var ADDR={USDC:{addr:'0x7a2f4b9e3d8c1A5b2F0e3c9C4e',label:'USDC address (ERC-20)',note:'Send only USDC on Ethereum (ERC-20).'},BTC:{addr:'bc1q9zk3l7m4xq8p2v0n6sahk7v2',label:'BTC address',note:'Send only Bitcoin (BTC) to this address.'},ETH:{addr:'0x7a2f4b9e3d8c1A5b2F0e3c9C4e',label:'ETH address (ERC-20)',note:'Send only ETH on Ethereum.'}};
+  var rcCur='USDC';
+  function rcRender(){ var a=ADDR[rcCur]; sec.querySelector('#rcLabel').textContent=a.label; sec.querySelector('#rcAddr').textContent=a.addr; sec.querySelector('#rcNote').textContent=a.note; sec.querySelector('#rcQR').src=QR(a.addr,96); }
+  sec.querySelectorAll('#rcCur [data-cur]').forEach(function(c){ c.addEventListener('click',function(){ rcCur=c.getAttribute('data-cur'); sec.querySelectorAll('#rcCur [data-cur]').forEach(function(x){ x.className=chipCls(x===c); }); rcRender(); }); });
+  sec.querySelector('#rcCopy').addEventListener('click',function(){ cp(this,ADDR[rcCur].addr); });
+  // ---- Bank ----
+  sec.querySelectorAll('#bkFields [data-copy]').forEach(function(b){ b.addEventListener('click',function(){ cp(b,b.getAttribute('data-copy')); }); });
+  var all=sec.querySelector('#bkCopyAll'); if(all) all.addEventListener('click',function(){ var t=[].map.call(sec.querySelectorAll('#bkFields [data-copy]'),function(b){return b.getAttribute('data-copy');}).join('\n'); cp(all,t,'Copied ✓'); });
+  rqRender(); rcRender();
 })();
 </script>
 </body>
