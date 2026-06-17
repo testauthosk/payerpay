@@ -67,7 +67,7 @@ tailwind.config={theme:{extend:{
  #wp-line{stroke:rgb(var(--mint))}
  #wpg stop{stop-color:rgb(var(--mint))}
  .wallet-hide .wbal{filter:blur(8px);-webkit-filter:blur(8px);user-select:none}
- @media (min-width:1024px) and (min-height:840px){ .home-shell{height:calc(100vh - 5.5rem);overflow:hidden} }
+ @media (min-width:1024px) and (min-height:840px){ .home-shell{height:calc(100vh - 6rem);overflow:hidden} }
  .ppm{pointer-events:none}
  .ppm.show{pointer-events:auto}
  .ppm-bd{opacity:0;transition:opacity .3s ease}
@@ -189,7 +189,7 @@ tailwind.config={theme:{extend:{
     <div class="flex flex-1 min-w-0">
 
       <!-- CENTER -->
-      <div class="flex-1 min-w-0 px-4 lg:px-6 py-4">
+      <div class="flex-1 min-w-0 px-4 lg:px-6 pt-4 pb-6">
 
         <!-- ============ HOME ============ -->
         <section data-screen="home" class="home-shell flex flex-col gap-3.5">
@@ -623,7 +623,7 @@ tailwind.config={theme:{extend:{
       </div>
 
       <!-- MARKETS RAIL (xl) -->
-      <aside class="mkt-rail flex flex-col shrink-0 self-start sticky top-14" style="height:calc(100vh - 3.5rem)">
+      <aside class="mkt-rail flex flex-col shrink-0 self-start sticky top-14" style="height:calc(100vh - 5rem)">
        <div class="mkt-rail-in flex flex-col gap-4 p-4 w-[316px] h-full">
         <div class="bg-surf border border-line rounded-2xl overflow-hidden shrink-0">
           <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">Markets</div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">See all</button></div>
