@@ -68,6 +68,12 @@ tailwind.config={theme:{extend:{
  #wpg stop{stop-color:rgb(var(--mint))}
  .wallet-hide .wbal{filter:blur(8px);-webkit-filter:blur(8px);user-select:none}
  @media (min-width:1024px) and (min-height:840px){ .home-shell{height:calc(100vh - 6rem);overflow:hidden} }
+ @keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+ [data-screen]:not([hidden]){animation:screenIn .28s ease}
+ .cf-body{overflow:hidden;transition:max-height .4s ease,opacity .3s ease,margin-top .4s ease;max-height:280px;opacity:1}
+ .cf-collapsed .cf-body{max-height:0;opacity:0;margin-top:0}
+ .cf-chevron{transition:transform .32s ease}
+ .cf-collapsed .cf-chevron{transform:rotate(180deg)}
  .ppm{pointer-events:none}
  .ppm.show{pointer-events:auto}
  .ppm-bd{opacity:0;transition:opacity .3s ease}
@@ -213,7 +219,7 @@ tailwind.config={theme:{extend:{
             <div data-go="wallet" class="cursor-pointer bg-surf border border-line rounded-2xl px-4 py-3.5 flex items-center gap-3 hover:border-mint transition-colors"><img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/btc.svg" alt="BTC" class="w-10 h-10 rounded-full shrink-0"><div class="min-w-0 flex-1"><div class="text-[11px] text-t3 font-semibold">Bitcoin · 0.0061</div><div class="text-[20px] font-extrabold num leading-tight">$90.50</div></div><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5 num shrink-0">+2.1%</span></div>
           </div>
 
-          <div class="bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col">
+          <div class="cfcard bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div><div class="text-[13px] font-bold">Cash flow</div>
                 <div class="flex items-center gap-4 mt-2">
@@ -221,9 +227,9 @@ tailwind.config={theme:{extend:{
                   <div class="w-px h-7 bg-line"></div>
                   <div class="flex items-center gap-2"><span class="w-7 h-7 rounded-lg bg-ink/5 grid place-items-center text-ink"><i class="ph-bold ph-arrow-up-right text-[14px]"></i></span><div><div class="text-[10.5px] text-t3 font-semibold leading-none">Money out</div><div id="cf-out" class="text-[14px] font-extrabold num leading-tight">−$1,284.40</div></div></div>
                 </div></div>
-              <div id="cf-tabs" class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5 shrink-0 self-start"><button data-range="7" class="px-2.5 py-1 rounded-md text-t2 transition-colors">7D</button><button data-range="30" class="px-2.5 py-1 rounded-md bg-chip text-white transition-colors">30D</button><button data-range="90" class="px-2.5 py-1 rounded-md text-t2 transition-colors">90D</button></div>
+              <div class="flex items-center gap-2 shrink-0 self-start"><div id="cf-tabs" class="flex gap-1 text-[11.5px] font-semibold bg-bg border border-line rounded-lg p-0.5"><button data-range="7" class="px-2.5 py-1 rounded-md text-t2 transition-colors">7D</button><button data-range="30" class="px-2.5 py-1 rounded-md bg-chip text-white transition-colors">30D</button><button data-range="90" class="px-2.5 py-1 rounded-md text-t2 transition-colors">90D</button></div><button data-cf-toggle type="button" class="w-7 h-7 grid place-items-center rounded-lg bg-bg border border-line text-t2 hover:border-mint hover:text-mint-deep transition-colors" title="Collapse chart"><i class="ph-bold ph-caret-up text-[13px] cf-chevron"></i></button></div>
             </div>
-            <div class="relative h-[148px] xl:h-[168px] mt-3">
+            <div class="cf-body mt-3"><div class="relative h-[148px] xl:h-[168px]">
               <div class="absolute top-1 right-1 z-10 flex items-center gap-1.5 bg-chip text-white rounded-lg px-2.5 py-1 text-[11px] font-bold shadow-sm">Now <span class="num text-mint-bright">$12,480</span></div>
               <svg class="w-full h-full" viewBox="0 0 600 200" preserveAspectRatio="none">
                 <defs><linearGradient id="cfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12B981" stop-opacity="0.28"/><stop offset="100%" stop-color="#12B981" stop-opacity="0"/></linearGradient><clipPath id="cf-clip"><rect id="cf-clip-r" x="0" y="-6" width="600" height="212"/></clipPath></defs>
@@ -240,7 +246,7 @@ tailwind.config={theme:{extend:{
               <div id="cf-tip" class="absolute pointer-events-none opacity-0 z-30 bg-chip text-white rounded-lg px-2.5 py-1.5 text-[11px] font-bold shadow-lg -translate-x-1/2 whitespace-nowrap"></div>
               <div id="cf-hit" class="absolute inset-0 z-20 cursor-crosshair"></div>
             </div>
-            <div id="cf-axis" class="flex justify-between text-[10px] text-t3 font-semibold mt-1.5 px-0.5"><span>Feb 14</span><span>Feb 22</span><span>Mar 1</span><span>Mar 8</span><span>Mar 15</span></div>
+            <div id="cf-axis" class="flex justify-between text-[10px] text-t3 font-semibold mt-1.5 px-0.5"><span>Feb 14</span><span>Feb 22</span><span>Mar 1</span><span>Mar 8</span><span>Mar 15</span></div></div>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:flex-1 lg:min-h-0">
@@ -865,6 +871,8 @@ tailwind.config={theme:{extend:{
   };
   document.addEventListener('click',function(){ document.querySelectorAll('.cv-menu').forEach(function(m){m.classList.add('hidden');}); });
   document.querySelectorAll('[data-cv]').forEach(init);
+  var cfCard=document.querySelector('.cfcard'), cfBtn=document.querySelector('[data-cf-toggle]');
+  if(cfCard&&cfBtn) cfBtn.addEventListener('click',function(){ cfCard.classList.toggle('cf-collapsed'); cfBtn.setAttribute('title', cfCard.classList.contains('cf-collapsed')?'Expand chart':'Collapse chart'); });
 })();
 </script>
 <script>
