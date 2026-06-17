@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -74,6 +75,12 @@ tailwind.config={theme:{extend:{
  .cf-collapsed .cf-body{max-height:0;opacity:0;margin-top:0}
  .cf-chevron{transition:transform .32s ease}
  .cf-collapsed .cf-chevron{transform:rotate(180deg)}
+ .pp-mark{position:relative;width:32px;height:32px;border-radius:9px;overflow:hidden;display:grid;place-items:center;background:radial-gradient(85% 85% at 72% 22%,rgba(51,230,160,.34) 0%,transparent 46%),radial-gradient(120% 120% at 28% 16%,#1E3A2C 0%,transparent 56%),linear-gradient(150deg,#16271E 0%,#0E1A14 60%,#0A120E 100%);box-shadow:0 2px 8px -2px rgba(10,18,14,.5)}
+ .pp-mark .mp{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;line-height:1;letter-spacing:-.05em;color:#E9F6EF;margin-top:-1px}
+ .pp-mark .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#33E6A0;top:6px;right:7px;box-shadow:0 1px 4px rgba(51,230,160,.7)}
+ .apay-ico{filter:brightness(0) invert(1)}
+ .gpay-ico{filter:brightness(0)}
+ html.dark .gpay-ico{filter:brightness(0) invert(1)}
  .ppm{pointer-events:none}
  .ppm.show{pointer-events:auto}
  .ppm-bd{opacity:0;transition:opacity .3s ease}
@@ -128,7 +135,7 @@ tailwind.config={theme:{extend:{
   <aside id="sidebar" class="fixed lg:sticky top-0 left-0 z-50 w-[260px] lg:w-[224px] h-screen bg-surf border-r border-line flex flex-col shrink-0 px-3 py-3.5 -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-out">
     <div class="flex items-center justify-between px-2.5 pb-3.5">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-mint grid place-items-center text-ink"><i class="ph-fill ph-wave-triangle text-[18px]"></i></div>
+        <div class="pp-mark"><span class="mp">P</span><span class="dot"></span></div>
         <b class="text-[17px] font-extrabold tracking-tight">Payer<span class="text-mint-deep">Pay</span></b>
       </div>
       <button id="closeSb" class="lg:hidden w-8 h-8 grid place-items-center rounded-lg text-t2 hover:bg-bg"><i class="ph-bold ph-x text-[16px]"></i></button>
@@ -306,7 +313,7 @@ tailwind.config={theme:{extend:{
         </section>
 
         <!-- ============ CARDS ============ -->
-        <section data-screen="cards" hidden class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:h-[calc(100vh-5.5rem)] lg:overflow-hidden">
+        <section data-screen="cards" hidden class="home-shell grid grid-cols-1 lg:grid-cols-12 gap-4">
             <!-- LEFT: card + actions + details (all full col-4 width = aligned) -->
             <div class="lg:col-span-4 min-w-0 flex flex-col gap-3.5 lg:min-h-0 lg:overflow-y-auto scroll-y">
               <div class="relative">
@@ -345,18 +352,18 @@ tailwind.config={theme:{extend:{
                     </div></div></div>
                   </div></div></div>
                 </div>
-                <div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
-                <button data-cprev aria-label="Previous card" class="absolute left-0 top-[42%] -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-surf shadow-lg border border-line grid place-items-center text-ink hover:bg-mint hover:text-white hover:border-mint transition-colors"><i class="ph-bold ph-caret-left text-[16px]"></i></button>
-                <button data-cnext aria-label="Next card" class="absolute right-0 top-[42%] -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-surf shadow-lg border border-line grid place-items-center text-ink hover:bg-mint hover:text-white hover:border-mint transition-colors"><i class="ph-bold ph-caret-right text-[16px]"></i></button>
+                <button data-cprev aria-label="Previous card" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-surf shadow-lg border border-line grid place-items-center text-ink hover:bg-mint hover:text-white hover:border-mint transition-colors"><i class="ph-bold ph-caret-left text-[16px]"></i></button>
+                <button data-cnext aria-label="Next card" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-surf shadow-lg border border-line grid place-items-center text-ink hover:bg-mint hover:text-white hover:border-mint transition-colors"><i class="ph-bold ph-caret-right text-[16px]"></i></button>
               </div>
+              <div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
               <div class="grid grid-cols-3 gap-2">
                 <button class="bg-surf border border-line rounded-xl py-3 flex flex-col items-center gap-1.5 hover:border-mint transition-colors"><i class="ph-bold ph-snowflake text-[18px] text-mint-deep"></i><span class="text-[11px] font-semibold">Freeze</span></button>
                 <button class="bg-surf border border-line rounded-xl py-3 flex flex-col items-center gap-1.5 hover:border-mint transition-colors"><i class="ph-bold ph-eye text-[18px] text-mint-deep"></i><span class="text-[11px] font-semibold">Details</span></button>
                 <button class="bg-surf border border-line rounded-xl py-3 flex flex-col items-center gap-1.5 hover:border-mint transition-colors"><i class="ph-bold ph-sliders-horizontal text-[18px] text-mint-deep"></i><span class="text-[11px] font-semibold">Limits</span></button>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <button class="bg-chip text-white rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity"><i class="ph-fill ph-apple-logo text-[15px]"></i> Apple Pay</button>
-                <button class="bg-surf border border-line rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-1.5 hover:border-mint transition-colors"><i class="ph-fill ph-google-logo text-[14px]"></i> Google Pay</button>
+                <button class="bg-chip text-white rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/apple.svg" alt="" class="apay-ico w-[14px] h-[14px]"> Apple Pay</button>
+                <button class="bg-surf border border-line rounded-xl py-2.5 text-[12px] font-bold flex items-center justify-center gap-2 hover:border-mint transition-colors"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/google.svg" alt="" class="gpay-ico w-[14px] h-[14px]"> Google Pay</button>
               </div>
               <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
                 <div class="px-4 py-3 text-[13px] font-bold flex items-center justify-between">Card details <button class="text-[11.5px] text-mint-deep font-semibold flex items-center gap-1"><i class="ph ph-eye text-[13px]"></i> Reveal</button></div>
@@ -459,7 +466,7 @@ tailwind.config={theme:{extend:{
         </section>
 
         <!-- ============ ACTIVITY ============ -->
-        <section data-screen="activity" hidden class="flex flex-col gap-4">
+        <section data-screen="activity" hidden class="home-shell flex flex-col gap-4">
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="bg-surf border border-line rounded-2xl px-4 py-3.5"><div class="text-[11px] text-t3 font-semibold">Money in</div><div data-act-in class="text-[19px] font-extrabold num text-pos leading-tight mt-0.5">+$0.00</div></div>
             <div class="bg-surf border border-line rounded-2xl px-4 py-3.5"><div class="text-[11px] text-t3 font-semibold">Money out</div><div data-act-out class="text-[19px] font-extrabold num leading-tight mt-0.5">−$0.00</div></div>
@@ -470,9 +477,9 @@ tailwind.config={theme:{extend:{
             <div class="flex gap-1 text-[12.5px] font-semibold bg-surf border border-line rounded-xl p-1"><span data-filter="all" class="px-3 py-1.5 rounded-lg bg-chip text-white cursor-pointer">All</span><span data-filter="in" class="px-3 py-1.5 rounded-lg text-t2 cursor-pointer">Money in</span><span data-filter="out" class="px-3 py-1.5 rounded-lg text-t2 cursor-pointer">Money out</span><span data-filter="card" class="px-3 py-1.5 rounded-lg text-t2 cursor-pointer">Card</span></div>
             <div class="flex items-center gap-2 bg-surf border border-line rounded-xl px-3 py-2 w-full sm:w-[240px]"><i class="ph ph-magnifying-glass text-[15px] text-t3 shrink-0"></i><input data-act-search placeholder="Search transactions…" class="bg-transparent outline-none text-[12.5px] font-medium w-full text-ink placeholder:text-t3"></div>
           </div>
-          <div class="bg-surf border border-line rounded-2xl overflow-hidden">
-            <div class="hidden sm:flex items-center gap-3 px-5 py-2 text-[10.5px] font-bold uppercase tracking-[0.08em] text-t3 border-b border-line bg-bg/40"><div class="flex-1">Transaction</div><div class="w-32">Date</div><div class="w-24 text-center">Status</div><div class="w-28 text-right">Amount</div></div>
-            <div class="divide-y divide-line" data-act-list>
+          <div class="bg-surf border border-line rounded-2xl overflow-hidden flex flex-col flex-1 min-h-0">
+            <div class="hidden sm:flex items-center gap-3 px-5 py-2 text-[10.5px] font-bold uppercase tracking-[0.08em] text-t3 border-b border-line bg-bg/40 shrink-0"><div class="flex-1">Transaction</div><div class="w-32">Date</div><div class="w-24 text-center">Status</div><div class="w-28 text-right">Amount</div></div>
+            <div class="divide-y divide-line flex-1 min-h-0 overflow-y-auto scroll-y" data-act-list>
               <div data-type="in" data-amt="1500" data-search="incoming transfer usdc coinbase" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-pos/10 grid place-items-center text-pos shrink-0"><i class="ph-bold ph-arrow-down-left text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Incoming transfer</div><div class="text-[11.5px] text-t3">USDC · Coinbase</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Today, 14:02</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-pos bg-pos/10 rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num text-pos">+$1,500.00</div></div>
               <div data-type="card" data-amt="-129" data-search="apple store shopping card 8830" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-shopping-bag text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Apple Store</div><div class="text-[11.5px] text-t3">Shopping · Card ••8830</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Yesterday, 18:21</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">−$129.00</div></div>
               <div data-type="exchange" data-amt="0" data-search="convert usd usdc exchange" class="flex items-center gap-3 px-5 py-2.5"><span class="w-9 h-9 rounded-full bg-bg grid place-items-center text-ink shrink-0"><i class="ph-duotone ph-arrows-left-right text-[15px]"></i></span><div class="flex-1 min-w-0"><div class="text-[13.5px] font-semibold truncate">Convert USD → USDC</div><div class="text-[11.5px] text-t3">Exchange</div></div><div class="hidden sm:block w-32 text-[12.5px] text-t2 font-medium">Mar 12, 09:40</div><div class="hidden sm:flex w-24 justify-center"><span class="text-[10.5px] font-bold text-t2 bg-bg rounded-full px-2 py-0.5">Done</span></div><div class="w-28 text-right text-[13.5px] font-bold num">$500.00</div></div>
@@ -602,28 +609,60 @@ tailwind.config={theme:{extend:{
         </section>
 
         <!-- ============ SETTINGS ============ -->
-        <section data-screen="settings" hidden class="flex flex-col gap-4 max-w-3xl">
-          <div class="bg-surf border border-line rounded-2xl p-5 flex items-center gap-4">
-            <span class="w-14 h-14 rounded-full bg-chip text-white grid place-items-center text-[16px] font-bold">ИП</span>
-            <div class="flex-1"><div class="text-[15px] font-bold">Igor Petrov</div><div class="text-[12px] text-t3">igor@payerpay.io · Personal</div></div>
-            <button class="bg-bg border border-line rounded-lg px-4 py-2 text-[12.5px] font-bold hover:border-mint transition-colors">Edit profile</button>
+        <section data-screen="settings" hidden class="flex flex-col gap-4">
+          <div class="bg-surf border border-line rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+            <span class="w-14 h-14 rounded-full bg-chip text-white grid place-items-center text-[16px] font-bold shrink-0">ИП</span>
+            <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><div class="text-[15px] font-bold">Igor Petrov</div><span class="text-[10px] font-bold text-mint-deep bg-mint-tint rounded-full px-2 py-0.5">Verified</span></div><div class="text-[12px] text-t3">igor@payerpay.io · Personal plan</div></div>
+            <div class="flex gap-2"><button class="bg-bg border border-line rounded-lg px-4 py-2 text-[12.5px] font-bold hover:border-mint transition-colors">Edit profile</button><button class="bg-mint text-ink rounded-lg px-4 py-2 text-[12.5px] font-bold hover:bg-mint-deep transition-colors">Upgrade</button></div>
           </div>
-          <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
-            <div class="px-5 py-3 text-[13px] font-bold">Preferences</div>
-            <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Theme</div><div class="text-[11.5px] text-t3">Light / Dark</div></div><div class="flex gap-1 bg-bg border border-line rounded-lg p-0.5 text-[12px] font-semibold"><span data-theme="light" class="px-3 py-1 rounded-md bg-chip text-white cursor-pointer">Light</span><span data-theme="dark" class="px-3 py-1 rounded-md text-t2 cursor-pointer">Dark</span></div></div>
-            <div class="flex items-start justify-between px-5 py-3.5 gap-4"><div class="shrink-0 pt-0.5"><div class="text-[13px] font-semibold">Accent color</div><div class="text-[11.5px] text-t3">Personalize your theme</div></div><div class="flex flex-wrap gap-2 justify-end max-w-[290px]">
-              <span data-accent="#12B981" class="w-6 h-6 rounded-full cursor-pointer" style="background:#12B981"></span><span data-accent="#06B6D4" class="w-6 h-6 rounded-full cursor-pointer" style="background:#06B6D4"></span><span data-accent="#0EA5E9" class="w-6 h-6 rounded-full cursor-pointer" style="background:#0EA5E9"></span><span data-accent="#3B82F6" class="w-6 h-6 rounded-full cursor-pointer" style="background:#3B82F6"></span><span data-accent="#2563EB" class="w-6 h-6 rounded-full cursor-pointer" style="background:#2563EB"></span><span data-accent="#6366F1" class="w-6 h-6 rounded-full cursor-pointer" style="background:#6366F1"></span><span data-accent="#8B5CF6" class="w-6 h-6 rounded-full cursor-pointer" style="background:#8B5CF6"></span><span data-accent="#A855F7" class="w-6 h-6 rounded-full cursor-pointer" style="background:#A855F7"></span><span data-accent="#D946EF" class="w-6 h-6 rounded-full cursor-pointer" style="background:#D946EF"></span><span data-accent="#EC4899" class="w-6 h-6 rounded-full cursor-pointer" style="background:#EC4899"></span><span data-accent="#DB2777" class="w-6 h-6 rounded-full cursor-pointer" style="background:#DB2777"></span><span data-accent="#F43F5E" class="w-6 h-6 rounded-full cursor-pointer" style="background:#F43F5E"></span><span data-accent="#EF4444" class="w-6 h-6 rounded-full cursor-pointer" style="background:#EF4444"></span><span data-accent="#F97316" class="w-6 h-6 rounded-full cursor-pointer" style="background:#F97316"></span><span data-accent="#F59E0B" class="w-6 h-6 rounded-full cursor-pointer" style="background:#F59E0B"></span><span data-accent="#EAB308" class="w-6 h-6 rounded-full cursor-pointer" style="background:#EAB308"></span><span data-accent="#84CC16" class="w-6 h-6 rounded-full cursor-pointer" style="background:#84CC16"></span><span data-accent="#22C55E" class="w-6 h-6 rounded-full cursor-pointer" style="background:#22C55E"></span><span data-accent="#14B8A6" class="w-6 h-6 rounded-full cursor-pointer" style="background:#14B8A6"></span><span data-accent="#64748B" class="w-6 h-6 rounded-full cursor-pointer" style="background:#64748B"></span>
-            </div></div>
-            <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Language</div></div><span class="text-[12.5px] font-semibold text-t2">English ›</span></div>
-            <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Display currency</div></div><span class="text-[12.5px] font-semibold text-t2">USD ›</span></div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+            <div class="lg:col-span-7 flex flex-col gap-4">
+              <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+                <div class="px-5 py-3 text-[13px] font-bold">Preferences</div>
+                <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Theme</div><div class="text-[11.5px] text-t3">Light / Dark</div></div><div class="flex gap-1 bg-bg border border-line rounded-lg p-0.5 text-[12px] font-semibold"><span data-theme="light" class="px-3 py-1 rounded-md bg-chip text-white cursor-pointer">Light</span><span data-theme="dark" class="px-3 py-1 rounded-md text-t2 cursor-pointer">Dark</span></div></div>
+                <div class="flex items-start justify-between px-5 py-3.5 gap-4"><div class="shrink-0 pt-0.5"><div class="text-[13px] font-semibold">Accent color</div><div class="text-[11.5px] text-t3">Personalize your theme</div></div><div class="flex flex-wrap gap-2 justify-end max-w-[290px]">
+                  <span data-accent="#12B981" class="w-6 h-6 rounded-full cursor-pointer" style="background:#12B981"></span><span data-accent="#06B6D4" class="w-6 h-6 rounded-full cursor-pointer" style="background:#06B6D4"></span><span data-accent="#0EA5E9" class="w-6 h-6 rounded-full cursor-pointer" style="background:#0EA5E9"></span><span data-accent="#3B82F6" class="w-6 h-6 rounded-full cursor-pointer" style="background:#3B82F6"></span><span data-accent="#2563EB" class="w-6 h-6 rounded-full cursor-pointer" style="background:#2563EB"></span><span data-accent="#6366F1" class="w-6 h-6 rounded-full cursor-pointer" style="background:#6366F1"></span><span data-accent="#8B5CF6" class="w-6 h-6 rounded-full cursor-pointer" style="background:#8B5CF6"></span><span data-accent="#A855F7" class="w-6 h-6 rounded-full cursor-pointer" style="background:#A855F7"></span><span data-accent="#D946EF" class="w-6 h-6 rounded-full cursor-pointer" style="background:#D946EF"></span><span data-accent="#EC4899" class="w-6 h-6 rounded-full cursor-pointer" style="background:#EC4899"></span><span data-accent="#DB2777" class="w-6 h-6 rounded-full cursor-pointer" style="background:#DB2777"></span><span data-accent="#F43F5E" class="w-6 h-6 rounded-full cursor-pointer" style="background:#F43F5E"></span><span data-accent="#EF4444" class="w-6 h-6 rounded-full cursor-pointer" style="background:#EF4444"></span><span data-accent="#F97316" class="w-6 h-6 rounded-full cursor-pointer" style="background:#F97316"></span><span data-accent="#F59E0B" class="w-6 h-6 rounded-full cursor-pointer" style="background:#F59E0B"></span><span data-accent="#EAB308" class="w-6 h-6 rounded-full cursor-pointer" style="background:#EAB308"></span><span data-accent="#84CC16" class="w-6 h-6 rounded-full cursor-pointer" style="background:#84CC16"></span><span data-accent="#22C55E" class="w-6 h-6 rounded-full cursor-pointer" style="background:#22C55E"></span><span data-accent="#14B8A6" class="w-6 h-6 rounded-full cursor-pointer" style="background:#14B8A6"></span><span data-accent="#64748B" class="w-6 h-6 rounded-full cursor-pointer" style="background:#64748B"></span>
+                </div></div>
+                <div class="flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-bg transition-colors"><div class="text-[13px] font-semibold">Language</div><span class="text-[12.5px] font-semibold text-t2">English <i class="ph ph-caret-right text-[11px]"></i></span></div>
+                <div class="flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-bg transition-colors"><div class="text-[13px] font-semibold">Display currency</div><span class="text-[12.5px] font-semibold text-t2">USD <i class="ph ph-caret-right text-[11px]"></i></span></div>
+                <div class="flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-bg transition-colors"><div class="text-[13px] font-semibold">Time zone</div><span class="text-[12.5px] font-semibold text-t2">GMT+1 · Berlin <i class="ph ph-caret-right text-[11px]"></i></span></div>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+                <div class="px-5 py-3 text-[13px] font-bold">Security</div>
+                <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Two-factor authentication</div><div class="text-[11.5px] text-t3">Extra layer on every login</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+                <div class="flex items-center justify-between px-5 py-3.5"><div><div class="text-[13px] font-semibold">Login alerts</div><div class="text-[11.5px] text-t3">Email me on new sign-ins</div></div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+                <div class="flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-bg transition-colors"><div class="text-[13px] font-semibold">Change password</div><i class="ph ph-caret-right text-t3"></i></div>
+                <div class="flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-bg transition-colors"><div class="text-[13px] font-semibold">Trusted devices</div><span class="flex items-center gap-2 text-[12px] text-t3 font-medium">3 active <i class="ph ph-caret-right"></i></span></div>
+                <div class="flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-bg transition-colors"><div class="text-[13px] font-semibold">Active sessions</div><i class="ph ph-caret-right text-t3"></i></div>
+              </div>
+            </div>
+            <div class="lg:col-span-5 flex flex-col gap-4">
+              <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+                <div class="px-5 py-3 text-[13px] font-bold">Notifications</div>
+                <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Payments & transfers</div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+                <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Security alerts</div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+                <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Product updates</div><span class="toggle bg-line w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+                <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Promotions</div><span class="toggle bg-line w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-3"><div class="text-[13px] font-bold">Monthly limit</div><span class="text-[10.5px] font-bold text-mint-deep bg-mint-tint rounded-full px-2 py-0.5">Personal</span></div>
+                <div class="flex items-center justify-between text-[12px] mb-1.5"><span class="text-t3 font-medium num">$18,200 of $50,000</span><span class="font-bold num">36%</span></div>
+                <div class="h-2 rounded-full bg-bg overflow-hidden"><div class="h-full rounded-full bg-mint" style="width:36%"></div></div>
+                <button class="w-full mt-3.5 bg-bg border border-line rounded-lg py-2.5 text-[12px] font-bold hover:border-mint transition-colors">Request higher limit</button>
+              </div>
+              <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
+                <div class="px-5 py-3 text-[13px] font-bold">Support & legal</div>
+                <div class="flex items-center justify-between px-5 py-3 cursor-pointer hover:bg-bg transition-colors"><div class="flex items-center gap-2.5 text-[13px] font-semibold"><i class="ph ph-lifebuoy text-t2 text-[16px]"></i>Help center</div><i class="ph ph-caret-right text-t3"></i></div>
+                <div class="flex items-center justify-between px-5 py-3 cursor-pointer hover:bg-bg transition-colors"><div class="flex items-center gap-2.5 text-[13px] font-semibold"><i class="ph ph-chat-circle text-t2 text-[16px]"></i>Contact support</div><i class="ph ph-caret-right text-t3"></i></div>
+                <div class="flex items-center justify-between px-5 py-3 cursor-pointer hover:bg-bg transition-colors"><div class="flex items-center gap-2.5 text-[13px] font-semibold"><i class="ph ph-file-text text-t2 text-[16px]"></i>Terms of Service</div><i class="ph ph-caret-right text-t3"></i></div>
+                <div class="flex items-center justify-between px-5 py-3 cursor-pointer hover:bg-bg transition-colors"><div class="flex items-center gap-2.5 text-[13px] font-semibold"><i class="ph ph-shield-check text-t2 text-[16px]"></i>Privacy Policy</div><i class="ph ph-caret-right text-t3"></i></div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="text-[13px] font-bold text-neg bg-surf border border-line rounded-2xl py-3 hover:border-neg transition-colors">Log out</button>
+                <button class="text-[12px] font-semibold text-t3 hover:text-neg transition-colors py-1">Close account</button>
+              </div>
+            </div>
           </div>
-          <div class="bg-surf border border-line rounded-2xl divide-y divide-line">
-            <div class="px-5 py-3 text-[13px] font-bold">Security</div>
-            <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Two-factor authentication</div><span class="toggle toggle-on w-10 h-6 rounded-full p-0.5 transition-colors cursor-pointer"><span class="knob block w-5 h-5 bg-white rounded-full transition-transform"></span></span></div>
-            <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Change password</div><i class="ph ph-caret-right text-t3"></i></div>
-            <div class="flex items-center justify-between px-5 py-3.5"><div class="text-[13px] font-semibold">Trusted devices</div><i class="ph ph-caret-right text-t3"></i></div>
-          </div>
-          <button class="text-[13px] font-bold text-neg bg-surf border border-line rounded-2xl py-3 hover:border-neg transition-colors">Log out</button>
         </section>
 
       </div>
@@ -643,9 +682,9 @@ tailwind.config={theme:{extend:{
         <div class="bg-surf border border-line rounded-2xl overflow-hidden shrink-0">
           <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">FX rates</div><span class="text-[10.5px] font-semibold text-t3">vs USD</span></div>
           <div class="divide-y divide-line">
-            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><span class="text-[14px]">🇪🇺</span><span class="text-[12.5px] font-bold">EUR</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.0845</span> <span class="text-[10.5px] font-semibold text-pos num">+0.2%</span></div></div>
-            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><span class="text-[14px]">🇬🇧</span><span class="text-[12.5px] font-bold">GBP</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.2710</span> <span class="text-[10.5px] font-semibold text-neg num">−0.1%</span></div></div>
-            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><span class="text-[14px]">🇯🇵</span><span class="text-[12.5px] font-bold">JPY</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">0.0067</span> <span class="text-[10.5px] font-semibold text-pos num">+0.4%</span></div></div>
+            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/eu.svg" alt="" class="w-[18px] h-[18px] rounded-full"><span class="text-[12.5px] font-bold">EUR</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.0845</span> <span class="text-[10.5px] font-semibold text-pos num">+0.2%</span></div></div>
+            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/gb.svg" alt="" class="w-[18px] h-[18px] rounded-full"><span class="text-[12.5px] font-bold">GBP</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">1.2710</span> <span class="text-[10.5px] font-semibold text-neg num">−0.1%</span></div></div>
+            <div class="flex items-center justify-between px-4 py-2.5"><div class="flex items-center gap-2"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags/flags/jp.svg" alt="" class="w-[18px] h-[18px] rounded-full"><span class="text-[12.5px] font-bold">JPY</span></div><div class="text-right"><span class="text-[12.5px] font-bold num">0.0067</span> <span class="text-[10.5px] font-semibold text-pos num">+0.4%</span></div></div>
           </div>
         </div>
         <div class="bg-surf border border-line rounded-2xl flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -1006,11 +1045,14 @@ tailwind.config={theme:{extend:{
     });
     sec.querySelector('#wAlloc').innerHTML=al;
   }
+  var wCur=null, wRaf=null;
+  function paintWp(ys){ var ln=sec.querySelector('#wp-line'), ar=sec.querySelector('#wp-area'); var d=smooth(ys.map(function(y,i){return [i*(600/(ys.length-1)), y];})); ln.setAttribute('d',d); ar.setAttribute('d',d+' L 600 160 L 0 160 Z'); }
   function setPeriod(p){
-    var ys=CURVE[p], ln=sec.querySelector('#wp-line'), ar=sec.querySelector('#wp-area');
-    var d=smooth(ys.map(function(y,i){return [i*(600/(ys.length-1)), y];}));
-    ln.setAttribute('d',d); ar.setAttribute('d',d+' L 600 160 L 0 160 Z');
-    [ln,ar].forEach(function(el){ el.style.transition='none'; el.style.opacity=0; el.getBoundingClientRect(); el.style.transition='opacity .4s ease'; el.style.opacity=1; });
+    var target=CURVE[p];
+    if(!wCur) wCur=target.map(function(){return 160;});
+    var from=wCur.slice(), t0=null;
+    if(wRaf) cancelAnimationFrame(wRaf);
+    (function step(){ wRaf=requestAnimationFrame(function(ts){ if(t0==null)t0=ts; var k=Math.min(1,(ts-t0)/620), e=1-Math.pow(1-k,3); wCur=from.map(function(y,i){ return y+(target[i]-y)*e; }); paintWp(wCur); if(k<1) step(); else wCur=target.slice(); }); })();
     var v=PER[p].chg==null?wchg24:PER[p].chg, ce=sec.querySelector('#wChg');
     ce.textContent=(v>=0?'+':'')+v.toFixed(1)+'%'; ce.classList.toggle('text-pos',v>=0); ce.classList.toggle('text-neg',v<0);
     sec.querySelector('#wPeriodLbl').textContent=PER[p].lbl;
