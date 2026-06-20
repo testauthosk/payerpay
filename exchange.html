@@ -63,12 +63,12 @@ tailwind.config={theme:{extend:{
  .pp-mark .mp{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;line-height:1;letter-spacing:-.05em;color:#E9F6EF;margin-top:-1px}
  .pp-mark .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#33E6A0;top:6px;right:7px;box-shadow:0 1px 4px rgba(51,230,160,.7)}
  .cico{width:22px;height:22px;border-radius:50%;object-fit:cover;background:rgb(var(--bg))}
- .dd{max-height:0;opacity:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .22s ease,border-color .25s ease,border-top-left-radius .25s ease,border-top-right-radius .25s ease;pointer-events:none}
- #payFrom,.curbtn{transition:border-color .22s ease,border-bottom-left-radius .25s ease,border-bottom-right-radius .25s ease,background-color .2s ease}
+ .dd{max-height:0;opacity:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .28s ease,border-color .25s ease,border-top-width .25s ease,border-top-left-radius .28s ease,border-top-right-radius .28s ease;pointer-events:none}
+ #payFrom,.curbtn{transition:border-color .25s ease,border-bottom-width .25s ease,border-bottom-left-radius .28s ease,border-bottom-right-radius .28s ease,background-color .2s ease}
  .dd.show{max-height:400px;opacity:1;pointer-events:auto;border-color:rgb(var(--mint));border-top-width:0;border-top-left-radius:0;border-top-right-radius:0}
  .ddbtn-open{border-color:rgb(var(--mint)) !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important;border-bottom-width:0 !important}
  .cp{pointer-events:none}
- .cp .cp-bd{opacity:0;transition:opacity .28s ease}
+ .cp .cp-bd{opacity:0;background:rgb(var(--bg) / .55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);transition:opacity .28s ease}
  .cp .cp-panel{opacity:0;transform:scale(.9);transition:opacity .26s ease,transform .36s cubic-bezier(.34,1.1,.5,1)}
  .cp.show{pointer-events:auto}
  .cp.show .cp-bd{opacity:1}
@@ -79,6 +79,15 @@ tailwind.config={theme:{extend:{
  .ppm-card{opacity:0;transform:translateY(14px) scale(.96);transition:opacity .3s ease,transform .34s cubic-bezier(.34,1.28,.5,1)}
  .ppm.show .ppm-bd{opacity:1}
  .ppm.show .ppm-card{opacity:1;transform:none}
+ .wm-grip{display:none}
+ @media (max-width:640px){
+  #wModal{align-items:end;padding:0}
+  #wModal .ppm-card{width:100%;max-width:none;height:90vh;max-height:90vh;border-radius:22px 22px 0 0;border-bottom:0;opacity:1;transform:translateY(101%);transition:transform .42s cubic-bezier(.45,0,.25,1);padding-bottom:calc(22px + env(safe-area-inset-bottom))}
+  #wModal.show .ppm-card{transform:translateY(0);transition:transform .56s cubic-bezier(.16,1,.3,1)}
+  #wModal .ppm-card.dragging{transition:none}
+  .wm-grip{display:block;padding:8px 0 2px;margin:-4px 0 6px;touch-action:none;cursor:grab}
+  .wm-handle{width:40px;height:5px;border-radius:100px;background:rgb(var(--line));margin:0 auto}
+ }
  .swapbtn{transition:transform .35s cubic-bezier(.34,1.4,.5,1)}
  .swapbtn:hover{transform:rotate(180deg)}
  input.amt::-webkit-outer-spin-button,input.amt::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
@@ -96,7 +105,7 @@ tailwind.config={theme:{extend:{
  .sheet-wrap.open{visibility:visible;transition:visibility 0s linear 0s}
  .sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .5s ease}
  .sheet-wrap.open .sheet-bg{opacity:1}
- .sheet{position:absolute;left:0;right:0;bottom:0;top:30%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;background:rgb(var(--surf));border:1px solid rgb(var(--line));border-bottom:0;border-radius:24px 24px 0 0;box-shadow:0 -16px 44px -18px rgba(0,0,0,.5);transform:translateY(101%);will-change:transform;transition:transform .42s cubic-bezier(.45,0,.25,1)}
+ .sheet{position:absolute;left:0;right:0;bottom:0;top:10%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;background:rgb(var(--surf));border:1px solid rgb(var(--line));border-bottom:0;border-radius:24px 24px 0 0;box-shadow:0 -16px 44px -18px rgba(0,0,0,.5);transform:translateY(101%);will-change:transform;transition:transform .42s cubic-bezier(.45,0,.25,1)}
  .sheet-wrap.open .sheet{transform:translateY(0);transition:transform .56s cubic-bezier(.16,1,.3,1)}
  .sheet.dragging{transition:none !important}
  .sheet-grip{flex-shrink:0;padding:12px 20px 2px;touch-action:none;cursor:grab}
@@ -463,16 +472,18 @@ tailwind.config={theme:{extend:{
 </div>
 
 <div id="curPop" class="cp fixed inset-0 z-[60] grid place-items-center p-4">
-  <div class="cp-bd absolute inset-0 bg-black/45" data-cp-close></div>
+  <div class="cp-bd absolute inset-0" data-cp-close></div>
   <div class="cp-panel relative w-full max-w-[420px] h-[62vh] max-h-[560px] bg-surf border border-line rounded-2xl flex flex-col overflow-hidden">
     <div class="flex items-center justify-between px-5 py-3.5 border-b border-line shrink-0"><div id="cpTitle" class="text-[15px] font-extrabold">Select currency</div><button class="w-8 h-8 grid place-items-center rounded-lg text-t2 hover:bg-bg" data-cp-close><i class="ph-bold ph-x text-[15px]"></i></button></div>
-    <div id="cpList" class="flex-1 min-h-0 overflow-y-auto scroll-y p-2"></div>
+    <div id="cpCat" class="px-3.5 pt-3 pb-1 shrink-0"></div>
+    <div id="cpList" class="flex-1 min-h-0 overflow-y-auto scroll-y p-2 pt-1"></div>
     <div class="p-3 border-t border-line shrink-0"><button id="cpOk" class="w-full bg-mint text-ink rounded-xl py-3 text-[13.5px] font-extrabold hover:bg-mint-deep transition-colors">Confirm</button></div>
   </div>
 </div>
 <div id="wModal" class="ppm fixed inset-0 z-50 grid place-items-center p-4">
   <div class="ppm-bd absolute inset-0 bg-black/45" data-wclose></div>
   <div class="ppm-card relative w-full max-w-[440px] bg-surf border border-line rounded-2xl p-5 max-h-[85vh] overflow-y-auto scroll-y">
+    <div class="wm-grip" id="wmGrip"><div class="wm-handle"></div></div>
     <button class="absolute top-3.5 right-3.5 w-8 h-8 grid place-items-center rounded-lg text-t2 hover:bg-bg z-10" data-wclose><i class="ph-bold ph-x text-[15px]"></i></button>
     <div id="wModalBody"></div>
   </div>
@@ -644,12 +655,22 @@ tailwind.config={theme:{extend:{
   }
   function showWModal(){$('#wModal').classList.add('show');}
   function closeWModal(){$('#wModal').classList.remove('show');}
+  (function(){var card=$('#wModal .ppm-card'),grip=$('#wmGrip');if(!grip)return;var sy=0,dy=0,drag=false;
+    function st(y){sy=y;dy=0;drag=true;card.classList.add('dragging');}
+    function mv(y){if(!drag)return;dy=Math.max(0,y-sy);card.style.transform='translateY('+dy+'px)';}
+    function en(){if(!drag)return;drag=false;card.classList.remove('dragging');var cl=dy>110;card.style.transform='';if(cl)closeWModal();}
+    grip.addEventListener('touchstart',function(e){st(e.touches[0].clientY);},{passive:true});
+    grip.addEventListener('touchmove',function(e){mv(e.touches[0].clientY);},{passive:true});
+    grip.addEventListener('touchend',en);
+    grip.addEventListener('mousedown',function(e){st(e.clientY);function mm(ev){mv(ev.clientY);}function mu(){en();document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);}document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);});
+  })();
   function openWDeposit(code){
     var codes=['USD','EUR','GBP','BTC','ETH','USDT','SOL'].filter(function(c){return DEPOSIT[c];});
     function paint(c){var d=DEPOSIT[c];
+      var qv=(function(){var v='';d.rows.forEach(function(r){if(!v&&/address|iban|account number/i.test(r[0]))v=r[1];});return v||d.rows[d.rows.length-1][1];})();var qr='https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=6&data='+encodeURIComponent(qv);
       var chips=codes.map(function(x){return '<button data-wd="'+x+'" class="px-2.5 py-1 rounded-lg text-[12px] font-bold whitespace-nowrap '+(x===c?'bg-mint-tint text-mint-deep':'text-t2 hover:bg-bg')+'">'+x+'</button>';}).join('');
       var rows=d.rows.map(function(r){return '<div class="flex items-center justify-between gap-3 px-4 py-2.5 border-t border-line first:border-0"><span class="text-[12px] text-t3">'+r[0]+'</span><div class="flex items-center gap-2 min-w-0"><span class="num text-[12.5px] font-semibold text-right break-all">'+r[1]+'</span><button class="shrink-0 text-t3 hover:text-mint-deep" data-copy="'+r[1]+'"><i class="ph ph-copy text-[14px]"></i></button></div></div>';}).join('');
-      $('#wModalBody').innerHTML='<div class="text-[16px] font-extrabold mb-0.5">Deposit</div><div class="text-[12px] text-t3 mb-3">Send to the matching point — funds credit your wallet automatically.</div><div class="flex gap-1.5 overflow-x-auto pb-2 -mx-1 px-1">'+chips+'</div><div class="rounded-xl border border-line overflow-hidden mt-1"><div class="flex items-center gap-2.5 px-4 py-3 bg-bg">'+icoTag(c,'cico')+'<div class="text-[13.5px] font-extrabold">'+c+' · '+d.kind+'</div></div>'+rows+'</div><button class="mt-4 w-full bg-mint text-ink rounded-xl py-2.5 text-[13px] font-extrabold hover:bg-mint-deep transition-colors" data-wclose>Done</button>';
+      $('#wModalBody').innerHTML='<div class="text-[16px] font-extrabold mb-0.5">Deposit</div><div class="text-[12px] text-t3 mb-3">Send to the matching point — funds credit your wallet automatically.</div><div class="flex gap-1.5 overflow-x-auto pb-2 -mx-1 px-1">'+chips+'</div><div class="flex justify-center my-3"><div class="rounded-2xl bg-white p-3 border border-line shadow-sm"><img src="'+qr+'" width="128" height="128" alt="Deposit QR" style="display:block;border-radius:8px"><div class="text-[10.5px] text-center font-semibold mt-1.5" style="color:#64748B">Scan to deposit '+c+'</div></div></div><div class="rounded-xl border border-line overflow-hidden mt-1"><div class="flex items-center gap-2.5 px-4 py-3 bg-bg">'+icoTag(c,'cico')+'<div class="text-[13.5px] font-extrabold">'+c+' · '+d.kind+'</div></div>'+rows+'</div><button class="mt-4 w-full bg-mint text-ink rounded-xl py-2.5 text-[13px] font-extrabold hover:bg-mint-deep transition-colors" data-wclose>Done</button>';
       $$('#wModalBody [data-wd]').forEach(function(x){x.addEventListener('click',function(){paint(x.getAttribute('data-wd'));});});
       $$('#wModalBody [data-copy]').forEach(function(bb){bb.addEventListener('click',function(){try{navigator.clipboard.writeText(bb.getAttribute('data-copy'));var i=bb.querySelector('i');i.className='ph ph-check text-[14px] text-mint-deep';setTimeout(function(){i.className='ph ph-copy text-[14px]';},1200);}catch(e){}});});
       $$('#wModalBody [data-wclose]').forEach(function(x){x.addEventListener('click',closeWModal);});
@@ -671,10 +692,13 @@ tailwind.config={theme:{extend:{
   function renderActivity(){$('#actList').innerHTML=ACTIVITY.map(function(a){var st=a[3]==='done'?'<span class="text-[11px] font-bold text-mint-deep bg-mint-tint rounded-full px-2 py-0.5">Done</span>':'<span class="text-[11px] font-bold text-t2 bg-bg border border-line rounded-full px-2 py-0.5">Pending</span>';return '<div class="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-3 items-center px-5 py-3 border-b border-line"><div class="flex items-center gap-2.5 min-w-0"><div class="w-8 h-8 rounded-lg bg-mint-tint text-mint-deep grid place-items-center shrink-0"><i class="ph-bold ph-arrows-left-right text-[13px]"></i></div><div class="min-w-0"><div class="text-[13px] font-bold truncate">'+a[0]+'</div><div class="text-[11.5px] text-t3 truncate">'+a[1]+'</div></div></div><div class="text-[12.5px] text-t2">'+a[2]+'</div><div>'+st+'</div><div class="text-right text-[13px] font-extrabold num text-mint-deep">'+a[4]+'</div></div>';}).join('');}
 
   // accounts
-  // ===== currency picker popup (60% screen, currency + network) =====
+  // ===== currency picker popup (60% screen, currency + network + fiat/crypto capsule) =====
   var NETWORKS={BTC:['Bitcoin'],ETH:['Ethereum (ERC-20)'],USDT:['Ethereum (ERC-20)','Tron (TRC-20)','BNB Smart Chain (BEP-20)','Solana'],USDC:['Ethereum (ERC-20)','Solana','Base'],SOL:['Solana']};
+  function catOf(code){return FIAT.some(function(c){return c.code===code;})?'fiat':'crypto';}
   function renderCurPop(){
-    var side=cur.popSide; var list=(side==='send')?cur.list.send:cur.list.get;
+    var cats=[['fiat','Fiat'],['crypto','Crypto']];
+    $('#cpCat').innerHTML='<div class="flex bg-bg rounded-xl p-0.5 border border-line">'+cats.map(function(c){var on=cur.popCat===c[0];return '<button data-cat="'+c[0]+'" class="flex-1 py-1.5 rounded-lg text-[12.5px] font-bold transition-colors" style="'+(on?'background:rgb(var(--chip));color:#fff':'color:rgb(var(--t2))')+'">'+c[1]+'</button>';}).join('')+'</div>';
+    var list=cur.popCat==='fiat'?FIAT:CRYPTO;
     $('#cpList').innerHTML=list.map(function(c){
       var sel=c.code===cur.popCode; var nets=NETWORKS[c.code]||[];
       var row='<button data-cc="'+c.code+'" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl '+(sel?'bg-mint-tint':'hover:bg-bg')+' text-left transition-colors"><img class="cico" style="width:30px;height:30px" src="'+c.ico+'" alt=""><div class="min-w-0 flex-1"><div class="text-[14px] font-bold leading-tight">'+c.code+'</div><div class="text-[11.5px] text-t3 truncate">'+c.name+(nets.length>1?' · '+nets.length+' networks':'')+'</div></div>'+(sel?'<i class="ph-fill ph-check-circle text-mint-deep text-[19px]"></i>':'<i class="ph ph-circle text-t3 text-[18px]"></i>')+'</button>';
@@ -684,13 +708,14 @@ tailwind.config={theme:{extend:{
       }
       return row+netBlock;
     }).join('');
+    $$('#cpCat [data-cat]').forEach(function(b){b.addEventListener('click',function(){var nc=b.getAttribute('data-cat');if(nc===cur.popCat)return;cur.popCat=nc;var l=nc==='fiat'?FIAT:CRYPTO;cur.popCode=l[0].code;cur.popNet=(NETWORKS[cur.popCode]&&NETWORKS[cur.popCode][0])||null;renderCurPop();});});
     $$('#cpList [data-cc]').forEach(function(b){b.addEventListener('click',function(){var code=b.getAttribute('data-cc');cur.popCode=code;cur.popNet=(NETWORKS[code]&&NETWORKS[code][0])||null;renderCurPop();});});
     $$('#cpList [data-cn]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();cur.popNet=b.getAttribute('data-cn');renderCurPop();});});
   }
   function openCurPop(side){
     closeAllDD(); cur.popSide=side;
     var current=(side==='send')?cur.send:cur.get;
-    cur.popCode=current; cur.popNet=(NETWORKS[current]&&NETWORKS[current][0])||null;
+    cur.popCode=current; cur.popCat=catOf(current); cur.popNet=(NETWORKS[current]&&NETWORKS[current][0])||null;
     $('#cpTitle').textContent=(side==='send'?'You send':'You get');
     renderCurPop();
     var btn=(side==='send')?$('#sendCur'):$('#getCur'); var r=btn.getBoundingClientRect();
@@ -701,7 +726,17 @@ tailwind.config={theme:{extend:{
   function closeCurPop(){$('#curPop').classList.remove('show');}
   (function(){
     $$('#curPop [data-cp-close]').forEach(function(b){b.addEventListener('click',closeCurPop);});
-    var ok=$('#cpOk'); if(ok)ok.addEventListener('click',function(){pickCur(cur.popSide,cur.popCode);if(cur.popSide==='send')cur.sendNet=cur.popNet;else cur.getNet=cur.popNet;closeCurPop();});
+    var ok=$('#cpOk'); if(ok)ok.addEventListener('click',function(){
+      var sc=(cur.popSide==='send')?cur.popCat:catOf(cur.send);
+      var gc=(cur.popSide==='get')?cur.popCat:catOf(cur.get);
+      var nt=(sc==='fiat'?'f':'c')+(gc==='fiat'?'f':'c');
+      cur.type=nt;var T=TYPES[nt];cur.list.send=T.send;cur.list.get=T.get;cur.src=SOURCES[0];
+      cur[cur.popSide]=cur.popCode;
+      if(cur.popSide==='send')cur.sendNet=cur.popNet;else cur.getNet=cur.popNet;
+      $$('.xtab').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-xtype')===nt);});
+      updatePayLabel();paintCur('send');paintCur('get');recalc();
+      closeCurPop();
+    });
   })();
 
   function initPayFrom(){
