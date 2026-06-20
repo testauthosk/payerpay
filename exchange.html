@@ -212,7 +212,7 @@ tailwind.config={theme:{extend:{
               <svg class="w-full flex-1 min-h-0" viewBox="0 0 100 42" preserveAspectRatio="none">
                 <defs><linearGradient id="xg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(var(--mint))" stop-opacity=".26"/><stop offset="1" stop-color="rgb(var(--mint))" stop-opacity="0"/></linearGradient></defs>
                 <path id="xchartFill" fill="url(#xg)" d=""></path>
-                <path id="xchartLine" fill="none" stroke="rgb(var(--mint))" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" d=""></path>
+                <path id="xchartLine" fill="none" stroke="rgb(var(--mint))" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" d=""></path>
               </svg>
             </div>
           </div>
@@ -501,13 +501,15 @@ tailwind.config={theme:{extend:{
   function renderAccounts(){$('#acctGrid').innerHTML=ACCOUNTS.map(function(a){var usd=a.bal*PRICE[a.code];return '<div class="bg-surf border border-line rounded-2xl p-4 hover:border-mint transition-colors"><div class="flex items-center gap-2.5 mb-3">'+icoTag(a.code,'cico')+'<div class="min-w-0"><div class="text-[13px] font-bold truncate">'+a.label+'</div><div class="text-[11px] text-t3 truncate">'+a.sub+'</div></div></div><div class="text-[20px] font-extrabold num tracking-tight">'+fmt(a.code,a.bal)+' <span class="text-[12px] text-t3 font-bold">'+a.code+'</span></div><div class="text-[11.5px] text-t3 num mt-0.5">≈ $'+fmt('USD',usd)+'</div></div>';}).join('');}
 
   // markets rail (sparklines)
-  function spark(pts){var n=pts.length,mx=Math.max.apply(null,pts),mn=Math.min.apply(null,pts),rng=(mx-mn)||1;return pts.map(function(v,i){var x=i/(n-1)*100,y=30-((v-mn)/rng)*27+1;return (i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}).join(' ');}
+  // Smooth Catmull-Rom -> cubic-bezier path (same curve as the main site's home charts).
+  function smooth(p){var d="M "+p[0][0].toFixed(2)+" "+p[0][1].toFixed(2);for(var i=0;i<p.length-1;i++){var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p[i+1];d+=" C "+(p1[0]+(p2[0]-p0[0])/6).toFixed(2)+" "+(p1[1]+(p2[1]-p0[1])/6).toFixed(2)+" "+(p2[0]-(p3[0]-p1[0])/6).toFixed(2)+" "+(p2[1]-(p3[1]-p1[1])/6).toFixed(2)+" "+p2[0].toFixed(2)+" "+p2[1].toFixed(2);}return d;}
+  function spark(pts){var n=pts.length,mx=Math.max.apply(null,pts),mn=Math.min.apply(null,pts),rng=(mx-mn)||1;var pp=pts.map(function(v,i){return [i/(n-1)*100, 30-((v-mn)/rng)*27+1];});return smooth(pp);}
   function renderMarkets(){$('#mkt').innerHTML=MKT.map(function(m){var up=m[5]===1;var col=up?'#12B981':'#E5533C';var pcol=up?'text-pos':'text-neg';return '<div class="flex items-center gap-2.5 px-4 py-2.5"><img src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+m[0]+'.svg" alt="" class="w-8 h-8 shrink-0"><div class="min-w-0 w-[54px]"><div class="text-[12.5px] font-bold leading-tight">'+m[1]+'</div><div class="text-[10.5px] text-t3">'+m[2]+'</div></div><svg class="flex-1 h-8" viewBox="0 0 100 32" preserveAspectRatio="none"><path fill="none" stroke="'+col+'" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" d="'+spark(m[6])+'"/></svg><div class="text-right shrink-0 w-[64px]"><div class="text-[12.5px] font-bold num leading-tight">'+m[3]+'</div><div class="text-[10.5px] font-semibold '+pcol+' num">'+m[4]+'</div></div></div>';}).join('');}
 
   $$('.tgl').forEach(function(t){t.addEventListener('click',function(){t.classList.toggle('toggle-on');});});
 
   var CHARTD=[30,33,31,35,34,38,36,40,39,43,41,45,44,48,46,51];
-  function drawChart(){var p=CHARTD,n=p.length,mx=Math.max.apply(null,p),mn=Math.min.apply(null,p),rng=(mx-mn)||1;var pts=p.map(function(v,i){return (i/(n-1)*100).toFixed(2)+' '+(40-((v-mn)/rng)*36+2).toFixed(2);});$('#xchartLine').setAttribute('d','M'+pts.join(' L'));$('#xchartFill').setAttribute('d','M0 42 L'+pts.join(' L')+' L100 42 Z');}
+  function drawChart(){var p=CHARTD,n=p.length,mx=Math.max.apply(null,p),mn=Math.min.apply(null,p),rng=(mx-mn)||1;var pts=p.map(function(v,i){return [i/(n-1)*100, 40-((v-mn)/rng)*36+2];});var d=smooth(pts);$('#xchartLine').setAttribute('d',d);$('#xchartFill').setAttribute('d',d+' L 100 42 L 0 42 Z');}
   setType('fc');renderWallet();renderActivity();renderAccounts();renderMarkets();drawChart();renderAccent();syncTheme();
 })();
 </script>
