@@ -63,8 +63,9 @@ tailwind.config={theme:{extend:{
  .pp-mark .mp{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;line-height:1;letter-spacing:-.05em;color:#E9F6EF;margin-top:-1px}
  .pp-mark .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#33E6A0;top:6px;right:7px;box-shadow:0 1px 4px rgba(51,230,160,.7)}
  .cico{width:22px;height:22px;border-radius:50%;object-fit:cover;background:rgb(var(--bg))}
- .dd{opacity:0;transform:translateY(-6px) scale(.97);transform-origin:top center;transition:opacity .2s ease,transform .28s cubic-bezier(.34,1.16,.5,1);pointer-events:none}
- .dd.show{opacity:1;transform:none;pointer-events:auto}
+ .dd{max-height:0;opacity:0;overflow:hidden;transition:max-height .32s cubic-bezier(.33,.1,.2,1),opacity .22s ease;pointer-events:none}
+ .dd.show{max-height:400px;opacity:1;pointer-events:auto;border-color:rgb(var(--mint));border-top-width:0;border-top-left-radius:0;border-top-right-radius:0}
+ .ddbtn-open{border-color:rgb(var(--mint)) !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important;border-bottom-width:0 !important}
  .ppm{pointer-events:none}
  .ppm.show{pointer-events:auto}
  .ppm-bd{opacity:0;transition:opacity .3s ease}
@@ -187,14 +188,14 @@ tailwind.config={theme:{extend:{
                   </span>
                   <i class="ph-bold ph-caret-down text-[12px] text-t3 shrink-0"></i>
                 </button>
-                <div id="payDD" class="dd absolute left-0 right-0 top-[calc(100%+6px)] z-50 bg-surf border border-line rounded-2xl shadow-xl p-1.5"></div>
+                <div id="payDD" class="dd absolute left-0 right-0 top-full z-50 bg-surf border border-line rounded-2xl shadow-lg p-1.5"></div>
               </div>
             </div>
             <div class="rounded-xl border border-line bg-bg px-4 lg:px-5 py-3 lg:py-4">
               <div class="flex items-center justify-between text-[12px] font-semibold text-t3 mb-1.5"><span>You send</span><span id="sendBal">Balance: —</span></div>
               <div class="flex items-center gap-3">
                 <input id="sendAmt" type="number" inputmode="decimal" class="amt num flex-1 min-w-0 bg-transparent outline-none text-[32px] font-extrabold tracking-tight" value="1000">
-                <button id="sendCur" data-side="send" class="curbtn flex items-center gap-2 bg-surf border border-line rounded-xl pl-2.5 pr-3 py-2.5 hover:border-mint transition-colors shrink-0">
+                <button id="sendCur" data-side="send" class="curbtn flex items-center justify-between gap-2 min-w-[112px] bg-surf border border-line rounded-xl pl-2.5 pr-3 py-2.5 hover:border-mint transition-colors shrink-0">
                   <img class="cico" alt=""><span class="code text-[15px] font-extrabold">USD</span><i class="ph-bold ph-caret-down text-[12px] text-t3"></i>
                 </button>
               </div>
@@ -206,7 +207,7 @@ tailwind.config={theme:{extend:{
               <div class="flex items-center justify-between text-[12px] font-semibold text-t3 mb-1.5"><span>You get</span><span id="rateInline">—</span></div>
               <div class="flex items-center gap-3">
                 <input id="getAmt" type="text" readonly class="amt num flex-1 min-w-0 bg-transparent outline-none text-[32px] font-extrabold tracking-tight text-mint-deep" value="0">
-                <button id="getCur" data-side="get" class="curbtn flex items-center gap-2 bg-surf border border-line rounded-xl pl-2.5 pr-3 py-2.5 hover:border-mint transition-colors shrink-0">
+                <button id="getCur" data-side="get" class="curbtn flex items-center justify-between gap-2 min-w-[112px] bg-surf border border-line rounded-xl pl-2.5 pr-3 py-2.5 hover:border-mint transition-colors shrink-0">
                   <img class="cico" alt=""><span class="code text-[15px] font-extrabold">BTC</span><i class="ph-bold ph-caret-down text-[12px] text-t3"></i>
                 </button>
               </div>
@@ -482,9 +483,17 @@ tailwind.config={theme:{extend:{
 
   // currency dropdown
   var ddSide=null;
-  function openDD(btn){ddSide=btn.getAttribute('data-side');var list=(ddSide==='send')?cur.list.send:cur.list.get;var dd=$('#curDD');dd.innerHTML=list.map(function(c){return '<button data-pick="'+c.code+'" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left"><img class="cico" src="'+c.ico+'" alt=""><span class="text-[13.5px] font-bold">'+c.code+'</span><span class="text-[12px] text-t3 ml-auto truncate">'+c.name+'</span></button>';}).join('');var r=btn.getBoundingClientRect();dd.style.left=Math.min(r.left,window.innerWidth-274)+'px';dd.style.top=(r.bottom+6)+'px';dd.classList.add('show');$$('#curDD [data-pick]').forEach(function(b){b.addEventListener('click',function(){pickCur(ddSide,b.getAttribute('data-pick'));closeDD();});});}
-  function closeDD(){$('#curDD').classList.remove('show');}
-  document.addEventListener('click',function(e){if(!e.target.closest('#curDD')&&!e.target.closest('.curbtn'))closeDD();});
+  function closeAllDD(){$$('.dd.show').forEach(function(d){d.classList.remove('show');});$$('.ddbtn-open').forEach(function(b){b.classList.remove('ddbtn-open');});}
+  function openDD(btn){
+    var dd=$('#curDD'); var wasOpen=dd.classList.contains('show')&&btn.classList.contains('ddbtn-open');
+    closeAllDD(); if(wasOpen) return;
+    ddSide=btn.getAttribute('data-side');var list=(ddSide==='send')?cur.list.send:cur.list.get;
+    dd.innerHTML=list.map(function(c){return '<button data-pick="'+c.code+'" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left"><img class="cico" src="'+c.ico+'" alt=""><span class="text-[13.5px] font-bold">'+c.code+'</span></button>';}).join('');
+    var r=btn.getBoundingClientRect();var w=Math.max(r.width,118);dd.style.width=w+'px';dd.style.left=Math.min(r.left,window.innerWidth-w-8)+'px';dd.style.top=r.bottom+'px';
+    dd.classList.add('show');btn.classList.add('ddbtn-open');
+    $$('#curDD [data-pick]').forEach(function(b){b.addEventListener('click',function(){pickCur(ddSide,b.getAttribute('data-pick'));closeAllDD();});});
+  }
+  document.addEventListener('click',function(e){if(!e.target.closest('.dd')&&!e.target.closest('.curbtn')&&!e.target.closest('#payFrom'))closeAllDD();});
 
   // exchange core
   var cur={type:'fc',send:'USD',get:'BTC',list:{send:FIAT,get:CRYPTO},src:null};
@@ -559,16 +568,13 @@ tailwind.config={theme:{extend:{
 
   // accounts
   function initPayFrom(){
-    function open(){
+    function build(){
       var fiatSend=(cur.type==='fc'||cur.type==='ff');
       var list=SOURCES.filter(function(s){return s.kind==='wallet'||(fiatSend?s.kind==='fiat':s.kind==='crypto');});
-      var dd=$('#payDD');
-      dd.innerHTML=list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('');
-      dd.classList.add('show');
-      $$('#payDD [data-pf]').forEach(function(b){b.addEventListener('click',function(){var s=SOURCES.filter(function(x){return x.id===b.getAttribute('data-pf');})[0];if(s)setSource(s);$('#payDD').classList.remove('show');});});
+      $('#payDD').innerHTML=list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('');
+      $$('#payDD [data-pf]').forEach(function(b){b.addEventListener('click',function(){var s=SOURCES.filter(function(x){return x.id===b.getAttribute('data-pf');})[0];if(s)setSource(s);closeAllDD();});});
     }
-    $('#payFrom').addEventListener('click',function(e){e.stopPropagation();open();});
-    document.addEventListener('click',function(e){if(!e.target.closest('#payDD')&&!e.target.closest('#payFrom'))$('#payDD').classList.remove('show');});
+    $('#payFrom').addEventListener('click',function(e){e.stopPropagation();var dd=$('#payDD');var wasOpen=dd.classList.contains('show');closeAllDD();if(wasOpen)return;build();dd.classList.add('show');$('#payFrom').classList.add('ddbtn-open');});
   }
 
   // markets rail (sparklines)
