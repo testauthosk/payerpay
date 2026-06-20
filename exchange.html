@@ -82,8 +82,13 @@ tailwind.config={theme:{extend:{
  .rail-collapsed .mkt-rail{width:0 !important;opacity:0 !important;border-left-color:transparent !important}
  #railToggle .rt-chev{transition:transform .3s ease}
  .rail-collapsed #railToggle .rt-chev{transform:rotate(180deg)}
- #notifPanel{opacity:0;transform:translateY(-6px) scale(.98);transform-origin:top right;transition:opacity .18s ease,transform .18s ease;pointer-events:none}
- #notifPanel.show{opacity:1;transform:none;pointer-events:auto}
+ #hdrActions{max-width:280px;transition:max-width .34s cubic-bezier(.4,0,.2,1),opacity .26s ease,transform .34s cubic-bezier(.4,0,.2,1),margin .34s ease}
+ #hdrActions.hide{max-width:0;opacity:0;transform:translateX(10px);margin-left:-8px;pointer-events:none}
+ #notifSheet .ns-bd{opacity:0;transition:opacity .3s ease}
+ #notifSheet .ns-panel{transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1)}
+ #notifSheet.show{pointer-events:auto !important}
+ #notifSheet.show .ns-bd{opacity:1}
+ #notifSheet.show .ns-panel{transform:none}
 </style>
 </head>
 <body class="font-sans bg-bg text-ink">
@@ -130,19 +135,11 @@ tailwind.config={theme:{extend:{
       <div class="ml-auto flex items-center gap-2 shrink-0">
         <button id="railToggle" type="button" class="hidden xl:grid w-9 h-9 rounded-xl bg-bg border border-line place-items-center hover:border-mint transition-colors" title="Hide market panel"><i class="ph-bold ph-sidebar-simple rt-chev text-[16px]"></i></button>
         <button id="themeToggle" class="w-9 h-9 grid place-items-center rounded-xl bg-bg border border-line text-t2 hover:border-mint transition-colors"><i class="ph ph-moon text-[16px]"></i></button>
-        <div class="relative">
-          <button id="notifBtn" type="button" class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative hover:border-mint transition-colors text-t2"><i class="ph ph-bell text-[16px]"></i><span class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
-          <div id="notifPanel" class="absolute right-0 top-[calc(100%+8px)] z-50 w-[320px] bg-surf border border-line rounded-2xl shadow-2xl overflow-hidden">
-            <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">Notifications</div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">Mark read</button></div>
-            <div class="divide-y divide-line max-h-[300px] overflow-y-auto scroll-y">
-              <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug">USD → BTC exchange complete — 0.0152 BTC in your wallet</div><div class="text-[10.5px] text-t3 mt-1">2m ago</div></div></div>
-              <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug">EUR deposit received — €1,200 credited</div><div class="text-[10.5px] text-t3 mt-1">1h ago</div></div></div>
-              <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug text-t2">BTC is up 2.1% today</div><div class="text-[10.5px] text-t3 mt-1">3h ago</div></div></div>
-            </div>
-          </div>
+        <button id="notifBtn" type="button" class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative hover:border-mint transition-colors text-t2"><i class="ph ph-bell text-[16px]"></i><span class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
+        <div id="hdrActions" class="flex items-center gap-2 overflow-hidden">
+          <button data-wact="deposit" class="h-9 inline-flex items-center gap-1.5 bg-mint text-ink rounded-xl px-3 text-[13px] font-bold shrink-0 hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrow-down-left text-[15px]"></i> Add</button>
+          <button data-wact="withdraw" class="h-9 inline-flex items-center gap-1.5 bg-mint-tint text-mint-deep border border-mint/30 rounded-xl px-3 text-[13px] font-bold shrink-0 hover:bg-mint hover:text-ink transition-colors"><i class="ph-bold ph-arrow-up-right text-[15px]"></i> Send</button>
         </div>
-        <button class="h-9 inline-flex items-center gap-1.5 bg-mint text-ink rounded-xl px-3 text-[13px] font-bold shrink-0 hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrow-down-left text-[15px]"></i> Add</button>
-        <button class="h-9 inline-flex items-center gap-1.5 bg-mint-tint text-mint-deep border border-mint/30 rounded-xl px-3 text-[13px] font-bold shrink-0 hover:bg-mint hover:text-ink transition-colors"><i class="ph-bold ph-arrow-up-right text-[15px]"></i> Send</button>
       </div>
     </header>
 
@@ -397,6 +394,25 @@ tailwind.config={theme:{extend:{
 <div id="curDD" class="dd fixed z-50 w-[260px] bg-surf border border-line rounded-2xl shadow-xl p-1.5"></div>
 
 <!-- deposit modal -->
+<!-- notifications bottom sheet -->
+<div id="notifSheet" class="fixed inset-0 z-[60] pointer-events-none">
+  <div class="ns-bd absolute inset-0 bg-black/45"></div>
+  <div class="ns-panel absolute left-0 right-0 bottom-0 mx-auto w-full max-w-[480px] bg-surf border border-line rounded-t-2xl flex flex-col max-h-[80vh]">
+    <div class="pt-2.5 pb-1 flex justify-center shrink-0 cursor-pointer" data-ns-close><div class="w-10 h-1 rounded-full bg-line"></div></div>
+    <div class="flex items-center justify-between px-5 py-3 border-b border-line shrink-0">
+      <div class="text-[15px] font-extrabold">Notifications</div>
+      <button class="text-[12px] font-semibold text-mint-deep hover:underline" data-ns-close>Mark all read</button>
+    </div>
+    <div class="overflow-y-auto scroll-y divide-y divide-line flex-1 min-h-0">
+      <div class="flex gap-3 px-5 py-3.5"><span class="w-7 h-7 rounded-lg bg-mint-tint text-mint-deep grid place-items-center shrink-0"><i class="ph-bold ph-arrows-left-right text-[13px]"></i></span><div class="min-w-0"><div class="text-[13px] font-semibold leading-snug">USD → BTC exchange complete — 0.0152 BTC in your wallet</div><div class="text-[11px] text-t3 mt-1">2m ago</div></div><span class="w-2 h-2 rounded-full bg-mint shrink-0 mt-1.5"></span></div>
+      <div class="flex gap-3 px-5 py-3.5"><span class="w-7 h-7 rounded-lg bg-mint-tint text-mint-deep grid place-items-center shrink-0"><i class="ph-bold ph-arrow-down-left text-[13px]"></i></span><div class="min-w-0"><div class="text-[13px] font-semibold leading-snug">EUR deposit received — €1,200 credited to your wallet</div><div class="text-[11px] text-t3 mt-1">1h ago</div></div><span class="w-2 h-2 rounded-full bg-mint shrink-0 mt-1.5"></span></div>
+      <div class="flex gap-3 px-5 py-3.5"><span class="w-7 h-7 rounded-lg bg-bg border border-line text-t2 grid place-items-center shrink-0"><i class="ph-bold ph-trend-up text-[13px]"></i></span><div class="min-w-0"><div class="text-[13px] font-semibold leading-snug text-t2">BTC is up 2.1% today — good time to convert</div><div class="text-[11px] text-t3 mt-1">3h ago</div></div></div>
+      <div class="flex gap-3 px-5 py-3.5"><span class="w-7 h-7 rounded-lg bg-bg border border-line text-t2 grid place-items-center shrink-0"><i class="ph-bold ph-shield-check text-[13px]"></i></span><div class="min-w-0"><div class="text-[13px] font-semibold leading-snug text-t2">New device signed in to your account</div><div class="text-[11px] text-t3 mt-1">Yesterday</div></div></div>
+    </div>
+    <div class="p-3 border-t border-line shrink-0"><button class="w-full bg-bg border border-line rounded-xl py-2.5 text-[13px] font-bold hover:border-mint transition-colors" data-ns-close>Close</button></div>
+  </div>
+</div>
+
 <div id="wModal" class="ppm fixed inset-0 z-50 grid place-items-center p-4">
   <div class="ppm-bd absolute inset-0 bg-black/45" data-wclose></div>
   <div class="ppm-card relative w-full max-w-[440px] bg-surf border border-line rounded-2xl p-5 max-h-[85vh] overflow-y-auto scroll-y">
@@ -461,7 +477,7 @@ tailwind.config={theme:{extend:{
   function fmt(code,v){if(['BTC','ETH','SOL'].indexOf(code)>=0){var dp=code==='BTC'?5:3;return Number(v).toLocaleString('en-US',{minimumFractionDigits:dp,maximumFractionDigits:dp});}return Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
   function icoTag(code,cls){var c=ALL[code];return '<img class="'+(cls||'cico')+'" src="'+(c?c.ico:'')+'" alt="">';}
 
-  function go(name){$$('[data-screen]').forEach(function(s){s.hidden=s.getAttribute('data-screen')!==name;});$$('.navi').forEach(function(n){n.classList.toggle('active',n.getAttribute('data-nav')===name);});}
+  function go(name){$$('[data-screen]').forEach(function(s){s.hidden=s.getAttribute('data-screen')!==name;});$$('.navi').forEach(function(n){n.classList.toggle('active',n.getAttribute('data-nav')===name);});var ha=$('#hdrActions');if(ha)ha.classList.toggle('hide',name==='wallet');}
   $$('.navi').forEach(function(n){n.addEventListener('click',function(){go(n.getAttribute('data-nav'));});});
   $$('[data-go]').forEach(function(b){b.addEventListener('click',function(){go(b.getAttribute('data-go'));});});
   $$('.seg').forEach(function(b){b.addEventListener('click',function(){$$('.seg').forEach(function(x){x.classList.remove('active');});b.classList.add('active');});});
@@ -471,9 +487,10 @@ tailwind.config={theme:{extend:{
   (function(){var sb=$('#sidebar'),bd=$('#sbBackdrop');function setSb(o){sb.classList.toggle('-translate-x-full',!o);bd.classList.toggle('opacity-0',!o);bd.classList.toggle('pointer-events-none',!o);}var hb=$('#hamburger');if(hb)hb.addEventListener('click',function(){setSb(true);});if(bd)bd.addEventListener('click',function(){setSb(false);});$$('.navi').forEach(function(n){n.addEventListener('click',function(){setSb(false);});});})();
 
   // notifications
-  var nb=$('#notifBtn'),np=$('#notifPanel');
-  nb.addEventListener('click',function(e){e.stopPropagation();np.classList.toggle('show');});
-  document.addEventListener('click',function(e){if(!e.target.closest('#notifPanel')&&!e.target.closest('#notifBtn'))np.classList.remove('show');});
+  var nb=$('#notifBtn'),ns=$('#notifSheet');
+  nb.addEventListener('click',function(e){e.stopPropagation();ns.classList.toggle('show');});
+  $$('#notifSheet [data-ns-close]').forEach(function(b){b.addEventListener('click',function(){ns.classList.remove('show');});});
+  document.addEventListener('click',function(e){if(ns.classList.contains('show')&&!e.target.closest('.ns-panel')&&!e.target.closest('#notifBtn'))ns.classList.remove('show');});
 
   // theme + accent
   function syncTheme(){var d=document.documentElement.classList.contains('dark');var i=$('#themeToggle i');if(i)i.className='ph '+(d?'ph-sun':'ph-moon')+' text-[16px]';$$('.thm').forEach(function(t){var on=t.getAttribute('data-theme')===(d?'dark':'light');t.classList.toggle('bg-surf',on);t.classList.toggle('shadow-sm',on);t.classList.toggle('text-ink',on);t.classList.toggle('text-t2',!on);});}
