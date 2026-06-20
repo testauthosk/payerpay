@@ -141,7 +141,8 @@ tailwind.config={theme:{extend:{
  .nd-time{font-size:12px;color:rgb(var(--t3))}
  .nd-title{font-size:21px;font-weight:800;color:rgb(var(--ink));margin:6px 0 12px;line-height:1.25}
  .nd-body{font-size:14.5px;color:rgb(var(--t2));line-height:1.65}
- .wallet-hide .wbal{filter:blur(7px);-webkit-filter:blur(7px);user-select:none}
+ .wbal{transition:filter .42s cubic-bezier(.4,0,.2,1),-webkit-filter .42s cubic-bezier(.4,0,.2,1)}
+ .wallet-hide .wbal{filter:blur(8px);-webkit-filter:blur(8px);user-select:none}
 </style>
 </head>
 <body class="font-sans bg-bg text-ink">
@@ -310,7 +311,7 @@ tailwind.config={theme:{extend:{
           <div class="flex-1 min-w-0">
             <div class="text-[11px] text-t3 font-bold uppercase tracking-[0.08em]">Total balance</div>
             <div class="flex items-end gap-3 mt-0.5">
-              <div class="text-[28px] lg:text-[32px] font-extrabold num tracking-tight wbal">$24,310.84</div>
+              <div class="text-[28px] lg:text-[32px] font-extrabold num tracking-tight wbal px-3 -mx-3">$24,310.84</div>
               <div class="text-[13px] font-bold text-pos mb-1.5 flex items-center gap-1"><i class="ph-bold ph-trend-up"></i> +2.4%</div>
             </div>
           </div>
