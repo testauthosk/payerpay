@@ -2,8 +2,17 @@
 <html lang="en" class="h-full">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PayerPay — Exchange</title>
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="pp-icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0B0F14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Exchange">
+<meta name="application-name" content="Exchange">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
@@ -63,10 +72,10 @@ tailwind.config={theme:{extend:{
  .pp-mark .mp{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;line-height:1;letter-spacing:-.05em;color:#E9F6EF;margin-top:-1px}
  .pp-mark .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#33E6A0;top:6px;right:7px;box-shadow:0 1px 4px rgba(51,230,160,.7)}
  .cico{width:22px;height:22px;border-radius:50%;object-fit:cover;background:rgb(var(--bg))}
- .dd{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .34s cubic-bezier(.4,0,.2,1),opacity .24s ease,border-color .25s ease,border-top-width .25s ease,border-top-left-radius .28s ease,border-top-right-radius .28s ease;pointer-events:none}
+ .dd{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .36s cubic-bezier(.4,0,.2,1),visibility 0s linear .36s,border-color .25s ease,border-top-width .25s ease,border-top-left-radius .28s ease,border-top-right-radius .28s ease;pointer-events:none}
  .dd>.dd-in{overflow:hidden;min-height:0}
  #payFrom,.curbtn{transition:border-color .25s ease,border-bottom-width .25s ease,border-bottom-left-radius .28s ease,border-bottom-right-radius .28s ease,background-color .2s ease}
- .dd.show{grid-template-rows:1fr;opacity:1;pointer-events:auto;border-color:rgb(var(--mint));border-top-width:0;border-top-left-radius:0;border-top-right-radius:0}
+ .dd.show{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .36s cubic-bezier(.4,0,.2,1),visibility 0s linear 0s,border-color .25s ease,border-top-width .25s ease,border-top-left-radius .28s ease,border-top-right-radius .28s ease;pointer-events:auto;border-color:rgb(var(--mint));border-top-width:0;border-top-left-radius:0;border-top-right-radius:0}
  .ddbtn-open{border-color:rgb(var(--mint)) !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important;border-bottom-width:0 !important}
  .cp{pointer-events:none}
  .cp .cp-bd{opacity:0;background:rgb(var(--bg) / .55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);transition:opacity .28s ease}
@@ -144,9 +153,30 @@ tailwind.config={theme:{extend:{
  .nd-body{font-size:14.5px;color:rgb(var(--t2));line-height:1.65}
  .wbal{transition:filter .42s cubic-bezier(.4,0,.2,1),-webkit-filter .42s cubic-bezier(.4,0,.2,1)}
  .wallet-hide .wbal{filter:blur(8px);-webkit-filter:blur(8px);user-select:none}
+ /* launch / splash screen */
+ .xsplash{position:fixed;inset:0;z-index:200;background:#0B0F14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s ease,visibility .5s}
+ .xsplash.hide{opacity:0;visibility:hidden;pointer-events:none}
+ .xsplash-stage{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:-8px}
+ .xsplash-mark{animation:spMark .85s cubic-bezier(.2,.85,.3,1.25) both}
+ .xsplash-logo{width:98px;height:auto;display:block;filter:drop-shadow(0 18px 40px rgba(0,0,0,.55));animation:spJelly 1.25s cubic-bezier(.45,0,.25,1) .6s infinite both}
+ .xsplash-pill{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:#33E6A0;background:rgba(51,230,160,.14);border:1px solid rgba(51,230,160,.22);border-radius:999px;padding:5px 16px;animation:spFade .8s .5s both}
+ .xsplash-foot{position:absolute;bottom:calc(30px + env(safe-area-inset-bottom));font-size:12.5px;letter-spacing:.02em;color:#5C6B7A;animation:spFade .8s .72s both}
+ .xsplash-foot b{color:#9FB0BF;font-weight:700}
+ @keyframes spMark{from{opacity:0;transform:scale(.55) translateY(8px)}to{opacity:1;transform:none}}
+ @keyframes spFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+ @keyframes spJelly{0%,100%{transform:scale(1,1)}22%{transform:scale(1.13,.88)}44%{transform:scale(.9,1.12)}62%{transform:scale(1.06,.96)}80%{transform:scale(.98,1.03)}}
+ @media (prefers-reduced-motion:reduce){.xsplash-logo,.xsplash-mark{animation:spMark .4s both}}
 </style>
 </head>
 <body class="font-sans bg-bg text-ink">
+<div class="xsplash" id="xsplash">
+  <div class="xsplash-stage">
+    <div class="xsplash-mark"><img class="xsplash-logo" src="pp-logo.png" alt="PayerPay"></div>
+    <span class="xsplash-pill">Exchange</span>
+  </div>
+  <div class="xsplash-foot">Powered by <b>PayerPay</b></div>
+</div>
+<script>(function(){var s=document.getElementById('xsplash');if(!s)return;var done=false;var hide=function(){if(done)return;done=true;s.classList.add('hide');setTimeout(function(){s.style.display='none';},560);};var run=function(){setTimeout(hide,1700);};if(document.readyState==='complete')run();else addEventListener('load',run);setTimeout(hide,6000);})();</script>
 <div class="h-full flex">
 
   <div id="sbBackdrop" class="fixed inset-0 bg-black/45 z-40 opacity-0 pointer-events-none transition-opacity lg:hidden"></div>
