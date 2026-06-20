@@ -89,13 +89,50 @@ tailwind.config={theme:{extend:{
  .rail-collapsed .mkt-rail{width:0 !important;opacity:0 !important;border-left-color:transparent !important}
  #railToggle .rt-chev{transition:transform .3s ease}
  .rail-collapsed #railToggle .rt-chev{transform:rotate(180deg)}
- #hdrActions{max-width:280px;transition:max-width .34s cubic-bezier(.4,0,.2,1),opacity .26s ease,transform .34s cubic-bezier(.4,0,.2,1),margin .34s ease}
- #hdrActions.hide{max-width:0;opacity:0;transform:translateX(10px);margin-left:-8px;pointer-events:none}
- #notifSheet .ns-bd{opacity:0;transition:opacity .3s ease}
- #notifSheet .ns-panel{transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1)}
- #notifSheet.show{pointer-events:auto !important}
- #notifSheet.show .ns-bd{opacity:1}
- #notifSheet.show .ns-panel{transform:none}
+ #hdrActions{display:grid;grid-template-columns:1fr;transition:grid-template-columns .42s cubic-bezier(.4,0,.2,1),opacity .32s ease}
+ #hdrActions>div{overflow:hidden;min-width:0;display:flex;align-items:center;gap:.5rem}
+ #hdrActions.hide{grid-template-columns:0fr;opacity:0;pointer-events:none}
+ .sheet-wrap{position:fixed;inset:0;z-index:60;visibility:hidden;transition:visibility 0s linear .55s}
+ .sheet-wrap.open{visibility:visible;transition:visibility 0s linear 0s}
+ .sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .5s ease}
+ .sheet-wrap.open .sheet-bg{opacity:1}
+ .sheet{position:absolute;left:0;right:0;bottom:0;top:30%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;background:rgb(var(--surf));border:1px solid rgb(var(--line));border-bottom:0;border-radius:24px 24px 0 0;box-shadow:0 -16px 44px -18px rgba(0,0,0,.5);transform:translateY(101%);will-change:transform;transition:transform .42s cubic-bezier(.45,0,.25,1)}
+ .sheet-wrap.open .sheet{transform:translateY(0);transition:transform .56s cubic-bezier(.16,1,.3,1)}
+ .sheet.dragging{transition:none !important}
+ .sheet-grip{flex-shrink:0;padding:12px 20px 2px;touch-action:none;cursor:grab}
+ .sheet-handle{width:40px;height:5px;border-radius:100px;background:rgb(var(--line));margin:0 auto 12px}
+ .sheet-head{display:flex;align-items:center;justify-content:space-between;padding:0 20px 12px}
+ .sheet-head h3{font-weight:800;font-size:19px;color:rgb(var(--ink))}
+ .sheet-x{width:36px;height:36px;border-radius:12px;background:rgb(var(--bg));border:1px solid rgb(var(--line));display:grid;place-items:center;color:rgb(var(--ink));font-size:19px;line-height:1;cursor:pointer}
+ .sheet-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 20px calc(20px + env(safe-area-inset-bottom))}
+ .sheet-scroll::-webkit-scrollbar{display:none}
+ .notif{display:flex;gap:12px;padding:14px 0;border-top:1px solid rgb(var(--line))}
+ .notif:first-child{border-top:none}
+ .notif .nic{width:40px;height:40px;border-radius:12px;flex:none;display:grid;place-items:center;background:rgb(var(--chip));color:rgb(var(--t2))}
+ .notif .nic svg{width:19px;height:19px}
+ .notif.green .nic{background:rgb(var(--mint-tint));color:rgb(var(--mint-deep))}
+ .notif.amber .nic{background:rgba(255,193,61,.16);color:#E0A93B}
+ .notif .nb{flex:1;min-width:0}
+ .notif .nb .nt{font-weight:600;font-size:14px;color:rgb(var(--ink))}
+ .notif .nb .ns{font-size:12.5px;color:rgb(var(--t3));margin-top:2px;line-height:1.4}
+ .notif .ntime{font-size:11px;color:rgb(var(--t3));white-space:nowrap;flex:none}
+ .notif.tap{cursor:pointer;transition:background .18s;margin:0 -10px;padding-left:10px;padding-right:10px;border-radius:12px}
+ .notif.tap:active{background:rgb(var(--bg))}
+ .notif .chev{flex:none;color:rgb(var(--t3));align-self:center}
+ .notif-detail{position:absolute;inset:0;background:rgb(var(--surf));border-radius:24px 24px 0 0;z-index:2;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .38s cubic-bezier(.4,0,.2,1)}
+ .sheet-wrap.detail .notif-detail{transform:translateX(0)}
+ .nd-head{display:flex;align-items:center;gap:10px;padding:8px 20px 6px}
+ .nd-head .bk{width:36px;height:36px;border-radius:12px;background:rgb(var(--bg));border:1px solid rgb(var(--line));display:grid;place-items:center;cursor:pointer;color:rgb(var(--ink))}
+ .nd-head .bk svg{width:18px;height:18px}
+ .nd-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:10px 24px calc(24px + env(safe-area-inset-bottom))}
+ .nd-ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:rgb(var(--chip));color:rgb(var(--t2));margin:4px 0 16px}
+ .nd-ic svg{width:26px;height:26px}
+ .nd-ic.green{background:rgb(var(--mint-tint));color:rgb(var(--mint-deep))}
+ .nd-ic.amber{background:rgba(255,193,61,.16);color:#E0A93B}
+ .nd-time{font-size:12px;color:rgb(var(--t3))}
+ .nd-title{font-size:21px;font-weight:800;color:rgb(var(--ink));margin:6px 0 12px;line-height:1.25}
+ .nd-body{font-size:14.5px;color:rgb(var(--t2));line-height:1.65}
+ .wallet-hide .wbal{filter:blur(7px);-webkit-filter:blur(7px);user-select:none}
 </style>
 </head>
 <body class="font-sans bg-bg text-ink">
@@ -142,10 +179,12 @@ tailwind.config={theme:{extend:{
       <div class="ml-auto flex items-center gap-2 shrink-0">
         <button id="railToggle" type="button" class="hidden xl:grid w-9 h-9 rounded-xl bg-bg border border-line place-items-center hover:border-mint transition-colors" title="Hide market panel"><i class="ph-bold ph-sidebar-simple rt-chev text-[16px]"></i></button>
         <button id="themeToggle" class="w-9 h-9 grid place-items-center rounded-xl bg-bg border border-line text-t2 hover:border-mint transition-colors"><i class="ph ph-moon text-[16px]"></i></button>
-        <button id="notifBtn" type="button" class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative hover:border-mint transition-colors text-t2"><i class="ph ph-bell text-[16px]"></i><span class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
-        <div id="hdrActions" class="flex items-center gap-2 overflow-hidden">
+        <button id="notifBtn" type="button" onclick="openNotif()" class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative hover:border-mint transition-colors text-t2"><i class="ph ph-bell text-[16px]"></i><span class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
+        <div id="hdrActions">
+          <div>
           <button data-wact="deposit" class="h-9 inline-flex items-center gap-1.5 bg-mint text-ink rounded-xl px-3 text-[13px] font-bold shrink-0 hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrow-down-left text-[15px]"></i> Add</button>
           <button data-wact="withdraw" class="h-9 inline-flex items-center gap-1.5 bg-mint-tint text-mint-deep border border-mint/30 rounded-xl px-3 text-[13px] font-bold shrink-0 hover:bg-mint hover:text-ink transition-colors"><i class="ph-bold ph-arrow-up-right text-[15px]"></i> Send</button>
+          </div>
         </div>
       </div>
     </header>
@@ -275,7 +314,7 @@ tailwind.config={theme:{extend:{
         <!-- assets + allocation -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:flex-1 lg:min-h-0 mt-4">
           <div class="lg:col-span-2 bg-surf border border-line rounded-2xl flex flex-col min-h-0">
-            <div class="flex items-center justify-between px-4 lg:px-5 py-3 border-b border-line shrink-0"><div class="text-[13px] font-bold">Your assets</div><button id="hideBal" class="text-[11.5px] font-semibold text-t2 hover:text-mint-deep flex items-center gap-1"><i class="ph ph-eye text-[14px]"></i> Hide</button></div>
+            <div class="flex items-center justify-between px-4 lg:px-5 py-3 border-b border-line shrink-0"><div class="text-[13px] font-bold">Your assets</div><button id="hideBal" class="text-[11.5px] font-semibold text-t2 hover:text-mint-deep inline-flex items-center justify-end gap-1 min-w-[56px]"><i class="ph ph-eye text-[14px]"></i> Hide</button></div>
             <div id="walletAssets" class="lg:flex-1 lg:min-h-0 overflow-y-auto scroll-y p-1.5"></div>
           </div>
           <div class="bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col min-h-0">
@@ -402,21 +441,24 @@ tailwind.config={theme:{extend:{
 
 <!-- deposit modal -->
 <!-- notifications bottom sheet -->
-<div id="notifSheet" class="fixed inset-0 z-[60] pointer-events-none">
-  <div class="ns-bd absolute inset-0 bg-black/45"></div>
-  <div class="ns-panel absolute left-0 right-0 bottom-0 mx-auto w-full max-w-[480px] bg-surf border border-line rounded-t-2xl flex flex-col max-h-[80vh]">
-    <div class="pt-2.5 pb-1 flex justify-center shrink-0 cursor-pointer" data-ns-close><div class="w-10 h-1 rounded-full bg-line"></div></div>
-    <div class="flex items-center justify-between px-5 py-3 border-b border-line shrink-0">
-      <div class="text-[15px] font-extrabold">Notifications</div>
-      <button class="text-[12px] font-semibold text-mint-deep hover:underline" data-ns-close>Mark all read</button>
+<div class="sheet-wrap" id="notifSheet">
+  <div class="sheet-bg" onclick="closeNotif()"></div>
+  <div class="sheet">
+    <div class="sheet-grip" id="notifGrip"><div class="sheet-handle"></div></div>
+    <div class="sheet-head"><h3>Notifications</h3><button class="sheet-x" onclick="closeNotif()" aria-label="Close">&times;</button></div>
+    <div class="sheet-scroll">
+      <div class="notif green tap" onclick="openNotifDetail(this)" data-full="Your USD to BTC exchange is complete. 0.0152 BTC has been credited to your wallet at the mid-market rate. Reference PP-5294-0042. You can view it any time under Activity."><div class="nic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="nb"><div class="nt">Exchange complete</div><div class="ns">USD to BTC done — 0.0152 BTC in your wallet.</div></div><div class="ntime">2m</div><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></div>
+      <div class="notif green tap" onclick="openNotifDetail(this)" data-full="A SEPA deposit of EUR 1,200 has been received and credited to your wallet. Funds are available immediately for exchange or withdrawal."><div class="nic"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="nb"><div class="nt">Deposit received</div><div class="ns">EUR 1,200 credited to your wallet.</div></div><div class="ntime">1h</div><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></div>
+      <div class="notif amber tap" onclick="openNotifDetail(this)" data-full="BTC is up 2.1% over the last 24 hours. It may be a good moment to convert. Open Exchange to see the live mid-market rate."><div class="nic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 17l6-6 4 4 8-8m0 0h-5m5 0v5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="nb"><div class="nt">BTC is up 2.1% today</div><div class="ns">Good moment to convert — check the rate.</div></div><div class="ntime">3h</div><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></div>
+      <div class="notif tap" onclick="openNotifDetail(this)" data-full="A new sign-in to your account was detected from a new device. If this was you, no action is needed. If not, secure your account from Settings."><div class="nic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="nb"><div class="nt">New sign-in to your account</div><div class="ns">From a new device. Secure it if this wasn't you.</div></div><div class="ntime">1d</div><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></div>
+      <div class="notif green tap" onclick="openNotifDetail(this)" data-full="Your withdrawal of 1,200 USDT to an external wallet on the Ethereum network has been sent and is confirming on-chain."><div class="nic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20V8m0 0l-4 4m4-4l4 4M5 4h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="nb"><div class="nt">Withdrawal sent</div><div class="ns">1,200 USDT sent on Ethereum (ERC-20).</div></div><div class="ntime">2d</div><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></div>
+      <div class="notif tap" onclick="openNotifDetail(this)" data-full="Your identity has been verified (KYC approved). Your limits have been increased and all exchange features are now available."><div class="nic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="nb"><div class="nt">Identity verified</div><div class="ns">KYC approved — limits increased.</div></div><div class="ntime">5d</div><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2"/></svg></div>
     </div>
-    <div class="overflow-y-auto scroll-y divide-y divide-line flex-1 min-h-0">
-      <div class="flex gap-3 px-5 py-3.5"><span class="w-7 h-7 rounded-lg bg-mint-tint text-mint-deep grid place-items-center shrink-0"><i class="ph-bold ph-arrows-left-right text-[13px]"></i></span><div class="min-w-0"><div class="text-[13px] font-semibold leading-snug">USD → BTC exchange complete — 0.0152 BTC in your wallet</div><div class="text-[11px] text-t3 mt-1">2m ago</div></div><span class="w-2 h-2 rounded-full bg-mint shrink-0 mt-1.5"></span></div>
-      <div class="flex gap-3 px-5 py-3.5"><span class="w-7 h-7 rounded-lg bg-mint-tint text-mint-deep grid place-items-center shrink-0"><i class="ph-bold ph-arrow-down-left text-[13px]"></i></span><div class="min-w-0"><div class="text-[13px] font-semibold leading-snug">EUR deposit received — €1,200 credited to your wallet</div><div class="text-[11px] text-t3 mt-1">1h ago</div></div><span class="w-2 h-2 rounded-full bg-mint shrink-0 mt-1.5"></span></div>
-      <div class="flex gap-3 px-5 py-3.5"><span class="w-7 h-7 rounded-lg bg-bg border border-line text-t2 grid place-items-center shrink-0"><i class="ph-bold ph-trend-up text-[13px]"></i></span><div class="min-w-0"><div class="text-[13px] font-semibold leading-snug text-t2">BTC is up 2.1% today — good time to convert</div><div class="text-[11px] text-t3 mt-1">3h ago</div></div></div>
-      <div class="flex gap-3 px-5 py-3.5"><span class="w-7 h-7 rounded-lg bg-bg border border-line text-t2 grid place-items-center shrink-0"><i class="ph-bold ph-shield-check text-[13px]"></i></span><div class="min-w-0"><div class="text-[13px] font-semibold leading-snug text-t2">New device signed in to your account</div><div class="text-[11px] text-t3 mt-1">Yesterday</div></div></div>
+    <div class="notif-detail">
+      <div class="sheet-grip"><div class="sheet-handle"></div></div>
+      <div class="nd-head"><div class="bk" onclick="closeNotifDetail()"><svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="font-weight:700;font-size:15px;color:rgb(var(--ink))">Notification</div></div>
+      <div class="nd-scroll" id="notifDetailBody"></div>
     </div>
-    <div class="p-3 border-t border-line shrink-0"><button class="w-full bg-bg border border-line rounded-xl py-2.5 text-[13px] font-bold hover:border-mint transition-colors" data-ns-close>Close</button></div>
   </div>
 </div>
 
@@ -502,10 +544,40 @@ tailwind.config={theme:{extend:{
   (function(){var sb=$('#sidebar'),bd=$('#sbBackdrop');function setSb(o){sb.classList.toggle('-translate-x-full',!o);bd.classList.toggle('opacity-0',!o);bd.classList.toggle('pointer-events-none',!o);}var hb=$('#hamburger');if(hb)hb.addEventListener('click',function(){setSb(true);});if(bd)bd.addEventListener('click',function(){setSb(false);});$$('.navi').forEach(function(n){n.addEventListener('click',function(){setSb(false);});});})();
 
   // notifications
-  var nb=$('#notifBtn'),ns=$('#notifSheet');
-  nb.addEventListener('click',function(e){e.stopPropagation();ns.classList.toggle('show');});
-  $$('#notifSheet [data-ns-close]').forEach(function(b){b.addEventListener('click',function(){ns.classList.remove('show');});});
-  document.addEventListener('click',function(e){if(ns.classList.contains('show')&&!e.target.closest('.ns-panel')&&!e.target.closest('#notifBtn'))ns.classList.remove('show');});
+  window.openNotif=function(){ document.getElementById('notifSheet').classList.add('open'); };
+  window.closeNotif=function(){ var s=document.getElementById('notifSheet'); s.classList.remove('open'); setTimeout(function(){ s.classList.remove('detail'); },320); };
+  window.openNotifDetail=function(el){
+    var t=el.querySelector('.nt').textContent;
+    var full=el.getAttribute('data-full')||el.querySelector('.ns').textContent;
+    var time=el.querySelector('.ntime').textContent;
+    var icon=el.querySelector('.nic').innerHTML;
+    var tone=el.classList.contains('green')?'green':el.classList.contains('amber')?'amber':'';
+    document.getElementById('notifDetailBody').innerHTML=
+      '<div class="nd-ic '+tone+'">'+icon+'</div>'+
+      '<div class="nd-time">'+time+' ago</div>'+
+      '<div class="nd-title">'+t+'</div>'+
+      '<p class="nd-body">'+full+'</p>'+
+      '<button class="w-full bg-mint text-ink rounded-xl py-3 text-[13.5px] font-extrabold hover:bg-mint-deep transition-colors" style="margin-top:22px" onclick="closeNotifDetail()">Mark as read</button>';
+    document.getElementById('notifSheet').classList.add('detail');
+  };
+  window.closeNotifDetail=function(){ document.getElementById('notifSheet').classList.remove('detail'); };
+  function attachSheetDrag(wrapId, closeFn){
+    var wrap=document.getElementById(wrapId); if(!wrap) return;
+    var sheet=wrap.querySelector('.sheet'), grips=wrap.querySelectorAll('.sheet-grip');
+    var startY=0, dy=0, dragging=false;
+    function start(y){ startY=y; dy=0; dragging=true; sheet.classList.add('dragging'); }
+    function move(y){ if(!dragging) return; dy=Math.max(0,y-startY); sheet.style.transform='translateY('+dy+'px)'; }
+    function end(){ if(!dragging) return; dragging=false; sheet.classList.remove('dragging'); var close=dy>110; sheet.style.transform=''; if(close) closeFn(); }
+    grips.forEach(function(g){
+      g.addEventListener('touchstart',function(e){ start(e.touches[0].clientY); },{passive:true});
+      g.addEventListener('touchmove',function(e){ move(e.touches[0].clientY); },{passive:true});
+      g.addEventListener('touchend',end);
+      g.addEventListener('mousedown',function(e){ start(e.clientY);
+        function mm(ev){ move(ev.clientY); } function mu(){ end(); document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu); }
+        document.addEventListener('mousemove',mm); document.addEventListener('mouseup',mu); });
+    });
+  }
+  attachSheetDrag('notifSheet', window.closeNotif);
 
   // theme + accent
   function syncTheme(){var d=document.documentElement.classList.contains('dark');var i=$('#themeToggle i');if(i)i.className='ph '+(d?'ph-sun':'ph-moon')+' text-[16px]';$$('.thm').forEach(function(t){var on=t.getAttribute('data-theme')===(d?'dark':'light');t.classList.toggle('bg-surf',on);t.classList.toggle('shadow-sm',on);t.classList.toggle('text-ink',on);t.classList.toggle('text-t2',!on);});}
