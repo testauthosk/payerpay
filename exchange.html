@@ -89,18 +89,17 @@ tailwind.config={theme:{extend:{
 <div class="h-full flex">
 
   <!-- ============ LEFT SIDEBAR ============ -->
-  <aside class="w-[220px] shrink-0 bg-surf border-r border-line flex flex-col px-3 py-4">
-    <div class="flex items-center gap-2.5 px-2 pb-4">
+  <aside class="w-[248px] shrink-0 bg-surf border-r border-line flex flex-col px-3 py-4">
+    <div class="flex items-center gap-2 px-2 pb-4">
       <div class="pp-mark"><span class="mp">P</span><span class="dot"></span></div>
-      <b class="text-[17px] font-extrabold tracking-tight">Payer<span class="text-mint-deep">Pay</span></b>
-      <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-t3 border border-line rounded-full px-1.5 py-0.5 ml-0.5">EXCH</span>
+      <b class="text-[16.5px] font-extrabold tracking-tight">Payer<span class="text-mint-deep">Pay</span></b>
+      <span class="text-[11px] font-bold text-mint-deep bg-mint-tint rounded-full px-2.5 py-0.5 ml-0.5">Exchange</span>
     </div>
     <nav class="flex flex-col gap-0.5 text-[13px] font-semibold mt-1">
       <a data-nav="exchange" class="navi active cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph-bold ph-arrows-left-right text-[17px]"></i> Exchange</a>
       <a data-nav="wallet" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-wallet text-[17px]"></i> Wallet</a>
       <a data-nav="activity" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-clock-counter-clockwise text-[17px]"></i> Activity</a>
       <a data-nav="news" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-newspaper text-[17px]"></i> News</a>
-      <a data-nav="accounts" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-bank text-[17px]"></i> Accounts</a>
       <a data-nav="settings" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-gear text-[17px]"></i> Settings</a>
     </nav>
     <div class="mt-auto">
@@ -177,6 +176,14 @@ tailwind.config={theme:{extend:{
         <!-- exchange card -->
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 flex-1 min-h-0">
           <div class="lg:col-span-3 bg-surf border border-line rounded-2xl p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[12px] font-semibold text-t3">Pay from</span>
+              <button id="payFrom" class="flex items-center gap-2 bg-bg border border-line rounded-xl pl-2.5 pr-3 py-2 hover:border-mint transition-colors">
+                <i id="payFromIc" class="ph-fill ph-wallet text-mint-deep text-[15px]"></i>
+                <span id="payFromLbl" class="text-[13px] font-bold">Wallet balance</span>
+                <i class="ph-bold ph-caret-down text-[12px] text-t3"></i>
+              </button>
+            </div>
             <div class="rounded-xl border border-line bg-bg px-5 py-4">
               <div class="flex items-center justify-between text-[12px] font-semibold text-t3 mb-1.5"><span>You send</span><span id="sendBal">Balance: —</span></div>
               <div class="flex items-center gap-3">
@@ -309,12 +316,6 @@ tailwind.config={theme:{extend:{
         </div>
       </section>
 
-      <!-- ===== ACCOUNTS (shared) ===== -->
-      <section data-screen="accounts" hidden class="h-full max-w-[1100px] mx-auto flex flex-col">
-        <div class="mb-3 shrink-0"><h1 class="text-[22px] font-extrabold tracking-tight">Accounts</h1><p class="text-[12.5px] text-t3 mt-0.5">Shared with your main PayerPay account.</p></div>
-        <div id="acctGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 flex-1 min-h-0 content-start overflow-y-auto scroll-y"></div>
-      </section>
-
       <!-- ===== SETTINGS (shared) ===== -->
       <section data-screen="settings" hidden class="h-full max-w-[1100px] mx-auto flex flex-col">
         <div class="mb-3 shrink-0"><h1 class="text-[22px] font-extrabold tracking-tight">Settings</h1><p class="text-[12.5px] text-t3 mt-0.5">Shared preferences across PayerPay.</p></div>
@@ -387,6 +388,8 @@ tailwind.config={theme:{extend:{
 
 <!-- currency dropdown -->
 <div id="curDD" class="dd fixed z-50 w-[260px] bg-surf border border-line rounded-2xl shadow-xl p-1.5"></div>
+<!-- pay-from dropdown -->
+<div id="payDD" class="dd fixed z-50 w-[280px] bg-surf border border-line rounded-2xl shadow-xl p-1.5"></div>
 
 <!-- deposit modal -->
 <div id="depModal" class="ppm fixed inset-0 z-50 grid place-items-center p-4">
@@ -425,9 +428,15 @@ tailwind.config={theme:{extend:{
     SOL:{kind:'Solana network',rows:[['Network','Solana'],['Address','7xKqR3mB9vT1cZ8sLpY4nW2dQ6hF5gJ0aUe9oP1k']]}
   };
   var WALLET=[['USD',12480.50],['EUR',3200.00],['USDT',8150.00],['BTC',0.4120],['ETH',2.85]];
-  var ACCOUNTS=[
-    {code:'USD',label:'USD · Checking',sub:'ACH · Wire · RTP',bal:12480.50},{code:'EUR',label:'EUR · IBAN',sub:'SEPA',bal:3200.00},{code:'GBP',label:'GBP · Account',sub:'Faster Payments',bal:1840.00},
-    {code:'BTC',label:'Bitcoin',sub:'On-chain',bal:0.4120},{code:'ETH',label:'Ethereum',sub:'ERC-20',bal:2.85},{code:'USDT',label:'Tether',sub:'ERC-20',bal:8150.00}
+  // Pay-from sources (unified accounts) — chosen inside the exchange; drives the balance + % chips.
+  var SOURCES=[
+    {id:'wallet',kind:'wallet',cur:null,bal:null,icon:'ph-fill ph-wallet',label:'Wallet balance',sub:'Your in-app balance'},
+    {id:'usd',kind:'fiat',cur:'USD',bal:12480.50,icon:'ph ph-bank',label:'USD · Checking',sub:'Lead Bank ····1198'},
+    {id:'eur',kind:'fiat',cur:'EUR',bal:3200.00,icon:'ph ph-bank',label:'EUR · IBAN',sub:'····0130 · SEPA'},
+    {id:'gbp',kind:'fiat',cur:'GBP',bal:1840.00,icon:'ph ph-bank',label:'GBP · Account',sub:'····9006 · Faster Payments'},
+    {id:'card',kind:'fiat',cur:'USD',bal:8000.00,icon:'ph ph-credit-card',label:'Visa debit',sub:'····4821 · instant'},
+    {id:'btcw',kind:'crypto',cur:'BTC',bal:0.4120,icon:'ph ph-currency-btc',label:'Bitcoin wallet',sub:'bc1q···0yr4u7'},
+    {id:'ethw',kind:'crypto',cur:'ETH',bal:2.85,icon:'ph ph-currency-eth',label:'Ethereum wallet',sub:'0x3aF1···8e21'}
   ];
   var ACTIVITY=[
     ['Fiat → Crypto','USD → BTC','Today, 14:22','done','+0.0152 BTC'],['Crypto → Fiat','ETH → EUR','Today, 11:05','done','+612.40 EUR'],
@@ -466,18 +475,21 @@ tailwind.config={theme:{extend:{
   document.addEventListener('click',function(e){if(!e.target.closest('#curDD')&&!e.target.closest('.curbtn'))closeDD();});
 
   // exchange core
-  var cur={type:'fc',send:'USD',get:'BTC',list:{send:FIAT,get:CRYPTO}};
-  function setType(t){cur.type=t;var T=TYPES[t];cur.list.send=T.send;cur.list.get=T.get;cur.send=T.sd;cur.get=T.gd;$$('.xtab').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-xtype')===t);});paintCur('send');paintCur('get');recalc();}
+  var cur={type:'fc',send:'USD',get:'BTC',list:{send:FIAT,get:CRYPTO},src:null};
+  function availBal(){var s=cur.src||SOURCES[0];if(s.id==='wallet'){var wb=0;WALLET.forEach(function(w){if(w[0]===cur.send)wb=w[1];});return wb;}return s.bal;}
+  function updatePayLabel(){var s=cur.src||SOURCES[0];var lbl=$('#payFromLbl'),ic=$('#payFromIc');if(lbl)lbl.textContent=s.label;if(ic)ic.className=s.icon+' text-mint-deep text-[15px]';}
+  function setSource(s){if(s.cur&&(cur.type==='cf'||cur.type==='cc'))setType('fc');cur.src=s;if(s.cur){cur.send=s.cur;paintCur('send');}updatePayLabel();recalc();}
+  function setType(t){cur.type=t;var T=TYPES[t];cur.list.send=T.send;cur.list.get=T.get;cur.send=T.sd;cur.get=T.gd;cur.src=SOURCES[0];$$('.xtab').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-xtype')===t);});updatePayLabel();paintCur('send');paintCur('get');recalc();}
   function pickCur(side,code){if(side==='send'&&code===cur.get){cur.get=cur.send;}else if(side==='get'&&code===cur.send){cur.send=cur.get;}cur[side]=code;paintCur('send');paintCur('get');recalc();}
   function paintCur(side){var btn=(side==='send')?$('#sendCur'):$('#getCur');var code=cur[side];$('.code',btn).textContent=code;$('.cico',btn).src=ALL[code].ico;}
   function rate(){return PRICE[cur.send]/PRICE[cur.get];}
-  function recalc(){var amt=parseFloat($('#sendAmt').value)||0;var net=amt*rate()*(1-FEE_PCT);$('#getAmt').value=fmt(cur.get,net);$('#rateInline').textContent='1 '+cur.send+' ≈ '+fmt(cur.get,rate())+' '+cur.get;$('#sumRate').textContent='1 '+cur.send+' = '+fmt(cur.get,rate())+' '+cur.get;$('#sumFee').textContent=(FEE_PCT*100).toFixed(1)+'% · '+fmt(cur.send,amt*FEE_PCT)+' '+cur.send;$('#sumGet').textContent=fmt(cur.get,net)+' '+cur.get;$('#sumEta').textContent=(CRYP.indexOf(cur.send)>=0)?'~3 min':'~1 hour';var wb=null;WALLET.forEach(function(w){if(w[0]===cur.send)wb=w[1];});$('#sendBal').textContent='Balance: '+(wb!=null?fmt(cur.send,wb)+' '+cur.send:'—');var pl=$('#pairLbl');if(pl)pl.textContent=cur.send+' → '+cur.get;}
+  function recalc(){var amt=parseFloat($('#sendAmt').value)||0;var net=amt*rate()*(1-FEE_PCT);$('#getAmt').value=fmt(cur.get,net);$('#rateInline').textContent='1 '+cur.send+' ≈ '+fmt(cur.get,rate())+' '+cur.get;$('#sumRate').textContent='1 '+cur.send+' = '+fmt(cur.get,rate())+' '+cur.get;$('#sumFee').textContent=(FEE_PCT*100).toFixed(1)+'% · '+fmt(cur.send,amt*FEE_PCT)+' '+cur.send;$('#sumGet').textContent=fmt(cur.get,net)+' '+cur.get;$('#sumEta').textContent=(CRYP.indexOf(cur.send)>=0)?'~3 min':'~1 hour';var ab=availBal();$('#sendBal').textContent=(ab!=null?'Balance: '+fmt(cur.send,ab)+' '+cur.send:'Instant');var pl=$('#pairLbl');if(pl)pl.textContent=cur.send+' → '+cur.get;}
   $$('.xtab').forEach(function(x){x.addEventListener('click',function(){setType(x.getAttribute('data-xtype'));});});
   $$('.curbtn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();openDD(b);});});
   $('#sendAmt').addEventListener('input',recalc);
   $('#swapBtn').addEventListener('click',function(){var inv={fc:'cf',cf:'fc',ff:'ff',cc:'cc'};var s=cur.send,g=cur.get;setType(inv[cur.type]);cur.send=g;cur.get=s;paintCur('send');paintCur('get');recalc();});
   $('#getDeposit').addEventListener('click',function(){openDeposit(cur.send);});
-  $$('[data-pct]').forEach(function(b){b.addEventListener('click',function(){var wb=0;WALLET.forEach(function(w){if(w[0]===cur.send)wb=w[1];});if(!wb)wb=1000;var v=wb*parseFloat(b.getAttribute('data-pct'));$('#sendAmt').value=(CRYP.indexOf(cur.send)>=0?v.toFixed(4):v.toFixed(2));recalc();});});
+  $$('[data-pct]').forEach(function(b){b.addEventListener('click',function(){var ab=availBal();if(ab==null||!ab)ab=1000;var v=ab*parseFloat(b.getAttribute('data-pct'));$('#sendAmt').value=(CRYP.indexOf(cur.send)>=0?v.toFixed(4):v.toFixed(2));recalc();});});
 
   // deposit modal
   function depCardHTML(code){var d=DEPOSIT[code];if(!d)return '';var rows=d.rows.map(function(r){return '<div class="flex items-center justify-between gap-3 py-2 border-t border-line first:border-0"><span class="text-[12px] text-t3">'+r[0]+'</span><span class="num text-[12.5px] font-semibold text-right break-all">'+r[1]+'</span></div>';}).join('');return '<div class="flex items-center gap-2.5 mb-1">'+icoTag(code,'cico')+'<div><div class="text-[14px] font-extrabold">'+code+' deposit</div><div class="text-[11.5px] text-t3">'+d.kind+'</div></div></div>'+rows;}
@@ -498,7 +510,18 @@ tailwind.config={theme:{extend:{
   function renderActivity(){$('#actList').innerHTML=ACTIVITY.map(function(a){var st=a[3]==='done'?'<span class="text-[11px] font-bold text-mint-deep bg-mint-tint rounded-full px-2 py-0.5">Done</span>':'<span class="text-[11px] font-bold text-t2 bg-bg border border-line rounded-full px-2 py-0.5">Pending</span>';return '<div class="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-3 items-center px-5 py-3 border-b border-line"><div class="flex items-center gap-2.5 min-w-0"><div class="w-8 h-8 rounded-lg bg-mint-tint text-mint-deep grid place-items-center shrink-0"><i class="ph-bold ph-arrows-left-right text-[13px]"></i></div><div class="min-w-0"><div class="text-[13px] font-bold truncate">'+a[0]+'</div><div class="text-[11.5px] text-t3 truncate">'+a[1]+'</div></div></div><div class="text-[12.5px] text-t2">'+a[2]+'</div><div>'+st+'</div><div class="text-right text-[13px] font-extrabold num text-mint-deep">'+a[4]+'</div></div>';}).join('');}
 
   // accounts
-  function renderAccounts(){$('#acctGrid').innerHTML=ACCOUNTS.map(function(a){var usd=a.bal*PRICE[a.code];return '<div class="bg-surf border border-line rounded-2xl p-4 hover:border-mint transition-colors"><div class="flex items-center gap-2.5 mb-3">'+icoTag(a.code,'cico')+'<div class="min-w-0"><div class="text-[13px] font-bold truncate">'+a.label+'</div><div class="text-[11px] text-t3 truncate">'+a.sub+'</div></div></div><div class="text-[20px] font-extrabold num tracking-tight">'+fmt(a.code,a.bal)+' <span class="text-[12px] text-t3 font-bold">'+a.code+'</span></div><div class="text-[11.5px] text-t3 num mt-0.5">≈ $'+fmt('USD',usd)+'</div></div>';}).join('');}
+  function initPayFrom(){
+    function open(){
+      var fiatSend=(cur.type==='fc'||cur.type==='ff');
+      var list=SOURCES.filter(function(s){return s.kind==='wallet'||(fiatSend?s.kind==='fiat':s.kind==='crypto');});
+      var dd=$('#payDD');
+      dd.innerHTML=list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('');
+      var r=$('#payFrom').getBoundingClientRect();dd.style.left=Math.min(r.left,window.innerWidth-292)+'px';dd.style.top=(r.bottom+6)+'px';dd.classList.add('show');
+      $$('#payDD [data-pf]').forEach(function(b){b.addEventListener('click',function(){var s=SOURCES.filter(function(x){return x.id===b.getAttribute('data-pf');})[0];if(s)setSource(s);$('#payDD').classList.remove('show');});});
+    }
+    $('#payFrom').addEventListener('click',function(e){e.stopPropagation();open();});
+    document.addEventListener('click',function(e){if(!e.target.closest('#payDD')&&!e.target.closest('#payFrom'))$('#payDD').classList.remove('show');});
+  }
 
   // markets rail (sparklines)
   // Smooth Catmull-Rom -> cubic-bezier path (same curve as the main site's home charts).
@@ -510,7 +533,7 @@ tailwind.config={theme:{extend:{
 
   var CHARTD=[30,33,31,35,34,38,36,40,39,43,41,45,44,48,46,51];
   function drawChart(){var p=CHARTD,n=p.length,mx=Math.max.apply(null,p),mn=Math.min.apply(null,p),rng=(mx-mn)||1;var pts=p.map(function(v,i){return [i/(n-1)*100, 40-((v-mn)/rng)*36+2];});var d=smooth(pts);$('#xchartLine').setAttribute('d',d);$('#xchartFill').setAttribute('d',d+' L 100 42 L 0 42 Z');}
-  setType('fc');renderWallet();renderActivity();renderAccounts();renderMarkets();drawChart();renderAccent();syncTheme();
+  setType('fc');renderWallet();renderActivity();initPayFrom();renderMarkets();drawChart();renderAccent();syncTheme();
 })();
 </script>
 </body>
