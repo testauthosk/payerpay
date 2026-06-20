@@ -252,24 +252,30 @@ tailwind.config={theme:{extend:{
 
       <!-- ===== WALLET ===== -->
       <section data-screen="wallet" hidden class="lg:h-full max-w-[1100px] mx-auto flex flex-col">
-        <div class="flex items-end justify-between mb-3 shrink-0">
-          <div>
-            <h1 class="text-[22px] font-extrabold tracking-tight">Wallet</h1>
-            <p class="text-[12.5px] text-t3 mt-0.5">Your internal balance — deposit in, withdraw out anytime.</p>
-          </div>
-          <div class="text-right"><div class="text-[11px] text-t3 font-semibold">Total balance</div><div class="text-[22px] font-extrabold num tracking-tight">$24,310.84</div></div>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:flex-1 lg:min-h-0">
-          <div class="lg:col-span-2 bg-surf border border-line rounded-2xl p-4 flex flex-col min-h-0">
-            <div class="flex items-center justify-between mb-2 shrink-0"><div class="text-[13px] font-bold">Balances</div>
-              <div class="flex gap-1.5"><button class="text-[11.5px] font-bold text-mint-deep bg-mint-tint rounded-lg px-2.5 py-1">Deposit</button><button class="text-[11.5px] font-bold text-t2 bg-bg border border-line rounded-lg px-2.5 py-1">Withdraw</button></div>
+        <!-- hero: total + change + actions -->
+        <div class="bg-surf border border-line rounded-2xl p-4 lg:p-5 shrink-0 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div class="flex-1 min-w-0">
+            <div class="text-[11px] text-t3 font-bold uppercase tracking-[0.08em]">Total balance</div>
+            <div class="flex items-end gap-3 mt-0.5">
+              <div class="text-[28px] lg:text-[32px] font-extrabold num tracking-tight wbal">$24,310.84</div>
+              <div class="text-[13px] font-bold text-pos mb-1.5 flex items-center gap-1"><i class="ph-bold ph-trend-up"></i> +2.4%</div>
             </div>
-            <div id="walletBal" class="space-y-1 overflow-y-auto scroll-y -mr-1 pr-1"></div>
           </div>
-          <div class="lg:col-span-3 bg-surf border border-line rounded-2xl p-5 flex flex-col min-h-0">
-            <div class="flex items-center justify-between mb-1 shrink-0"><div class="text-[13px] font-bold">Deposit points</div><div id="depTabs" class="flex gap-1 text-[11.5px] font-semibold overflow-x-auto"></div></div>
-            <p class="text-[11.5px] text-t3 mb-3 shrink-0">Send funds to the matching point — they arrive in your wallet automatically.</p>
-            <div id="depBody" class="lg:flex-1 lg:min-h-0 overflow-y-auto scroll-y -mr-1 pr-1"></div>
+          <div class="grid grid-cols-3 sm:flex gap-2 shrink-0">
+            <button data-wact="deposit" class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 bg-mint text-ink rounded-xl px-3.5 py-2.5 text-[12.5px] font-bold hover:bg-mint-deep transition-colors"><i class="ph-bold ph-arrow-down-left text-[16px]"></i> Deposit</button>
+            <button data-wact="withdraw" class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 bg-bg border border-line rounded-xl px-3.5 py-2.5 text-[12.5px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-arrow-up-right text-[16px]"></i> Withdraw</button>
+            <button data-go="exchange" class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 bg-bg border border-line rounded-xl px-3.5 py-2.5 text-[12.5px] font-bold hover:border-mint transition-colors"><i class="ph-bold ph-arrows-left-right text-[16px]"></i> Exchange</button>
+          </div>
+        </div>
+        <!-- assets + allocation -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:flex-1 lg:min-h-0 mt-4">
+          <div class="lg:col-span-2 bg-surf border border-line rounded-2xl flex flex-col min-h-0">
+            <div class="flex items-center justify-between px-4 lg:px-5 py-3 border-b border-line shrink-0"><div class="text-[13px] font-bold">Your assets</div><button id="hideBal" class="text-[11.5px] font-semibold text-t2 hover:text-mint-deep flex items-center gap-1"><i class="ph ph-eye text-[14px]"></i> Hide</button></div>
+            <div id="walletAssets" class="lg:flex-1 lg:min-h-0 overflow-y-auto scroll-y p-1.5"></div>
+          </div>
+          <div class="bg-surf border border-line rounded-2xl p-4 lg:p-5 flex flex-col min-h-0">
+            <div class="text-[13px] font-bold mb-3 shrink-0">Allocation</div>
+            <div id="walletAlloc" class="lg:flex-1 lg:min-h-0 overflow-y-auto scroll-y space-y-3"></div>
           </div>
         </div>
       </section>
@@ -390,6 +396,13 @@ tailwind.config={theme:{extend:{
 <div id="curDD" class="dd fixed z-50 w-[260px] bg-surf border border-line rounded-2xl shadow-xl p-1.5"></div>
 
 <!-- deposit modal -->
+<div id="wModal" class="ppm fixed inset-0 z-50 grid place-items-center p-4">
+  <div class="ppm-bd absolute inset-0 bg-black/45" data-wclose></div>
+  <div class="ppm-card relative w-full max-w-[440px] bg-surf border border-line rounded-2xl p-5 max-h-[85vh] overflow-y-auto scroll-y">
+    <button class="absolute top-3.5 right-3.5 w-8 h-8 grid place-items-center rounded-lg text-t2 hover:bg-bg z-10" data-wclose><i class="ph-bold ph-x text-[15px]"></i></button>
+    <div id="wModalBody"></div>
+  </div>
+</div>
 <div id="depModal" class="ppm fixed inset-0 z-50 grid place-items-center p-4">
   <div class="ppm-bd absolute inset-0 bg-black/45" data-close></div>
   <div class="ppm-card relative w-full max-w-[420px] bg-surf border border-line rounded-2xl p-5">
@@ -496,12 +509,48 @@ tailwind.config={theme:{extend:{
   function closeDeposit(){$('#depModal').classList.remove('show');}
 
   // wallet
+  var CHG24={USD:0,EUR:0.2,GBP:-0.1,BTC:2.1,ETH:1.4,USDT:0,USDC:0,SOL:-0.8};
+  var ASSET_COLORS={USD:'#12B981',EUR:'#3B82F6',GBP:'#6366f1',BTC:'#F7931A',ETH:'#627EEA',USDT:'#26A17B',USDC:'#2775CA',SOL:'#14F195'};
   function renderWallet(){
-    $('#walletBal').innerHTML=WALLET.map(function(w){var code=w[0],bal=w[1],usd=bal*PRICE[code];return '<div class="flex items-center gap-3 px-2.5 py-2.5 rounded-xl hover:bg-bg">'+icoTag(code,'cico')+'<div class="min-w-0"><div class="text-[13px] font-bold">'+code+'</div><div class="text-[11px] text-t3 truncate">'+ALL[code].name+'</div></div><div class="ml-auto text-right"><div class="text-[13px] font-extrabold num">'+fmt(code,bal)+'</div><div class="text-[11px] text-t3 num">$'+fmt('USD',usd)+'</div></div></div>';}).join('');
-    var codes=['USD','EUR','GBP','BTC','ETH','USDT','SOL'];
-    $('#depTabs').innerHTML=codes.map(function(c,i){return '<button data-dep="'+c+'" class="depc px-2.5 py-1 rounded-lg whitespace-nowrap '+(i===0?'bg-mint-tint text-mint-deep':'text-t2 hover:bg-bg')+'">'+c+'</button>';}).join('');
-    $$('#depTabs [data-dep]').forEach(function(b){b.addEventListener('click',function(){$$('#depTabs .depc').forEach(function(x){x.className='depc px-2.5 py-1 rounded-lg whitespace-nowrap text-t2 hover:bg-bg';});b.className='depc px-2.5 py-1 rounded-lg whitespace-nowrap bg-mint-tint text-mint-deep';showDep(b.getAttribute('data-dep'));});});
-    showDep('USD');
+    var total=0; WALLET.forEach(function(w){total+=w[1]*PRICE[w[0]];});
+    $('#walletAssets').innerHTML=WALLET.map(function(w){var code=w[0],bal=w[1],usd=bal*PRICE[code],chg=CHG24[code]||0;
+      return '<button data-asset="'+code+'" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-bg text-left transition-colors">'
+        +'<img class="cico shrink-0" style="width:34px;height:34px" src="'+ALL[code].ico+'" alt="">'
+        +'<div class="min-w-0"><div class="text-[13.5px] font-bold leading-tight">'+code+'</div><div class="text-[11.5px] text-t3 truncate">'+ALL[code].name+'</div></div>'
+        +'<div class="ml-auto text-right wbal"><div class="text-[13.5px] font-extrabold num leading-tight">'+fmt(code,bal)+'</div><div class="text-[11px] text-t3 num">$'+fmt("USD",usd)+'</div></div>'
+        +'<div class="w-[52px] text-right text-[11.5px] font-bold num '+(chg>=0?'text-pos':'text-neg')+'">'+(chg>=0?'+':'')+chg.toFixed(1)+'%</div>'
+        +'<i class="ph-bold ph-caret-right text-t3 text-[13px] shrink-0"></i></button>';
+    }).join('');
+    $$('#walletAssets [data-asset]').forEach(function(b){b.addEventListener('click',function(){openWDeposit(b.getAttribute('data-asset'));});});
+    $('#walletAlloc').innerHTML=WALLET.slice().sort(function(a,b){return b[1]*PRICE[b[0]]-a[1]*PRICE[a[0]];}).map(function(w){var code=w[0],usd=w[1]*PRICE[code],pct=total?usd/total*100:0,col=ASSET_COLORS[code]||'#12B981';
+      return '<div><div class="flex items-center justify-between text-[12px] mb-1"><span class="font-bold flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:'+col+'"></span>'+code+'</span><span class="text-t3 num font-semibold">'+pct.toFixed(1)+'%</span></div><div class="h-2 rounded-full bg-bg overflow-hidden"><div class="h-full rounded-full" style="width:'+pct.toFixed(1)+'%;background:'+col+'"></div></div></div>';
+    }).join('');
+    $$('[data-wact]').forEach(function(b){b.addEventListener('click',function(){var a=b.getAttribute('data-wact');if(a==='deposit')openWDeposit(null);else openWWithdraw(null);});});
+    var hb=$('#hideBal');if(hb)hb.addEventListener('click',function(){document.body.classList.toggle('wallet-hide');var on=document.body.classList.contains('wallet-hide');hb.innerHTML=(on?'<i class="ph ph-eye-slash text-[14px]"></i> Show':'<i class="ph ph-eye text-[14px]"></i> Hide');});
+    $$('#wModal [data-wclose]').forEach(function(x){x.addEventListener('click',closeWModal);});
+  }
+  function showWModal(){$('#wModal').classList.add('show');}
+  function closeWModal(){$('#wModal').classList.remove('show');}
+  function openWDeposit(code){
+    var codes=['USD','EUR','GBP','BTC','ETH','USDT','SOL'].filter(function(c){return DEPOSIT[c];});
+    function paint(c){var d=DEPOSIT[c];
+      var chips=codes.map(function(x){return '<button data-wd="'+x+'" class="px-2.5 py-1 rounded-lg text-[12px] font-bold whitespace-nowrap '+(x===c?'bg-mint-tint text-mint-deep':'text-t2 hover:bg-bg')+'">'+x+'</button>';}).join('');
+      var rows=d.rows.map(function(r){return '<div class="flex items-center justify-between gap-3 px-4 py-2.5 border-t border-line first:border-0"><span class="text-[12px] text-t3">'+r[0]+'</span><div class="flex items-center gap-2 min-w-0"><span class="num text-[12.5px] font-semibold text-right break-all">'+r[1]+'</span><button class="shrink-0 text-t3 hover:text-mint-deep" data-copy="'+r[1]+'"><i class="ph ph-copy text-[14px]"></i></button></div></div>';}).join('');
+      $('#wModalBody').innerHTML='<div class="text-[16px] font-extrabold mb-0.5">Deposit</div><div class="text-[12px] text-t3 mb-3">Send to the matching point — funds credit your wallet automatically.</div><div class="flex gap-1.5 overflow-x-auto pb-2 -mx-1 px-1">'+chips+'</div><div class="rounded-xl border border-line overflow-hidden mt-1"><div class="flex items-center gap-2.5 px-4 py-3 bg-bg">'+icoTag(c,'cico')+'<div class="text-[13.5px] font-extrabold">'+c+' · '+d.kind+'</div></div>'+rows+'</div><button class="mt-4 w-full bg-mint text-ink rounded-xl py-2.5 text-[13px] font-extrabold hover:bg-mint-deep transition-colors" data-wclose>Done</button>';
+      $$('#wModalBody [data-wd]').forEach(function(x){x.addEventListener('click',function(){paint(x.getAttribute('data-wd'));});});
+      $$('#wModalBody [data-copy]').forEach(function(bb){bb.addEventListener('click',function(){try{navigator.clipboard.writeText(bb.getAttribute('data-copy'));var i=bb.querySelector('i');i.className='ph ph-check text-[14px] text-mint-deep';setTimeout(function(){i.className='ph ph-copy text-[14px]';},1200);}catch(e){}});});
+      $$('#wModalBody [data-wclose]').forEach(function(x){x.addEventListener('click',closeWModal);});
+    }
+    paint(code&&DEPOSIT[code]?code:'USD'); showWModal();
+  }
+  function openWWithdraw(code){
+    var codes=WALLET.map(function(w){return w[0];}); var sel=code&&codes.indexOf(code)>=0?code:codes[0];
+    function paint(c){var chips=codes.map(function(x){return '<button data-ww="'+x+'" class="px-2.5 py-1 rounded-lg text-[12px] font-bold whitespace-nowrap '+(x===c?'bg-mint-tint text-mint-deep':'text-t2 hover:bg-bg')+'">'+x+'</button>';}).join('');var bal=0;WALLET.forEach(function(w){if(w[0]===c)bal=w[1];});
+      $('#wModalBody').innerHTML='<div class="text-[16px] font-extrabold mb-0.5">Withdraw</div><div class="text-[12px] text-t3 mb-3">Send from your wallet to an external account or address.</div><div class="flex gap-1.5 overflow-x-auto pb-2 -mx-1 px-1 mb-1">'+chips+'</div><div class="rounded-xl border border-line bg-bg px-4 py-3 mb-2.5"><div class="flex items-center justify-between text-[11.5px] text-t3 font-semibold mb-1"><span>Amount</span><span class="num">Balance '+fmt(c,bal)+' '+c+'</span></div><div class="flex items-center gap-2"><input type="number" value="'+(bal*0.5).toFixed(c==="BTC"||c==="ETH"?4:2)+'" class="amt num flex-1 min-w-0 bg-transparent outline-none text-[24px] font-extrabold tracking-tight"><span class="text-[15px] font-extrabold shrink-0">'+c+'</span></div></div><div class="rounded-xl border border-line bg-bg px-4 py-3 mb-4"><div class="text-[11.5px] text-t3 font-semibold mb-1">Send to</div><input placeholder="Address or account number" class="w-full bg-transparent outline-none text-[13px] font-semibold"></div><button class="w-full bg-mint text-ink rounded-xl py-2.5 text-[13px] font-extrabold hover:bg-mint-deep transition-colors" data-wclose>Withdraw '+c+'</button>';
+      $$('#wModalBody [data-ww]').forEach(function(x){x.addEventListener('click',function(){paint(x.getAttribute('data-ww'));});});
+      $$('#wModalBody [data-wclose]').forEach(function(x){x.addEventListener('click',closeWModal);});
+    }
+    paint(sel); showWModal();
   }
   function showDep(code){var d=DEPOSIT[code];var rows=d.rows.map(function(r){return '<div class="flex items-center justify-between gap-3 px-4 py-2.5 border-t border-line first:border-0"><span class="text-[12px] text-t3">'+r[0]+'</span><div class="flex items-center gap-2 min-w-0"><span class="num text-[12.5px] font-semibold text-right break-all">'+r[1]+'</span><button class="shrink-0 text-t3 hover:text-mint-deep" data-copy="'+r[1]+'"><i class="ph ph-copy text-[14px]"></i></button></div></div>';}).join('');$('#depBody').innerHTML='<div class="rounded-xl border border-line overflow-hidden"><div class="flex items-center gap-2.5 px-4 py-3 bg-bg">'+icoTag(code,'cico')+'<div><div class="text-[13.5px] font-extrabold">'+code+' · '+d.kind+'</div><div class="text-[11px] text-t3">Funds credit your wallet automatically</div></div></div>'+rows+'</div><div class="flex gap-2 mt-3"><button class="flex-1 bg-mint text-ink rounded-xl py-2.5 text-[12.5px] font-extrabold hover:bg-mint-deep transition-colors">Withdraw '+code+'</button><button class="flex-1 bg-bg border border-line rounded-xl py-2.5 text-[12.5px] font-bold hover:border-mint transition-colors">Share details</button></div>';$$('#depBody [data-copy]').forEach(function(b){b.addEventListener('click',function(){try{navigator.clipboard.writeText(b.getAttribute('data-copy'));var i=b.querySelector('i');i.className='ph ph-check text-[14px] text-mint-deep';setTimeout(function(){i.className='ph ph-copy text-[14px]';},1200);}catch(e){}});});}
 
