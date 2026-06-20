@@ -154,36 +154,39 @@ tailwind.config={theme:{extend:{
       <section data-screen="exchange" class="lg:h-full max-w-[1160px] mx-auto flex flex-col">
         <!-- 4 exchange types -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4 shrink-0">
-          <button data-xtype="fc" class="xtab active flex items-center gap-2 px-3 py-3 rounded-xl border border-line bg-surf text-left transition-colors">
+          <button data-xtype="fc" class="xtab active flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line bg-surf text-left transition-colors">
             <i class="ph-bold ph-bank text-[17px]"></i><i class="ph-bold ph-arrow-right text-[11px] -mx-1 opacity-40"></i><i class="ph-bold ph-currency-btc text-[17px]"></i>
             <span class="text-[12px] font-bold leading-tight ml-0.5">Fiat → Crypto</span>
           </button>
-          <button data-xtype="cf" class="xtab flex items-center gap-2 px-3 py-3 rounded-xl border border-line bg-surf text-left transition-colors">
+          <button data-xtype="cf" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line bg-surf text-left transition-colors">
             <i class="ph-bold ph-currency-btc text-[17px]"></i><i class="ph-bold ph-arrow-right text-[11px] -mx-1 opacity-40"></i><i class="ph-bold ph-bank text-[17px]"></i>
             <span class="text-[12px] font-bold leading-tight ml-0.5">Crypto → Fiat</span>
           </button>
-          <button data-xtype="ff" class="xtab flex items-center gap-2 px-3 py-3 rounded-xl border border-line bg-surf text-left transition-colors">
+          <button data-xtype="ff" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line bg-surf text-left transition-colors">
             <i class="ph-bold ph-bank text-[17px]"></i><i class="ph-bold ph-arrows-left-right text-[11px] -mx-1 opacity-40"></i><i class="ph-bold ph-bank text-[17px]"></i>
             <span class="text-[12px] font-bold leading-tight ml-0.5">Fiat → Fiat</span>
           </button>
-          <button data-xtype="cc" class="xtab flex items-center gap-2 px-3 py-3 rounded-xl border border-line bg-surf text-left transition-colors">
+          <button data-xtype="cc" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line bg-surf text-left transition-colors">
             <i class="ph-bold ph-currency-btc text-[17px]"></i><i class="ph-bold ph-arrows-left-right text-[11px] -mx-1 opacity-40"></i><i class="ph-bold ph-currency-eth text-[17px]"></i>
             <span class="text-[12px] font-bold leading-tight ml-0.5">Crypto → Crypto</span>
           </button>
         </div>
 
         <!-- exchange card -->
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 lg:flex-1 lg:min-h-0">
-          <div class="lg:col-span-3 bg-surf border border-line rounded-2xl p-6 flex flex-col">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-3 lg:gap-5 lg:flex-1 lg:min-h-0">
+          <div class="lg:col-span-3 bg-surf border border-line rounded-2xl p-4 lg:p-6 flex flex-col">
             <div class="flex items-center justify-between mb-3">
               <span class="text-[12px] font-semibold text-t3">Pay from</span>
-              <button id="payFrom" class="flex items-center gap-2 bg-bg border border-line rounded-xl pl-2.5 pr-3 py-2 hover:border-mint transition-colors">
-                <i id="payFromIc" class="ph-fill ph-wallet text-mint-deep text-[15px]"></i>
-                <span id="payFromLbl" class="text-[13px] font-bold">Wallet balance</span>
-                <i class="ph-bold ph-caret-down text-[12px] text-t3"></i>
+              <button id="payFrom" class="flex items-center gap-2.5 bg-bg border border-line rounded-xl pl-2.5 pr-3 py-1.5 hover:border-mint transition-colors">
+                <i id="payFromIc" class="ph-fill ph-wallet text-mint-deep text-[16px] shrink-0"></i>
+                <span class="text-left leading-tight">
+                  <span id="payFromLbl" class="block text-[13px] font-bold">Wallet balance</span>
+                  <span id="payFromBal" class="block text-[11px] text-t3 num">&mdash;</span>
+                </span>
+                <i class="ph-bold ph-caret-down text-[12px] text-t3 shrink-0"></i>
               </button>
             </div>
-            <div class="rounded-xl border border-line bg-bg px-5 py-4">
+            <div class="rounded-xl border border-line bg-bg px-4 lg:px-5 py-3 lg:py-4">
               <div class="flex items-center justify-between text-[12px] font-semibold text-t3 mb-1.5"><span>You send</span><span id="sendBal">Balance: —</span></div>
               <div class="flex items-center gap-3">
                 <input id="sendAmt" type="number" inputmode="decimal" class="amt num flex-1 min-w-0 bg-transparent outline-none text-[32px] font-extrabold tracking-tight" value="1000">
@@ -195,7 +198,7 @@ tailwind.config={theme:{extend:{
             <div class="flex justify-center -my-3 relative z-10">
               <button id="swapBtn" class="swapbtn w-10 h-10 grid place-items-center rounded-full bg-surf border border-line text-mint-deep hover:border-mint shadow-sm"><i class="ph-bold ph-arrows-down-up text-[16px]"></i></button>
             </div>
-            <div class="rounded-xl border border-line bg-bg px-5 py-4">
+            <div class="rounded-xl border border-line bg-bg px-4 lg:px-5 py-3 lg:py-4">
               <div class="flex items-center justify-between text-[12px] font-semibold text-t3 mb-1.5"><span>You get</span><span id="rateInline">—</span></div>
               <div class="flex items-center gap-3">
                 <input id="getAmt" type="text" readonly class="amt num flex-1 min-w-0 bg-transparent outline-none text-[32px] font-extrabold tracking-tight text-mint-deep" value="0">
@@ -210,7 +213,7 @@ tailwind.config={theme:{extend:{
               <button data-pct="1" class="qamt text-[12.5px] font-bold text-t2 bg-bg border border-line rounded-lg py-2.5 hover:border-mint hover:text-mint-deep transition-colors">Max</button>
             </div>
             <!-- pair chart fills remaining height -->
-            <div class="mt-5 h-44 lg:h-auto lg:flex-1 lg:min-h-0 rounded-xl border border-line bg-bg px-5 pt-4 pb-3 flex flex-col">
+            <div class="mt-3 lg:mt-5 h-16 lg:h-auto lg:flex-1 lg:min-h-0 rounded-xl border border-line bg-bg px-4 lg:px-5 pt-3 lg:pt-4 pb-2 lg:pb-3 flex flex-col">
               <div class="flex items-center justify-between mb-1 shrink-0">
                 <div class="flex items-center gap-2"><i class="ph-bold ph-chart-line-up text-mint-deep text-[15px]"></i><span id="pairLbl" class="text-[13px] font-bold">USD → BTC</span></div>
                 <span class="text-[12px] font-bold text-pos">+2.1% · 24h</span>
@@ -223,22 +226,22 @@ tailwind.config={theme:{extend:{
             </div>
           </div>
 
-          <div class="lg:col-span-2 bg-surf border border-line rounded-2xl p-6 flex flex-col">
+          <div class="lg:col-span-2 bg-surf border border-line rounded-2xl p-4 lg:p-6 flex flex-col">
             <div class="text-[13px] font-bold mb-3">Order summary</div>
-            <div class="rounded-xl bg-mint-tint p-4 mb-4">
+            <div class="rounded-xl bg-mint-tint p-3 lg:p-4 mb-3 lg:mb-4">
               <div class="text-[11px] font-bold text-mint-deep uppercase tracking-[0.08em]">You receive</div>
-              <div id="sumGet" class="text-[28px] font-extrabold num text-mint-deep tracking-tight mt-1">—</div>
+              <div id="sumGet" class="text-[23px] lg:text-[28px] font-extrabold num text-mint-deep tracking-tight mt-0.5 lg:mt-1">—</div>
             </div>
-            <div class="space-y-3 text-[13px]">
+            <div class="space-y-2 lg:space-y-3 text-[12.5px] lg:text-[13px]">
               <div class="flex items-center justify-between gap-2"><span class="text-t3">Rate</span><span id="sumRate" class="num font-semibold text-right">—</span></div>
               <div class="flex items-center justify-between gap-2"><span class="text-t3">Fee</span><span id="sumFee" class="num font-semibold text-right">—</span></div>
               <div class="flex items-center justify-between"><span class="text-t3">Est. arrival</span><span id="sumEta" class="font-semibold">~5 min</span></div>
             </div>
-            <div class="rounded-xl bg-bg border border-line p-3.5 mt-4 text-[11.5px] text-t2 leading-relaxed">
+            <div class="hidden lg:block rounded-xl bg-bg border border-line p-3.5 mt-4 text-[11.5px] text-t2 leading-relaxed">
               <div class="flex items-center gap-1.5 font-bold text-ink mb-1"><i class="ph-fill ph-shield-check text-mint-deep text-[14px]"></i> No hidden fees</div>
               Mid-market rate, locked 60s. Funds auto-convert and credit your wallet — withdraw anytime.
             </div>
-            <button id="getDeposit" class="w-full bg-mint text-ink rounded-xl py-3.5 text-[14px] font-extrabold hover:bg-mint-deep transition-colors mt-auto">Get deposit details</button>
+            <button id="getDeposit" class="w-full bg-mint text-ink rounded-xl py-3 lg:py-3.5 text-[14px] font-extrabold hover:bg-mint-deep transition-colors mt-4 lg:mt-auto">Get deposit details</button>
           </div>
         </div>
       </section>
@@ -477,7 +480,7 @@ tailwind.config={theme:{extend:{
   function pickCur(side,code){if(side==='send'&&code===cur.get){cur.get=cur.send;}else if(side==='get'&&code===cur.send){cur.send=cur.get;}cur[side]=code;paintCur('send');paintCur('get');recalc();}
   function paintCur(side){var btn=(side==='send')?$('#sendCur'):$('#getCur');var code=cur[side];$('.code',btn).textContent=code;$('.cico',btn).src=ALL[code].ico;}
   function rate(){return PRICE[cur.send]/PRICE[cur.get];}
-  function recalc(){var amt=parseFloat($('#sendAmt').value)||0;var net=amt*rate()*(1-FEE_PCT);$('#getAmt').value=fmt(cur.get,net);$('#rateInline').textContent='1 '+cur.send+' ≈ '+fmt(cur.get,rate())+' '+cur.get;$('#sumRate').textContent='1 '+cur.send+' = '+fmt(cur.get,rate())+' '+cur.get;$('#sumFee').textContent=(FEE_PCT*100).toFixed(1)+'% · '+fmt(cur.send,amt*FEE_PCT)+' '+cur.send;$('#sumGet').textContent=fmt(cur.get,net)+' '+cur.get;$('#sumEta').textContent=(CRYP.indexOf(cur.send)>=0)?'~3 min':'~1 hour';var ab=availBal();$('#sendBal').textContent=(ab!=null?'Balance: '+fmt(cur.send,ab)+' '+cur.send:'Instant');var pl=$('#pairLbl');if(pl)pl.textContent=cur.send+' → '+cur.get;}
+  function recalc(){var amt=parseFloat($('#sendAmt').value)||0;var net=amt*rate()*(1-FEE_PCT);$('#getAmt').value=fmt(cur.get,net);$('#rateInline').textContent='1 '+cur.send+' ≈ '+fmt(cur.get,rate())+' '+cur.get;$('#sumRate').textContent='1 '+cur.send+' = '+fmt(cur.get,rate())+' '+cur.get;$('#sumFee').textContent=(FEE_PCT*100).toFixed(1)+'% · '+fmt(cur.send,amt*FEE_PCT)+' '+cur.send;$('#sumGet').textContent=fmt(cur.get,net)+' '+cur.get;$('#sumEta').textContent=(CRYP.indexOf(cur.send)>=0)?'~3 min':'~1 hour';var ab=availBal();$('#sendBal').textContent=(ab!=null?'Balance: '+fmt(cur.send,ab)+' '+cur.send:'Instant');var pf=$('#payFromBal');if(pf)pf.textContent=(ab!=null?fmt(cur.send,ab)+' '+cur.send:'Instant');var pl=$('#pairLbl');if(pl)pl.textContent=cur.send+' → '+cur.get;}
   $$('.xtab').forEach(function(x){x.addEventListener('click',function(){setType(x.getAttribute('data-xtype'));});});
   $$('.curbtn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();openDD(b);});});
   $('#sendAmt').addEventListener('input',recalc);
