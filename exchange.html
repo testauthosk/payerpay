@@ -86,49 +86,60 @@ tailwind.config={theme:{extend:{
 </style>
 </head>
 <body class="font-sans bg-bg text-ink">
-<div class="h-full flex flex-col">
+<div class="h-full flex">
 
-  <!-- ============ TOP NAV ============ -->
-  <header class="h-16 shrink-0 bg-surf border-b border-line flex items-center gap-3 px-5 z-30">
-    <div class="flex items-center gap-2.5 shrink-0">
+  <!-- ============ LEFT SIDEBAR ============ -->
+  <aside class="w-[220px] shrink-0 bg-surf border-r border-line flex flex-col px-3 py-4">
+    <div class="flex items-center gap-2.5 px-2 pb-4">
       <div class="pp-mark"><span class="mp">P</span><span class="dot"></span></div>
-      <b class="text-[17px] font-extrabold tracking-tight hidden sm:block">Payer<span class="text-mint-deep">Pay</span></b>
-      <span class="hidden lg:block text-[10px] font-bold uppercase tracking-[0.14em] text-t3 border border-line rounded-full px-2 py-0.5 ml-1">Exchange</span>
+      <b class="text-[17px] font-extrabold tracking-tight">Payer<span class="text-mint-deep">Pay</span></b>
+      <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-t3 border border-line rounded-full px-1.5 py-0.5 ml-0.5">EXCH</span>
     </div>
-
-    <nav class="flex items-center gap-1 ml-2 text-[13px] font-semibold overflow-x-auto">
-      <a data-nav="exchange" class="navi active cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap hover:bg-bg"><i class="ph-bold ph-arrows-left-right text-[16px]"></i> Exchange</a>
-      <a data-nav="wallet" class="navi cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap hover:bg-bg"><i class="ph ph-wallet text-[16px]"></i> Wallet</a>
-      <a data-nav="activity" class="navi cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap hover:bg-bg"><i class="ph ph-clock-counter-clockwise text-[16px]"></i> Activity</a>
-      <a data-nav="news" class="navi cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap hover:bg-bg"><i class="ph ph-newspaper text-[16px]"></i> News</a>
-      <a data-nav="accounts" class="navi cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap hover:bg-bg"><i class="ph ph-bank text-[16px]"></i> Accounts</a>
-      <a data-nav="settings" class="navi cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap hover:bg-bg"><i class="ph ph-gear text-[16px]"></i> Settings</a>
+    <nav class="flex flex-col gap-0.5 text-[13px] font-semibold mt-1">
+      <a data-nav="exchange" class="navi active cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph-bold ph-arrows-left-right text-[17px]"></i> Exchange</a>
+      <a data-nav="wallet" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-wallet text-[17px]"></i> Wallet</a>
+      <a data-nav="activity" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-clock-counter-clockwise text-[17px]"></i> Activity</a>
+      <a data-nav="news" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-newspaper text-[17px]"></i> News</a>
+      <a data-nav="accounts" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-bank text-[17px]"></i> Accounts</a>
+      <a data-nav="settings" class="navi cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-bg"><i class="ph ph-gear text-[17px]"></i> Settings</a>
     </nav>
-
-    <div class="ml-auto flex items-center gap-2 shrink-0">
-      <div class="hidden md:flex bg-bg rounded-xl p-0.5 border border-line mr-1">
-        <button data-seg="personal" class="seg active flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-t2 text-[12px] font-semibold transition-colors"><i class="ph-fill ph-user text-[13px]"></i> Personal</button>
-        <button data-seg="business" class="seg flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-t2 text-[12px] font-semibold transition-colors"><i class="ph ph-buildings text-[13px]"></i> Business</button>
+    <div class="mt-auto">
+      <div class="flex bg-bg rounded-xl p-0.5 border border-line">
+        <button data-seg="personal" class="seg active flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-t2 text-[12px] font-semibold transition-colors"><i class="ph-fill ph-user text-[13px]"></i> Personal</button>
+        <button data-seg="business" class="seg flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-t2 text-[12px] font-semibold transition-colors"><i class="ph ph-buildings text-[13px]"></i> Business</button>
       </div>
-      <button id="railToggle" type="button" class="hidden xl:grid w-9 h-9 rounded-xl bg-bg border border-line place-items-center hover:border-mint transition-colors" title="Hide market panel"><i class="ph-bold ph-sidebar-simple rt-chev text-[16px]"></i></button>
-      <button id="themeToggle" class="w-9 h-9 grid place-items-center rounded-xl bg-bg border border-line text-t2 hover:border-mint transition-colors"><i class="ph ph-moon text-[16px]"></i></button>
-      <div class="relative">
-        <button id="notifBtn" type="button" class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative hover:border-mint transition-colors text-t2"><i class="ph ph-bell text-[16px]"></i><span class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
-        <div id="notifPanel" class="absolute right-0 top-[calc(100%+8px)] z-50 w-[320px] bg-surf border border-line rounded-2xl shadow-2xl overflow-hidden">
-          <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">Notifications</div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">Mark read</button></div>
-          <div class="divide-y divide-line max-h-[300px] overflow-y-auto scroll-y">
-            <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug">USD → BTC exchange complete — 0.0152 BTC in your wallet</div><div class="text-[10.5px] text-t3 mt-1">2m ago</div></div></div>
-            <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug">EUR deposit received — €1,200 credited</div><div class="text-[10.5px] text-t3 mt-1">1h ago</div></div></div>
-            <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug text-t2">BTC is up 2.1% today</div><div class="text-[10.5px] text-t3 mt-1">3h ago</div></div></div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN COLUMN ============ -->
+  <div class="flex-1 min-w-0 flex flex-col">
+
+    <!-- top utility bar -->
+    <header class="h-14 shrink-0 bg-surf border-b border-line flex items-center gap-3 px-5">
+      <div class="relative hidden sm:block">
+        <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-t3 text-[15px]"></i>
+        <input type="text" placeholder="Search markets, transactions…" class="bg-bg border border-line rounded-xl pl-9 pr-3 py-2 text-[13px] w-[260px] outline-none focus:border-mint transition-colors">
+      </div>
+      <div class="ml-auto flex items-center gap-2 shrink-0">
+        <button id="railToggle" type="button" class="hidden xl:grid w-9 h-9 rounded-xl bg-bg border border-line place-items-center hover:border-mint transition-colors" title="Hide market panel"><i class="ph-bold ph-sidebar-simple rt-chev text-[16px]"></i></button>
+        <button id="themeToggle" class="w-9 h-9 grid place-items-center rounded-xl bg-bg border border-line text-t2 hover:border-mint transition-colors"><i class="ph ph-moon text-[16px]"></i></button>
+        <div class="relative">
+          <button id="notifBtn" type="button" class="w-9 h-9 rounded-xl bg-bg border border-line grid place-items-center relative hover:border-mint transition-colors text-t2"><i class="ph ph-bell text-[16px]"></i><span class="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-mint"></span></button>
+          <div id="notifPanel" class="absolute right-0 top-[calc(100%+8px)] z-50 w-[320px] bg-surf border border-line rounded-2xl shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-line"><div class="text-[13px] font-bold">Notifications</div><button class="text-[11.5px] font-semibold text-mint-deep hover:underline">Mark read</button></div>
+            <div class="divide-y divide-line max-h-[300px] overflow-y-auto scroll-y">
+              <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug">USD → BTC exchange complete — 0.0152 BTC in your wallet</div><div class="text-[10.5px] text-t3 mt-1">2m ago</div></div></div>
+              <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-mint mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug">EUR deposit received — €1,200 credited</div><div class="text-[10.5px] text-t3 mt-1">1h ago</div></div></div>
+              <div class="flex gap-2.5 px-4 py-3"><span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1.5 shrink-0"></span><div><div class="text-[12.5px] font-semibold leading-snug text-t2">BTC is up 2.1% today</div><div class="text-[10.5px] text-t3 mt-1">3h ago</div></div></div>
+            </div>
           </div>
         </div>
+        <button class="flex items-center gap-2 bg-mint text-ink rounded-xl px-3 sm:px-3.5 py-2 text-[13px] font-bold shrink-0 hover:bg-mint-deep transition-colors"><i class="ph-bold ph-plus text-[15px]"></i> <span class="hidden sm:inline">Add money</span></button>
       </div>
-      <button class="flex items-center gap-2 bg-mint text-ink rounded-xl px-3 sm:px-3.5 py-2 text-[13px] font-bold shrink-0 hover:bg-mint-deep transition-colors"><i class="ph-bold ph-plus text-[15px]"></i> <span class="hidden sm:inline">Add money</span></button>
-    </div>
-  </header>
+    </header>
 
-  <!-- shell: main + slide-out rail -->
-  <div class="flex-1 min-h-0 flex">
+    <!-- shell: main + slide-out rail -->
+    <div class="flex-1 min-h-0 flex">
 
     <!-- ============ MAIN (single screen, no page scroll) ============ -->
     <main class="flex-1 min-w-0 overflow-hidden px-5 py-5">
@@ -371,6 +382,7 @@ tailwind.config={theme:{extend:{
     <span class="hidden sm:inline">Powered by <b class="text-t2">PayerPay</b></span>
     <span class="sm:hidden">by <b class="text-t2">PayerPay</b></span>
   </footer>
+  </div>
 </div>
 
 <!-- currency dropdown -->
