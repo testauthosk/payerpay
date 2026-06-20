@@ -63,9 +63,10 @@ tailwind.config={theme:{extend:{
  .pp-mark .mp{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;line-height:1;letter-spacing:-.05em;color:#E9F6EF;margin-top:-1px}
  .pp-mark .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#33E6A0;top:6px;right:7px;box-shadow:0 1px 4px rgba(51,230,160,.7)}
  .cico{width:22px;height:22px;border-radius:50%;object-fit:cover;background:rgb(var(--bg))}
- .dd{max-height:0;opacity:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .28s ease,border-color .25s ease,border-top-width .25s ease,border-top-left-radius .28s ease,border-top-right-radius .28s ease;pointer-events:none}
+ .dd{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .34s cubic-bezier(.4,0,.2,1),opacity .24s ease,border-color .25s ease,border-top-width .25s ease,border-top-left-radius .28s ease,border-top-right-radius .28s ease;pointer-events:none}
+ .dd>.dd-in{overflow:hidden;min-height:0}
  #payFrom,.curbtn{transition:border-color .25s ease,border-bottom-width .25s ease,border-bottom-left-radius .28s ease,border-bottom-right-radius .28s ease,background-color .2s ease}
- .dd.show{max-height:400px;opacity:1;pointer-events:auto;border-color:rgb(var(--mint));border-top-width:0;border-top-left-radius:0;border-top-right-radius:0}
+ .dd.show{grid-template-rows:1fr;opacity:1;pointer-events:auto;border-color:rgb(var(--mint));border-top-width:0;border-top-left-radius:0;border-top-right-radius:0}
  .ddbtn-open{border-color:rgb(var(--mint)) !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important;border-bottom-width:0 !important}
  .cp{pointer-events:none}
  .cp .cp-bd{opacity:0;background:rgb(var(--bg) / .55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);transition:opacity .28s ease}
@@ -241,7 +242,7 @@ tailwind.config={theme:{extend:{
                   </span>
                   <i class="ph-bold ph-caret-down text-[12px] text-t3 shrink-0"></i>
                 </button>
-                <div id="payDD" class="dd absolute left-0 right-0 top-full z-50 bg-surf border border-line rounded-2xl shadow-lg p-1.5"></div>
+                <div id="payDD" class="dd absolute left-0 right-0 top-full z-50 bg-surf border border-line rounded-2xl shadow-lg"></div>
               </div>
             </div>
             <div class="rounded-xl border border-line bg-bg px-4 lg:px-5 py-3 lg:py-4">
@@ -447,7 +448,7 @@ tailwind.config={theme:{extend:{
 </div>
 
 <!-- currency dropdown -->
-<div id="curDD" class="dd fixed z-50 w-[260px] bg-surf border border-line rounded-2xl shadow-xl p-1.5"></div>
+<div id="curDD" class="dd fixed z-50 w-[260px] bg-surf border border-line rounded-2xl shadow-xl"></div>
 
 <!-- deposit modal -->
 <!-- notifications bottom sheet -->
@@ -599,7 +600,7 @@ tailwind.config={theme:{extend:{
 
   // currency dropdown
   var ddSide=null;
-  function closeAllDD(){$$('.dd.show').forEach(function(d){d.style.maxHeight='0px';d.classList.remove('show');});$$('.ddbtn-open').forEach(function(b){b.classList.remove('ddbtn-open');});}
+  function closeAllDD(){$$('.dd.show').forEach(function(d){d.classList.remove('show');});$$('.ddbtn-open').forEach(function(b){b.classList.remove('ddbtn-open');});}
   function openDD(btn){
     var dd=$('#curDD'); var wasOpen=dd.classList.contains('show')&&btn.classList.contains('ddbtn-open');
     closeAllDD(); if(wasOpen) return;
@@ -642,7 +643,7 @@ tailwind.config={theme:{extend:{
       return '<button data-asset="'+code+'" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-bg text-left transition-colors">'
         +'<img class="cico shrink-0" style="width:34px;height:34px" src="'+ALL[code].ico+'" alt="">'
         +'<div class="min-w-0"><div class="text-[13.5px] font-bold leading-tight">'+code+'</div><div class="text-[11.5px] text-t3 truncate">'+ALL[code].name+'</div></div>'
-        +'<div class="ml-auto text-right wbal"><div class="text-[13.5px] font-extrabold num leading-tight">'+fmt(code,bal)+'</div><div class="text-[11px] text-t3 num">$'+fmt("USD",usd)+'</div></div>'
+        +'<div class="ml-auto text-right wbal px-2.5"><div class="text-[13.5px] font-extrabold num leading-tight">'+fmt(code,bal)+'</div><div class="text-[11px] text-t3 num">$'+fmt("USD",usd)+'</div></div>'
         +'<div class="w-[52px] text-right text-[11.5px] font-bold num '+(chg>=0?'text-pos':'text-neg')+'">'+(chg>=0?'+':'')+chg.toFixed(1)+'%</div>'
         +'<i class="ph-bold ph-caret-right text-t3 text-[13px] shrink-0"></i></button>';
     }).join('');
@@ -744,10 +745,10 @@ tailwind.config={theme:{extend:{
     function build(){
       var fiatSend=(cur.type==='fc'||cur.type==='ff');
       var list=SOURCES.filter(function(s){return s.kind==='wallet'||(fiatSend?s.kind==='fiat':s.kind==='crypto');});
-      $('#payDD').innerHTML=list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('');
+      $('#payDD').innerHTML='<div class="dd-in p-1.5">'+list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('')+'</div>';
       $$('#payDD [data-pf]').forEach(function(b){b.addEventListener('click',function(){var s=SOURCES.filter(function(x){return x.id===b.getAttribute('data-pf');})[0];if(s)setSource(s);closeAllDD();});});
     }
-    $('#payFrom').addEventListener('click',function(e){e.stopPropagation();var dd=$('#payDD');var wasOpen=dd.classList.contains('show');closeAllDD();if(wasOpen)return;build();dd.classList.add('show');$('#payFrom').classList.add('ddbtn-open');dd.style.maxHeight=dd.scrollHeight+'px';});
+    $('#payFrom').addEventListener('click',function(e){e.stopPropagation();var dd=$('#payDD');var wasOpen=dd.classList.contains('show');closeAllDD();if(wasOpen)return;build();dd.classList.add('show');$('#payFrom').classList.add('ddbtn-open');});
   }
 
   // markets rail (sparklines)
