@@ -65,7 +65,9 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
  .navi.active{background:rgb(var(--mint-tint));color:rgb(var(--mint-deep))}
  .navi.active i{color:rgb(var(--mint-deep))}
  .seg.active{background:rgb(var(--chip));color:#fff}
- .xtab.active{background:rgb(var(--mint-tint));color:rgb(var(--mint-deep));border-color:rgb(var(--mint) / .45)}
+ .xtab{position:relative;z-index:1}
+ .xtab.active{color:rgb(var(--mint-deep));border-color:transparent}
+ .xtab-ind{position:absolute;top:0;left:0;width:0;height:0;border-radius:12px;background:rgb(var(--mint-tint));border:1px solid rgb(var(--mint) / .5);z-index:0;pointer-events:none;transition:transform .42s cubic-bezier(.4,0,.2,1),width .42s cubic-bezier(.4,0,.2,1),height .42s cubic-bezier(.4,0,.2,1)}
  .toggle-on{background:rgb(var(--mint))}
  .toggle-on .knob{transform:translateX(16px)}
  .pp-mark{position:relative;width:32px;height:32px;border-radius:9px;overflow:hidden;display:grid;place-items:center;background:radial-gradient(85% 85% at 72% 22%,rgba(51,230,160,.34) 0%,transparent 46%),radial-gradient(120% 120% at 28% 16%,#1E3A2C 0%,transparent 56%),linear-gradient(150deg,#16271E 0%,#0E1A14 60%,#0A120E 100%);box-shadow:0 2px 8px -2px rgba(10,18,14,.5)}
@@ -270,20 +272,21 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
       <!-- ===== EXCHANGE ===== -->
       <section data-screen="exchange" class="lg:h-full max-w-[1160px] mx-auto flex flex-col">
         <!-- 4 exchange types -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4 shrink-0">
-          <button data-xtype="fc" class="xtab active flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line bg-surf text-left transition-colors">
+        <div class="relative grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4 shrink-0">
+          <div id="xtabInd" class="xtab-ind"></div>
+          <button data-xtype="fc" class="xtab active flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line text-left transition-colors">
             <i class="ph-bold ph-bank text-[17px]"></i><i class="ph-bold ph-arrow-right text-[11px] -mx-1 opacity-40"></i><i class="ph-bold ph-currency-btc text-[17px]"></i>
             <span class="text-[12px] font-bold leading-tight ml-0.5">Fiat → Crypto</span>
           </button>
-          <button data-xtype="cf" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line bg-surf text-left transition-colors">
+          <button data-xtype="cf" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line text-left transition-colors">
             <i class="ph-bold ph-currency-btc text-[17px]"></i><i class="ph-bold ph-arrow-right text-[11px] -mx-1 opacity-40"></i><i class="ph-bold ph-bank text-[17px]"></i>
             <span class="text-[12px] font-bold leading-tight ml-0.5">Crypto → Fiat</span>
           </button>
-          <button data-xtype="ff" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line bg-surf text-left transition-colors">
+          <button data-xtype="ff" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line text-left transition-colors">
             <i class="ph-bold ph-bank text-[17px]"></i><i class="ph-bold ph-arrows-left-right text-[11px] -mx-1 opacity-40"></i><i class="ph-bold ph-bank text-[17px]"></i>
             <span class="text-[12px] font-bold leading-tight ml-0.5">Fiat → Fiat</span>
           </button>
-          <button data-xtype="cc" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line bg-surf text-left transition-colors">
+          <button data-xtype="cc" class="xtab flex items-center gap-2 px-3 py-2.5 lg:py-3 rounded-xl border border-line text-left transition-colors">
             <i class="ph-bold ph-currency-btc text-[17px]"></i><i class="ph-bold ph-arrows-left-right text-[11px] -mx-1 opacity-40"></i><i class="ph-bold ph-currency-eth text-[17px]"></i>
             <span class="text-[12px] font-bold leading-tight ml-0.5">Crypto → Crypto</span>
           </button>
@@ -746,7 +749,8 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
   function availBal(){var s=cur.src||SOURCES[0];if(s.id==='wallet'){var wb=0;WALLET.forEach(function(w){if(w[0]===cur.send)wb=w[1];});return wb;}return s.bal;}
   function updatePayLabel(){var s=cur.src||SOURCES[0];var lbl=$('#payFromLbl'),ic=$('#payFromIc');if(lbl)lbl.textContent=s.label;if(ic)ic.className=s.icon+' text-mint-deep text-[15px]';}
   function setSource(s){if(s.cur&&(cur.type==='cf'||cur.type==='cc'))setType('fc');cur.src=s;if(s.cur){cur.send=s.cur;paintCur('send');}updatePayLabel();recalc();}
-  function setType(t){cur.type=t;var T=TYPES[t];cur.list.send=T.send;cur.list.get=T.get;cur.send=T.sd;cur.get=T.gd;cur.src=SOURCES[0];$$('.xtab').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-xtype')===t);});updatePayLabel();paintCur('send');paintCur('get');recalc();}
+  function moveXtabInd(noanim){var a=$('.xtab.active'),ind=$('#xtabInd');if(!a||!ind)return;if(noanim)ind.style.transition='none';ind.style.width=a.offsetWidth+'px';ind.style.height=a.offsetHeight+'px';ind.style.transform='translate('+a.offsetLeft+'px,'+a.offsetTop+'px)';if(noanim){void ind.offsetWidth;ind.style.transition='';}}
+  function setType(t){cur.type=t;var T=TYPES[t];cur.list.send=T.send;cur.list.get=T.get;cur.send=T.sd;cur.get=T.gd;cur.src=SOURCES[0];$$('.xtab').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-xtype')===t);});updatePayLabel();paintCur('send');paintCur('get');recalc();moveXtabInd();}
   function pickCur(side,code){if(side==='send'&&code===cur.get){cur.get=cur.send;}else if(side==='get'&&code===cur.send){cur.send=cur.get;}cur[side]=code;paintCur('send');paintCur('get');recalc();}
   function paintCur(side){var btn=(side==='send')?$('#sendCur'):$('#getCur');var code=cur[side];$('.code',btn).textContent=code;$('.cico',btn).src=ALL[code].ico;}
   function rate(){return PRICE[cur.send]/PRICE[cur.get];}
@@ -873,7 +877,7 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
       cur[cur.popSide]=cur.popCode;
       if(cur.popSide==='send')cur.sendNet=cur.popNet;else cur.getNet=cur.popNet;
       $$('.xtab').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-xtype')===nt);});
-      updatePayLabel();paintCur('send');paintCur('get');recalc();closeCurPop();
+      updatePayLabel();paintCur('send');paintCur('get');recalc();moveXtabInd();closeCurPop();
     });
     var panel=$('#curPop .cp-panel'),grip=$('#curGrip');
     if(grip&&panel){var sy=0,dy=0,drag=false;
@@ -1049,6 +1053,7 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
   var CHARTD=[30,33,31,35,34,38,36,40,39,43,41,45,44,48,46,51];
   function drawChart(){var p=CHARTD,n=p.length,mx=Math.max.apply(null,p),mn=Math.min.apply(null,p),rng=(mx-mn)||1;var pts=p.map(function(v,i){return [i/(n-1)*100, 40-((v-mn)/rng)*36+2];});var d=smooth(pts);$('#xchartLine').setAttribute('d',d);$('#xchartFill').setAttribute('d',d+' L 100 42 L 0 42 Z');}
   setType('fc');renderWallet();renderActivity();initPayFrom();renderMarkets();drawChart();renderAccent();syncTheme();
+  moveXtabInd(true);requestAnimationFrame(function(){moveXtabInd(true);});addEventListener('load',function(){moveXtabInd(true);});addEventListener('resize',function(){moveXtabInd(true);});
 })();
 </script>
 </body>
