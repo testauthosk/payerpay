@@ -72,11 +72,11 @@ tailwind.config={theme:{extend:{
  .pp-mark .mp{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;line-height:1;letter-spacing:-.05em;color:#E9F6EF;margin-top:-1px}
  .pp-mark .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#33E6A0;top:6px;right:7px;box-shadow:0 1px 4px rgba(51,230,160,.7)}
  .cico{width:22px;height:22px;border-radius:50%;object-fit:cover;background:rgb(var(--bg))}
- .dd{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .36s cubic-bezier(.4,0,.2,1),visibility 0s linear .36s,border-color .25s ease,border-top-width .25s ease,border-top-left-radius .28s ease,border-top-right-radius .28s ease;pointer-events:none}
+ .dd{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .36s cubic-bezier(.4,0,.2,1),visibility 0s linear .36s;pointer-events:none}
  .dd>.dd-in{overflow:hidden;min-height:0}
  #payFrom,.curbtn{transition:border-color .25s ease,border-bottom-width .25s ease,border-bottom-left-radius .28s ease,border-bottom-right-radius .28s ease,background-color .2s ease}
- .dd.show{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .36s cubic-bezier(.4,0,.2,1),visibility 0s linear 0s,border-color .25s ease,border-top-width .25s ease,border-top-left-radius .28s ease,border-top-right-radius .28s ease;pointer-events:auto;border-color:rgb(var(--mint));border-top-width:0;border-top-left-radius:0;border-top-right-radius:0}
- .ddbtn-open{border-color:rgb(var(--mint)) !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important;border-bottom-width:0 !important}
+ .dd.show{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .36s cubic-bezier(.4,0,.2,1),visibility 0s linear 0s;pointer-events:auto}
+ .ddbtn-open{border-color:rgb(var(--mint)) !important}
  .cp{pointer-events:none}
  .cp .cp-bd{opacity:0;background:rgb(var(--bg) / .55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);transition:opacity .28s ease}
  .cp .cp-panel{opacity:0;transform:scale(.9);transition:opacity .26s ease,transform .36s cubic-bezier(.34,1.1,.5,1)}
@@ -102,7 +102,7 @@ tailwind.config={theme:{extend:{
  .cp-noanim .slide-track,.cp-noanim .cseg-thumb{transition:none!important}
  @media (max-width:640px){
   .cp{align-items:end;padding:0}
-  .cp .cp-panel{width:100%;max-width:none;height:90vh!important;max-height:90vh!important;border-radius:22px 22px 0 0;border-bottom:0;transform:translateY(101%);transition:transform .42s cubic-bezier(.45,0,.25,1)!important}
+  .cp .cp-panel{width:100%;max-width:none;height:90vh!important;max-height:90vh!important;border-radius:22px 22px 0 0;border-bottom:0;opacity:1!important;transform:translateY(101%);transition:transform .42s cubic-bezier(.45,0,.25,1)!important}
   .cp.show .cp-panel{transform:translateY(0)!important;transition:transform .56s cubic-bezier(.16,1,.3,1)!important}
   .cp .cp-panel.dragging{transition:none!important}
   .cp-grip{display:block}
@@ -302,7 +302,7 @@ tailwind.config={theme:{extend:{
                   </span>
                   <i class="ph-bold ph-caret-down text-[12px] text-t3 shrink-0"></i>
                 </button>
-                <div id="payDD" class="dd absolute left-0 right-0 top-full z-50 bg-surf border border-line rounded-2xl shadow-lg"></div>
+                <div id="payDD" class="dd absolute left-0 right-0 top-full z-50"></div>
               </div>
             </div>
             <div class="rounded-xl border border-line bg-bg px-4 lg:px-5 py-3 lg:py-4">
@@ -948,7 +948,7 @@ tailwind.config={theme:{extend:{
     function build(){
       var fiatSend=(cur.type==='fc'||cur.type==='ff');
       var list=SOURCES.filter(function(s){return s.kind==='wallet'||(fiatSend?s.kind==='fiat':s.kind==='crypto');});
-      $('#payDD').innerHTML='<div class="dd-in p-1.5">'+list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('')+'</div>';
+      $('#payDD').innerHTML='<div class="dd-in"><div class="bg-surf border border-line rounded-2xl shadow-lg p-1.5 mt-1.5">'+list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('')+'</div></div>';
       $$('#payDD [data-pf]').forEach(function(b){b.addEventListener('click',function(){var s=SOURCES.filter(function(x){return x.id===b.getAttribute('data-pf');})[0];if(s)setSource(s);closeAllDD();});});
     }
     $('#payFrom').addEventListener('click',function(e){e.stopPropagation();var dd=$('#payDD');var wasOpen=dd.classList.contains('show');closeAllDD();if(wasOpen)return;build();dd.classList.add('show');$('#payFrom').classList.add('ddbtn-open');});
