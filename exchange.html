@@ -76,7 +76,7 @@ tailwind.config={theme:{extend:{
  .dd>.dd-in{overflow:hidden;min-height:0}
  #payFrom,.curbtn{transition:border-color .25s ease,border-bottom-width .25s ease,border-bottom-left-radius .28s ease,border-bottom-right-radius .28s ease,background-color .2s ease}
  .dd.show{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .36s cubic-bezier(.4,0,.2,1),visibility 0s linear 0s;pointer-events:auto}
- .ddbtn-open{border-color:rgb(var(--mint)) !important}
+ .ddbtn-open{border-color:rgb(var(--mint)) !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important;border-bottom-width:0 !important}
  .cp{pointer-events:none}
  .cp .cp-bd{opacity:0;background:rgb(var(--bg) / .55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);transition:opacity .28s ease}
  .cp .cp-panel{opacity:0;transform:scale(.9);transition:opacity .26s ease,transform .36s cubic-bezier(.34,1.1,.5,1)}
@@ -948,7 +948,7 @@ tailwind.config={theme:{extend:{
     function build(){
       var fiatSend=(cur.type==='fc'||cur.type==='ff');
       var list=SOURCES.filter(function(s){return s.kind==='wallet'||(fiatSend?s.kind==='fiat':s.kind==='crypto');});
-      $('#payDD').innerHTML='<div class="dd-in"><div class="bg-surf border border-line rounded-2xl shadow-lg p-1.5 mt-1.5">'+list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('')+'</div></div>';
+      $('#payDD').innerHTML='<div class="dd-in"><div class="bg-surf border border-mint border-t-0 rounded-b-2xl p-1.5">'+list.map(function(s){var bl=s.id==='wallet'?'':(s.bal!=null?fmt(s.cur,s.bal)+' '+s.cur:'instant');var on=(cur.src||SOURCES[0]).id===s.id;return '<button data-pf="'+s.id+'" class="w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl hover:bg-bg text-left'+(on?' bg-bg':'')+'"><span class="flex items-center gap-2.5 min-w-0"><i class="'+s.icon+' text-mint-deep text-[16px] w-5 text-center shrink-0"></i><span class="min-w-0"><span class="block text-[13px] font-bold leading-tight">'+s.label+'</span><span class="block text-[11px] text-t3 truncate">'+s.sub+'</span></span></span>'+(bl?'<span class="text-[11.5px] font-semibold num text-t2 shrink-0">'+bl+'</span>':'')+'</button>';}).join('')+'</div></div>';
       $$('#payDD [data-pf]').forEach(function(b){b.addEventListener('click',function(){var s=SOURCES.filter(function(x){return x.id===b.getAttribute('data-pf');})[0];if(s)setSource(s);closeAllDD();});});
     }
     $('#payFrom').addEventListener('click',function(e){e.stopPropagation();var dd=$('#payDD');var wasOpen=dd.classList.contains('show');closeAllDD();if(wasOpen)return;build();dd.classList.add('show');$('#payFrom').classList.add('ddbtn-open');});
