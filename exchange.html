@@ -2,7 +2,7 @@
 <html lang="en" class="h-full">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PayerPay — Exchange</title>
 <link rel="icon" type="image/png" href="favicon-64.png">
 <link rel="apple-touch-icon" href="pp-icon-180.png">
@@ -178,16 +178,20 @@ tailwind.config={theme:{extend:{
  .wbal{transition:filter .42s cubic-bezier(.4,0,.2,1),-webkit-filter .42s cubic-bezier(.4,0,.2,1)}
  .wallet-hide .wbal{filter:blur(8px);-webkit-filter:blur(8px);user-select:none}
  /* launch / splash screen */
+ html.splashing{background:#0B0F14}
  .xsplash{position:fixed;inset:0;z-index:200;background:#0B0F14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s ease,visibility .5s}
  .xsplash.hide{opacity:0;visibility:hidden;pointer-events:none}
- .xsplash-stage{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:-8px}
+ .xsplash-stage{display:flex;flex-direction:column;align-items:center;gap:13px;margin-top:-16px}
  .xsplash-mark{animation:spMark .85s cubic-bezier(.2,.85,.3,1.25) both}
  .xsplash-logo{width:98px;height:auto;display:block;filter:drop-shadow(0 18px 40px rgba(0,0,0,.55));animation:spJelly 1.25s cubic-bezier(.45,0,.25,1) .6s infinite both}
- .xsplash-pill{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:#33E6A0;background:rgba(51,230,160,.14);border:1px solid rgba(51,230,160,.22);border-radius:999px;padding:5px 16px;box-shadow:0 8px 22px -8px rgba(51,230,160,.5);animation:spPop .62s cubic-bezier(.3,.7,.4,1) 1s both}
- .xsplash-foot{position:absolute;bottom:calc(30px + env(safe-area-inset-bottom));font-size:12.5px;letter-spacing:.02em;color:#5C6B7A;animation:spFade .8s 1.75s both}
+ .xsplash-name{font-size:23px;font-weight:800;letter-spacing:-.01em;color:#EAF2EE;margin-top:3px;animation:spDrop .58s cubic-bezier(.3,.7,.35,1.12) .72s both}
+ .xsplash-name b{color:#33E6A0;font-weight:800}
+ .xsplash-pill{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:#33E6A0;background:rgba(51,230,160,.14);border:1px solid rgba(51,230,160,.22);border-radius:999px;padding:5px 16px;box-shadow:0 8px 22px -8px rgba(51,230,160,.5);animation:spPop .62s cubic-bezier(.3,.7,.4,1) 1.3s both}
+ .xsplash-foot{position:absolute;bottom:calc(30px + env(safe-area-inset-bottom));font-size:12.5px;letter-spacing:.02em;color:#5C6B7A;animation:spFade .8s 2s both}
  .xsplash-foot b{color:#9FB0BF;font-weight:700}
  @keyframes spMark{from{opacity:0;transform:scale(.55) translateY(8px)}to{opacity:1;transform:none}}
  @keyframes spFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+ @keyframes spDrop{0%{opacity:0;transform:translateY(-16px) scale(.95)}65%{opacity:1;transform:translateY(3px) scale(1)}100%{opacity:1;transform:translateY(0)}}
  @keyframes spPop{0%{opacity:0;transform:scale(.3) translateY(-10px)}55%{opacity:1;transform:scale(1.15) translateY(0)}78%{transform:scale(.95)}100%{opacity:1;transform:scale(1)}}
  @keyframes spJelly{0%,100%{transform:scale(1,1)}22%{transform:scale(1.13,.88)}44%{transform:scale(.9,1.12)}62%{transform:scale(1.06,.96)}80%{transform:scale(.98,1.03)}}
  @media (prefers-reduced-motion:reduce){.xsplash-logo,.xsplash-mark{animation:spMark .4s both}}
@@ -197,11 +201,12 @@ tailwind.config={theme:{extend:{
 <div class="xsplash" id="xsplash">
   <div class="xsplash-stage">
     <div class="xsplash-mark"><img class="xsplash-logo" src="pp-logo.png" alt="PayerPay"></div>
+    <div class="xsplash-name">Payer<b>Pay</b></div>
     <span class="xsplash-pill">Exchange</span>
   </div>
   <div class="xsplash-foot">Powered by <b>PayerPay</b></div>
 </div>
-<script>(function(){var s=document.getElementById('xsplash');if(!s)return;var done=false;var hide=function(){if(done)return;done=true;s.classList.add('hide');setTimeout(function(){s.style.display='none';},560);};var run=function(){setTimeout(hide,3000);};if(document.readyState==='complete')run();else addEventListener('load',run);setTimeout(hide,7000);})();</script>
+<script>(function(){var s=document.getElementById('xsplash');if(!s)return;var H=document.documentElement;H.classList.add('splashing');var done=false;var hide=function(){if(done)return;done=true;s.classList.add('hide');H.classList.remove('splashing');setTimeout(function(){s.style.display='none';},560);};var run=function(){setTimeout(hide,3300);};if(document.readyState==='complete')run();else addEventListener('load',run);setTimeout(hide,7000);})();</script>
 <div class="h-full flex">
 
   <div id="sbBackdrop" class="fixed inset-0 bg-black/45 z-40 opacity-0 pointer-events-none transition-opacity lg:hidden"></div>
