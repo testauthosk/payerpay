@@ -94,11 +94,13 @@ tailwind.config={theme:{extend:{
  .cp-net{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.34,1.04,.5,1)}
  .cp-net.open{grid-template-rows:1fr}
  .cp-net>div{overflow:hidden;min-height:0}
+ .dep-recv{transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:2}
+ #depSheet.recv .dep-recv{transform:translateX(0)}
  @media (max-width:640px){
-  #curPop{align-items:end;padding:0}
-  #curPop .cp-panel{width:100%;max-width:none;height:90vh!important;max-height:90vh!important;border-radius:22px 22px 0 0;border-bottom:0;transform:translateY(101%);transition:transform .42s cubic-bezier(.45,0,.25,1)!important}
-  #curPop.show .cp-panel{transform:translateY(0)!important;transition:transform .56s cubic-bezier(.16,1,.3,1)!important}
-  #curPop .cp-panel.dragging{transition:none!important}
+  .cp{align-items:end;padding:0}
+  .cp .cp-panel{width:100%;max-width:none;height:90vh!important;max-height:90vh!important;border-radius:22px 22px 0 0;border-bottom:0;transform:translateY(101%);transition:transform .42s cubic-bezier(.45,0,.25,1)!important}
+  .cp.show .cp-panel{transform:translateY(0)!important;transition:transform .56s cubic-bezier(.16,1,.3,1)!important}
+  .cp .cp-panel.dragging{transition:none!important}
   .cp-grip{display:block}
  }
  .ppm{pointer-events:none}
@@ -536,6 +538,37 @@ tailwind.config={theme:{extend:{
     <div class="p-3 border-t border-line shrink-0"><button id="cpOk" class="w-full bg-mint text-ink rounded-xl py-3 text-[13.5px] font-extrabold hover:bg-mint-deep transition-colors">Confirm</button></div>
   </div>
 </div>
+<div id="depSheet" class="cp fixed inset-0 z-[60] grid place-items-center p-4">
+  <div class="cp-bd absolute inset-0" data-dep-close></div>
+  <div class="cp-panel relative w-full max-w-[440px] h-[80vh] max-h-[720px] bg-surf border border-line rounded-2xl overflow-hidden">
+    <div class="absolute inset-0 flex flex-col">
+      <div class="cp-grip pt-2.5 pb-0.5 shrink-0" id="depGrip"><div class="w-10 h-1.5 rounded-full bg-line mx-auto"></div></div>
+      <div class="flex items-center gap-2.5 px-4 sm:px-5 pt-3 pb-3 shrink-0">
+        <div class="text-[16px] font-extrabold mr-auto">Deposit</div>
+        <div class="cseg" id="depCat" data-cat="crypto"><div class="cseg-thumb"></div><button data-cat="fiat">Fiat</button><button data-cat="crypto" class="on">Crypto</button></div>
+        <button class="csheet-x" data-dep-close aria-label="Close"><i class="ph-bold ph-x text-[15px]"></i></button>
+      </div>
+      <div class="px-4 sm:px-5 pb-2 shrink-0"><div class="flex items-center gap-2 bg-bg border border-line rounded-xl px-3 h-10 focus-within:border-mint transition-colors"><i class="ph ph-magnifying-glass text-t3 text-[16px]"></i><input id="depSearch" placeholder="Search asset" class="flex-1 bg-transparent outline-none text-[13.5px] font-semibold"></div></div>
+      <div id="depList" class="flex-1 min-h-0 overflow-y-auto scroll-y px-2.5 sm:px-3 pb-2"></div>
+      <div class="p-3 border-t border-line shrink-0"><button id="depGo" class="w-full bg-mint text-ink rounded-xl py-3 text-[13.5px] font-extrabold hover:bg-mint-deep transition-colors">Continue to deposit</button></div>
+    </div>
+    <div class="dep-recv absolute inset-0 flex flex-col bg-surf">
+      <div class="flex items-center gap-2.5 px-4 sm:px-5 pt-4 pb-3 shrink-0 border-b border-line">
+        <button class="csheet-x" id="depBack" aria-label="Back"><i class="ph-bold ph-arrow-left text-[15px]"></i></button>
+        <div id="depRecvTitle" class="text-[16px] font-extrabold">Receive</div>
+      </div>
+      <div id="depRecvBody" class="flex-1 min-h-0 overflow-y-auto scroll-y px-4 sm:px-5 pb-3"></div>
+      <div class="p-3 border-t border-line shrink-0"><button data-dep-close class="w-full bg-mint text-ink rounded-xl py-3 text-[13.5px] font-extrabold hover:bg-mint-deep transition-colors">Done</button></div>
+    </div>
+  </div>
+</div>
+<div id="qrPop" class="ppm fixed inset-0 z-[70] grid place-items-center p-4">
+  <div class="ppm-bd absolute inset-0 bg-black/55" data-qr-close></div>
+  <div class="ppm-card relative w-full max-w-[330px] bg-surf border border-line rounded-2xl p-5">
+    <button class="csheet-x absolute top-3.5 right-3.5 z-10" data-qr-close aria-label="Close"><i class="ph-bold ph-x text-[15px]"></i></button>
+    <div id="qrPopBody" class="pt-1"></div>
+  </div>
+</div>
 <div id="wModal" class="ppm fixed inset-0 z-50 grid place-items-center p-4">
   <div class="ppm-bd absolute inset-0 bg-black/45" data-wclose></div>
   <div class="ppm-card relative w-full max-w-[440px] bg-surf border border-line rounded-2xl p-5 max-h-[85vh] overflow-y-auto scroll-y">
@@ -728,19 +761,7 @@ tailwind.config={theme:{extend:{
     grip.addEventListener('touchend',en);
     grip.addEventListener('mousedown',function(e){st(e.clientY);function mm(ev){mv(ev.clientY);}function mu(){en();document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);}document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);});
   })();
-  function openWDeposit(code){
-    var codes=['USD','EUR','GBP','BTC','ETH','USDT','SOL'].filter(function(c){return DEPOSIT[c];});
-    function paint(c){var d=DEPOSIT[c];
-      var qv=(function(){var v='';d.rows.forEach(function(r){if(!v&&/address|iban|account number/i.test(r[0]))v=r[1];});return v||d.rows[d.rows.length-1][1];})();var qr='https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=6&data='+encodeURIComponent(qv);
-      var chips=codes.map(function(x){return '<button data-wd="'+x+'" class="px-2.5 py-1 rounded-lg text-[12px] font-bold whitespace-nowrap '+(x===c?'bg-mint-tint text-mint-deep':'text-t2 hover:bg-bg')+'">'+x+'</button>';}).join('');
-      var rows=d.rows.map(function(r){return '<div class="flex items-center justify-between gap-3 px-4 py-2.5 border-t border-line first:border-0"><span class="text-[12px] text-t3">'+r[0]+'</span><div class="flex items-center gap-2 min-w-0"><span class="num text-[12.5px] font-semibold text-right break-all">'+r[1]+'</span><button class="shrink-0 text-t3 hover:text-mint-deep" data-copy="'+r[1]+'"><i class="ph ph-copy text-[14px]"></i></button></div></div>';}).join('');
-      $('#wModalBody').innerHTML='<div class="text-[16px] font-extrabold mb-0.5">Deposit</div><div class="text-[12px] text-t3 mb-3">Send to the matching point — funds credit your wallet automatically.</div><div class="flex gap-1.5 overflow-x-auto pb-2 -mx-1 px-1">'+chips+'</div><div class="flex justify-center my-3"><div class="rounded-2xl bg-white p-3 border border-line shadow-sm"><img src="'+qr+'" width="128" height="128" alt="Deposit QR" style="display:block;border-radius:8px"><div class="text-[10.5px] text-center font-semibold mt-1.5" style="color:#64748B">Scan to deposit '+c+'</div></div></div><div class="rounded-xl border border-line overflow-hidden mt-1"><div class="flex items-center gap-2.5 px-4 py-3 bg-bg">'+icoTag(c,'cico')+'<div class="text-[13.5px] font-extrabold">'+c+' · '+d.kind+'</div></div>'+rows+'</div><button class="mt-4 w-full bg-mint text-ink rounded-xl py-2.5 text-[13px] font-extrabold hover:bg-mint-deep transition-colors" data-wclose>Done</button>';
-      $$('#wModalBody [data-wd]').forEach(function(x){x.addEventListener('click',function(){paint(x.getAttribute('data-wd'));});});
-      $$('#wModalBody [data-copy]').forEach(function(bb){bb.addEventListener('click',function(){try{navigator.clipboard.writeText(bb.getAttribute('data-copy'));var i=bb.querySelector('i');i.className='ph ph-check text-[14px] text-mint-deep';setTimeout(function(){i.className='ph ph-copy text-[14px]';},1200);}catch(e){}});});
-      $$('#wModalBody [data-wclose]').forEach(function(x){x.addEventListener('click',closeWModal);});
-    }
-    paint(code&&DEPOSIT[code]?code:'USD'); showWModal();
-  }
+  function openWDeposit(code){openDepSheet(code);}
   function openWWithdraw(code){
     var codes=WALLET.map(function(w){return w[0];}); var sel=code&&codes.indexOf(code)>=0?code:codes[0];
     function paint(c){var chips=codes.map(function(x){return '<button data-ww="'+x+'" class="px-2.5 py-1 rounded-lg text-[12px] font-bold whitespace-nowrap '+(x===c?'bg-mint-tint text-mint-deep':'text-t2 hover:bg-bg')+'">'+x+'</button>';}).join('');var bal=0;WALLET.forEach(function(w){if(w[0]===c)bal=w[1];});
@@ -835,6 +856,85 @@ tailwind.config={theme:{extend:{
       grip.addEventListener('touchend',en);
       grip.addEventListener('mousedown',function(e){st(e.clientY);function mm(ev){mv(ev.clientY);}function mu(){en();document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);}document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);});
     }
+  })();
+
+  // ===== Deposit sheet — Exodus-style asset picker -> receive (address + QR) =====
+  var ADDR={'Ethereum':'0x3aF1b2C9e84D0a71F62b9C5e0aE3d77b1c4F8e21','Tron':'TJ8sQ2mW9kLa0pYxV4nR7dHb5eF1cZ3uKqWq','BNB Smart Chain':'0x7B3f9C1aE82D40b6F19c5A0eB3d77c2a4F8e91D2','Solana':'7xKqR3mB9vT1cZ8sLpY4nW2dQ6hF5gJ0aUe9oP1kCdN','Base':'0x9C4eA1f70B82d3516Fa9c0E5b3D77c2a4F8e91D2','Bitcoin':'bc1q9x4k2zr7m0v8plq6n3hs2td5e8wqac0yr4u7','Litecoin':'ltc1q8y3m2vr5n0t9plk6c3hs4td7e2wxab1yr8u','XRP Ledger':'rPdvC6ccq8hCdPKSPJkPmyZ4Mi1oG2FFkT','Cardano':'addr1qx2k9p7m3v0t8lq6n3hs2td5e8wqac0yr4u7n3hs2td5e','Polkadot':'15oF4uVJwmo2pdV2News4Vr3vK1q6dHb5eF1cZ3uKqWqYx','Avalanche':'0xAv4xC1aE82D40b6F19c5A0eB3d77c2a4F8e91D2','Cosmos':'cosmos1q8y3m2vr5n0t9plk6c3hs4td7e2wxab1yr8uqz','Stellar':'GBXLMQ2mW9kLa0pYxV4nR7dHb5eF1cZ3uKqW2dQ6hF5gJ0a','Bitcoin Cash':'bitcoincash:qz9x4k2zr7m0v8plq6n3hs2td5e8wqac0yr4u7','Dogecoin':'D8sQ2mW9kLa0pYxV4nR7dHb5eF1cZ3uKqWq','Polygon':'0xP01y9C1aE82D40b6F19c5A0eB3d77c2a4F8e91D2'};
+  var NATIVECHAIN={BTC:'Bitcoin',ETH:'Ethereum',BNB:'BNB Smart Chain',SOL:'Solana',XRP:'XRP Ledger',ADA:'Cardano',DOGE:'Dogecoin',TRX:'Tron',LTC:'Litecoin',DOT:'Polkadot',MATIC:'Polygon',AVAX:'Avalanche',LINK:'Ethereum',ATOM:'Cosmos',XLM:'Stellar',BCH:'Bitcoin Cash',UNI:'Ethereum'};
+  var dep={cat:'crypto',code:'BTC',net:null,search:'',anim:null};
+  function depNets(code){return NETWORKS[code]||[];}
+  function depChainName(){var n=depNets(dep.code);if(n.length>1)return (dep.net||n[0]).n;return NATIVECHAIN[dep.code]||'Ethereum';}
+  function depChainLabel(){var n=depNets(dep.code);if(n.length>1){var s=dep.net||n[0];return s.n+' · '+s.c;}return depChainName();}
+  function depAddress(){return ADDR[depChainName()]||ADDR.Ethereum;}
+  function depRows(){if(dep.cat==='fiat'){var d=DEPOSIT[dep.code];if(d)return d.rows;return [['Beneficiary','PayerPay International Inc'],['Account number','8829 0042 1198'],['Reference','PP-'+dep.code+'-DEP']];}return [['Network',depChainLabel()],['Address',depAddress()]];}
+  function depQRData(){if(dep.cat==='fiat'){var r=depRows();for(var i=0;i<r.length;i++)if(/account|iban/i.test(r[i][0]))return r[i][1];return r[r.length-1][1];}return depAddress();}
+  function depRow(c){
+    var sel=c.code===dep.code; var nets=depNets(c.code); var multi=nets.length>1; var bal=HELD[c.code];
+    var right=(bal!=null)?'<div class="text-right shrink-0"><div class="text-[13px] font-bold num leading-tight text-mint-deep">'+fmt(c.code,bal)+' '+c.code+'</div><div class="text-[11px] text-t3 num">$'+fmt("USD",bal*PRICE[c.code])+'</div></div>':'<div class="text-[12.5px] font-bold text-t3 shrink-0">'+c.code+'</div>';
+    var check=sel?'<i class="ph-fill ph-check-circle text-mint-deep text-[18px] shrink-0"></i>':'';
+    var row='<button data-dc="'+c.code+'" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl '+(sel?'bg-mint-tint':'hover:bg-bg')+' text-left transition-colors"><img class="cico shrink-0" style="width:32px;height:32px" src="'+c.ico+'" alt=""><div class="min-w-0 flex-1"><div class="text-[14px] font-bold leading-tight truncate">'+c.name+'</div><div class="text-[11px] text-t3">'+c.code+(multi?' · '+nets.length+' networks':'')+'</div></div>'+right+check+'</button>';
+    var netBlock='';
+    if(sel&&multi){var openCls=(dep.anim===c.code)?'':' open';
+      netBlock='<div class="cp-net'+openCls+'"><div><div class="relative ml-[27px] pl-4 pr-1 pb-2 pt-1 border-l border-line">'+nets.map(function(nw){var non=(dep.net||nets[0]).n===nw.n;return '<button data-dn="'+nw.n+'" class="relative w-full flex items-center gap-2 py-2 pl-1 text-left"><span class="absolute -left-4 top-1/2 w-3 h-px bg-line"></span><span class="text-[12.5px] font-bold '+(non?'text-mint-deep':'text-t2')+'">'+nw.n+'</span><span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md '+(non?'bg-mint-tint text-mint-deep':'bg-bg text-t3 border border-line')+'">'+nw.c+'</span>'+(non?'<i class="ph-bold ph-check text-mint-deep text-[14px] ml-auto"></i>':'<i class="ph ph-circle text-t3 text-[15px] ml-auto"></i>')+'</button>';}).join('')+'</div></div></div>';
+    }
+    return row+netBlock;
+  }
+  function renderDepList(){
+    var q=(dep.search||'').trim().toLowerCase();
+    var list=(dep.cat==='fiat'?FIAT:CRYPTO).filter(function(c){return !q||c.code.toLowerCase().indexOf(q)>=0||c.name.toLowerCase().indexOf(q)>=0;});
+    var held=list.filter(function(c){return HELD[c.code]!=null;}); var rest=list.filter(function(c){return HELD[c.code]==null;});
+    function sec(l){return '<div class="text-[11px] font-bold uppercase tracking-wide text-t3 px-3 pt-3 pb-1">'+l+'</div>';}
+    var html='';
+    if(held.length)html+=sec('Frequently used')+held.map(depRow).join('');
+    if(rest.length)html+=(held.length?sec('All assets'):'')+rest.map(depRow).join('');
+    if(!list.length)html='<div class="text-center text-[13px] text-t3 py-12">No assets found</div>';
+    var sc=$('#depList'); var st=sc.scrollTop; sc.innerHTML=html; sc.scrollTop=st;
+    if(dep.anim){var nb=sc.querySelector('.cp-net');if(nb)requestAnimationFrame(function(){requestAnimationFrame(function(){nb.classList.add('open');});});dep.anim=null;}
+    $$('#depList [data-dc]').forEach(function(b){b.addEventListener('click',function(){var code=b.getAttribute('data-dc');dep.code=code;var nw=NETWORKS[code];dep.net=nw?nw[0]:null;dep.anim=(nw&&nw.length>1)?code:null;renderDepList();});});
+    $$('#depList [data-dn]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var nm=b.getAttribute('data-dn');var nw=NETWORKS[dep.code]||[];for(var i=0;i<nw.length;i++)if(nw[i].n===nm)dep.net=nw[i];renderDepList();});});
+  }
+  function updateDepCapsule(){var seg=$('#depCat');if(!seg)return;seg.setAttribute('data-cat',dep.cat);$$('#depCat button[data-cat]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-cat')===dep.cat);});}
+  function renderDepRecv(){
+    var c=ALL[dep.code]; var rows=depRows(); var qr='https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data='+encodeURIComponent(depQRData());
+    var rowsHtml=rows.map(function(r){return '<div class="flex items-center justify-between gap-3 px-4 py-3 border-t border-line first:border-0"><span class="text-[12px] text-t3 shrink-0">'+r[0]+'</span><div class="flex items-center gap-2 min-w-0"><span class="num text-[12.5px] font-semibold text-right break-all">'+r[1]+'</span><button class="shrink-0 text-t3 hover:text-mint-deep" data-copy="'+r[1]+'"><i class="ph ph-copy text-[14px]"></i></button></div></div>';}).join('');
+    $('#depRecvTitle').textContent='Receive '+dep.code;
+    $('#depRecvBody').innerHTML=
+      '<div class="flex items-center gap-3 py-3"><img class="cico" style="width:40px;height:40px" src="'+c.ico+'" alt=""><div><div class="text-[15px] font-extrabold">'+c.name+'</div><div class="text-[12px] text-t3">'+(dep.cat==='fiat'?(DEPOSIT[dep.code]?DEPOSIT[dep.code].kind:'Bank transfer'):depChainLabel())+'</div></div></div>'+
+      '<div class="rounded-xl border border-line overflow-hidden mb-3">'+rowsHtml+'</div>'+
+      '<button id="depQRtog" class="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl bg-bg border border-line hover:border-mint transition-colors"><span class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-lg bg-surf border border-line grid place-items-center"><i class="ph-bold ph-qr-code text-[18px] text-mint-deep"></i></span><span class="text-[13px] font-bold">Show QR code</span></span><i class="ph-bold ph-arrow-up-right text-[14px] text-t3"></i></button>';
+    $$('#depRecvBody [data-copy]').forEach(function(bb){bb.addEventListener('click',function(){try{navigator.clipboard.writeText(bb.getAttribute('data-copy'));var i=bb.querySelector('i');i.className='ph ph-check text-[14px] text-mint-deep';setTimeout(function(){i.className='ph ph-copy text-[14px]';},1200);}catch(e){}});});
+    var tog=$('#depQRtog');if(tog)tog.addEventListener('click',openQRPop);
+  }
+  function openQRPop(){
+    var c=ALL[dep.code]; var data=depQRData(); var qr='https://api.qrserver.com/v1/create-qr-code/?size=480x480&margin=10&data='+encodeURIComponent(data);
+    $('#qrPopBody').innerHTML=
+      '<div class="flex items-center gap-2.5 mb-3.5"><img class="cico" style="width:32px;height:32px" src="'+c.ico+'" alt=""><div><div class="text-[14.5px] font-extrabold leading-tight">'+c.name+'</div><div class="text-[11.5px] text-t3">'+(dep.cat==='fiat'?(DEPOSIT[dep.code]?DEPOSIT[dep.code].kind:'Bank transfer'):depChainLabel())+'</div></div></div>'+
+      '<div class="flex justify-center"><div class="rounded-2xl bg-white p-4 border border-line"><img src="'+qr+'" width="210" height="210" alt="QR code" style="display:block;border-radius:10px"></div></div>'+
+      '<div class="mt-3.5 rounded-xl bg-bg border border-line px-3 py-2.5 flex items-center gap-2"><span class="num text-[11.5px] font-semibold break-all flex-1 min-w-0">'+data+'</span><button class="shrink-0 text-t3 hover:text-mint-deep" data-copy="'+data+'"><i class="ph ph-copy text-[15px]"></i></button></div>'+
+      '<div class="text-[11px] text-t3 text-center mt-2.5">Scan with any wallet to deposit '+dep.code+'</div>';
+    $$('#qrPopBody [data-copy]').forEach(function(bb){bb.addEventListener('click',function(){try{navigator.clipboard.writeText(bb.getAttribute('data-copy'));var i=bb.querySelector('i');i.className='ph ph-check text-[15px] text-mint-deep';setTimeout(function(){i.className='ph ph-copy text-[15px]';},1200);}catch(e){}});});
+    $('#qrPop').classList.add('show');
+  }
+  function closeQRPop(){$('#qrPop').classList.remove('show');}
+  function openDepSheet(code){
+    closeAllDD();
+    if(code&&ALL[code]){dep.code=code;dep.cat=catOf(code);}else{dep.cat='crypto';dep.code='BTC';}
+    var nw=NETWORKS[dep.code];dep.net=nw?nw[0]:null;dep.search='';dep.anim=null;
+    var si=$('#depSearch');if(si)si.value='';
+    $('#depSheet').classList.remove('recv');
+    updateDepCapsule();renderDepList();
+    $('#depSheet').classList.add('show');var sc=$('#depList');if(sc)sc.scrollTop=0;
+  }
+  function closeDepSheet(){$('#depSheet').classList.remove('show');}
+  (function(){
+    $$('#depSheet [data-dep-close]').forEach(function(b){b.addEventListener('click',closeDepSheet);});
+    $$('#qrPop [data-qr-close]').forEach(function(b){b.addEventListener('click',closeQRPop);});
+    $$('#depCat button[data-cat]').forEach(function(b){b.addEventListener('click',function(){var nc=b.getAttribute('data-cat');if(nc===dep.cat)return;dep.cat=nc;var l=nc==='fiat'?FIAT:CRYPTO;dep.code=l[0].code;var nw=NETWORKS[dep.code];dep.net=nw?nw[0]:null;dep.anim=null;updateDepCapsule();renderDepList();var sc=$('#depList');if(sc)sc.scrollTop=0;});});
+    var si=$('#depSearch');if(si)si.addEventListener('input',function(){dep.search=si.value;dep.anim=null;renderDepList();});
+    var go=$('#depGo');if(go)go.addEventListener('click',function(){renderDepRecv();$('#depSheet').classList.add('recv');});
+    var bk=$('#depBack');if(bk)bk.addEventListener('click',function(){$('#depSheet').classList.remove('recv');});
+    var panel=$('#depSheet .cp-panel'),grip=$('#depGrip');
+    if(grip&&panel){var sy=0,dy=0,drag=false;function st(y){sy=y;dy=0;drag=true;panel.classList.add('dragging');}function mv(y){if(!drag)return;dy=Math.max(0,y-sy);panel.style.transform='translateY('+dy+'px)';}function en(){if(!drag)return;drag=false;panel.classList.remove('dragging');var cl=dy>110;panel.style.transform='';if(cl)closeDepSheet();}grip.addEventListener('touchstart',function(e){st(e.touches[0].clientY);},{passive:true});grip.addEventListener('touchmove',function(e){mv(e.touches[0].clientY);},{passive:true});grip.addEventListener('touchend',en);grip.addEventListener('mousedown',function(e){st(e.clientY);function mm(ev){mv(ev.clientY);}function mu(){en();document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);}document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);});}
   })();
 
   function initPayFrom(){
