@@ -789,26 +789,19 @@ tailwind.config={theme:{extend:{
   function catOf(code){return FIAT.some(function(c){return c.code===code;})?'fiat':'crypto';}
   var HELD={}; WALLET.forEach(function(w){HELD[w[0]]=w[1];});
   var cpAnimNet=null;
+  function netInnerHTML(nets,selName,attr){return nets.map(function(nw){var non=selName===nw.n;return '<button '+attr+'="'+nw.n+'" class="relative w-full flex items-center gap-2 py-2 pl-1 text-left"><span class="absolute -left-4 top-1/2 w-3 h-px bg-line"></span><span class="text-[12.5px] font-bold '+(non?'text-mint-deep':'text-t2')+'">'+nw.n+'</span><span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md '+(non?'bg-mint-tint text-mint-deep':'bg-bg text-t3 border border-line')+'">'+nw.c+'</span>'+(non?'<i class="ph-bold ph-check text-mint-deep text-[14px] ml-auto"></i>':'<i class="ph ph-circle text-t3 text-[15px] ml-auto"></i>')+'</button>';}).join('');}
+  function wireCn(ctx){$$('[data-cn]',ctx).forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var nm=b.getAttribute('data-cn');var nw=NETWORKS[cur.popCode]||[];for(var i=0;i<nw.length;i++)if(nw[i].n===nm)cur.popNet=nw[i];var inner=b.parentNode;if(inner){inner.innerHTML=netInnerHTML(nw,cur.popNet.n,'data-cn');wireCn(inner);}});});}
+  function cpSelect(code){cur.popCode=code;var nw=NETWORKS[code];cur.popNet=nw?nw[0]:null;var pane=$('#cpPane'+cur.popCat);if(!pane)return;$$('[data-cc]',pane).forEach(function(b){var on=b.getAttribute('data-cc')===code;b.classList.toggle('bg-mint-tint',on);b.classList.toggle('hover:bg-bg',!on);var k=$('.cc-chk',b);if(k)k.style.display=on?'':'none';});$$('.cp-net',pane).forEach(function(n){var on=n.getAttribute('data-net-for')===code;n.classList.toggle('open',on);if(on){var inner=$('[data-net-inner]',n);if(inner){inner.innerHTML=netInnerHTML(NETWORKS[code],cur.popNet?cur.popNet.n:'','data-cn');wireCn(inner);}}});}
+  function wireDn(ctx){$$('[data-dn]',ctx).forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var nm=b.getAttribute('data-dn');var nw=NETWORKS[dep.code]||[];for(var i=0;i<nw.length;i++)if(nw[i].n===nm)dep.net=nw[i];var inner=b.parentNode;if(inner){inner.innerHTML=netInnerHTML(nw,dep.net.n,'data-dn');wireDn(inner);}});});}
+  function depSelect(code){dep.code=code;var nw=NETWORKS[code];dep.net=nw?nw[0]:null;var pane=$('#depPane'+dep.cat);if(!pane)return;$$('[data-dc]',pane).forEach(function(b){var on=b.getAttribute('data-dc')===code;b.classList.toggle('bg-mint-tint',on);b.classList.toggle('hover:bg-bg',!on);var k=$('.cc-chk',b);if(k)k.style.display=on?'':'none';});$$('.cp-net',pane).forEach(function(n){var on=n.getAttribute('data-net-for')===code;n.classList.toggle('open',on);if(on){var inner=$('[data-net-inner]',n);if(inner){inner.innerHTML=netInnerHTML(NETWORKS[code],dep.net?dep.net.n:'','data-dn');wireDn(inner);}}});}
   function cpRow(c){
     var sel=c.code===cur.popCode; var nets=NETWORKS[c.code]||[]; var bal=HELD[c.code]; var multi=nets.length>1;
     var right;
     if(bal!=null){var usd=bal*PRICE[c.code];right='<div class="text-right shrink-0"><div class="text-[13px] font-bold num leading-tight text-mint-deep">'+fmt(c.code,bal)+' '+c.code+'</div><div class="text-[11px] text-t3 num">$'+fmt("USD",usd)+'</div></div>';}
     else{right='<div class="text-[12.5px] font-bold text-t3 shrink-0">'+c.code+'</div>';}
-    var check=sel?'<i class="ph-fill ph-check-circle text-mint-deep text-[18px] shrink-0"></i>':'';
+    var check='<i class="ph-fill ph-check-circle text-mint-deep text-[18px] shrink-0 cc-chk"'+(sel?'':' style="display:none"')+'></i>';
     var row='<button data-cc="'+c.code+'" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl '+(sel?'bg-mint-tint':'hover:bg-bg')+' text-left transition-colors"><img class="cico shrink-0" style="width:32px;height:32px" src="'+c.ico+'" alt=""><div class="min-w-0 flex-1"><div class="text-[14px] font-bold leading-tight truncate">'+c.name+'</div><div class="text-[11px] text-t3">'+c.code+(multi?' · '+nets.length+' networks':'')+'</div></div>'+right+check+'</button>';
-    var netBlock='';
-    if(sel&&multi){
-      var openCls=(cpAnimNet===c.code)?'':' open';
-      netBlock='<div class="cp-net'+openCls+'"><div><div class="relative ml-[27px] pl-4 pr-1 pb-2 pt-1 border-l border-line">'+
-        nets.map(function(nw){var non=cur.popNet&&cur.popNet.n===nw.n;
-          return '<button data-cn="'+nw.n+'" class="relative w-full flex items-center gap-2 py-2 pl-1 text-left">'+
-            '<span class="absolute -left-4 top-1/2 w-3 h-px bg-line"></span>'+
-            '<span class="text-[12.5px] font-bold '+(non?'text-mint-deep':'text-t2')+'">'+nw.n+'</span>'+
-            '<span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md '+(non?'bg-mint-tint text-mint-deep':'bg-bg text-t3 border border-line')+'">'+nw.c+'</span>'+
-            (non?'<i class="ph-bold ph-check text-mint-deep text-[14px] ml-auto"></i>':'<i class="ph ph-circle text-t3 text-[15px] ml-auto"></i>')+
-          '</button>';}).join('')+
-      '</div></div></div>';
-    }
+    var netBlock=multi?'<div class="cp-net'+(sel?' open':'')+'" data-net-for="'+c.code+'"><div><div class="relative ml-[27px] pl-4 pr-1 pb-2 pt-1 border-l border-line" data-net-inner>'+netInnerHTML(nets,(sel&&cur.popNet?cur.popNet.n:nets[0].n),'data-cn')+'</div></div></div>':'';
     return row+netBlock;
   }
   function paneListHTML(cat,rowFn,restLabel,searchVal){
@@ -829,9 +822,8 @@ tailwind.config={theme:{extend:{
     $('#cpPanecrypto').innerHTML=paneListHTML('crypto',cpRow,'Available for exchange',cur.popSearch);
     var act2=$(actId); if(act2)act2.scrollTop=st;
     $('#cpTrack').style.transform=cur.popCat==='crypto'?'translateX(-50%)':'translateX(0)';
-    if(cpAnimNet){var nb=$(actId).querySelector('.cp-net');if(nb)requestAnimationFrame(function(){requestAnimationFrame(function(){nb.classList.add('open');});});cpAnimNet=null;}
-    $$('#cpList [data-cc]').forEach(function(b){b.addEventListener('click',function(){var code=b.getAttribute('data-cc');cur.popCode=code;var nw=NETWORKS[code];cur.popNet=nw?nw[0]:null;cpAnimNet=(nw&&nw.length>1)?code:null;renderCpList();});});
-    $$('#cpList [data-cn]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var nm=b.getAttribute('data-cn');var nw=NETWORKS[cur.popCode]||[];for(var i=0;i<nw.length;i++)if(nw[i].n===nm)cur.popNet=nw[i];renderCpList();});});
+    $$('#cpList [data-cc]').forEach(function(b){b.addEventListener('click',function(){cpSelect(b.getAttribute('data-cc'));});});
+    wireCn($('#cpList'));
   }
   function updateCapsule(){var seg=$('#cpCat');if(!seg)return;seg.setAttribute('data-cat',cur.popCat);$$('#cpCat button[data-cat]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-cat')===cur.popCat);});}
   function renderCurPop(){updateCapsule();renderCpList();}
@@ -886,12 +878,9 @@ tailwind.config={theme:{extend:{
   function depRow(c){
     var sel=c.code===dep.code; var nets=depNets(c.code); var multi=nets.length>1; var bal=HELD[c.code];
     var right=(bal!=null)?'<div class="text-right shrink-0"><div class="text-[13px] font-bold num leading-tight text-mint-deep">'+fmt(c.code,bal)+' '+c.code+'</div><div class="text-[11px] text-t3 num">$'+fmt("USD",bal*PRICE[c.code])+'</div></div>':'<div class="text-[12.5px] font-bold text-t3 shrink-0">'+c.code+'</div>';
-    var check=sel?'<i class="ph-fill ph-check-circle text-mint-deep text-[18px] shrink-0"></i>':'';
+    var check='<i class="ph-fill ph-check-circle text-mint-deep text-[18px] shrink-0 cc-chk"'+(sel?'':' style="display:none"')+'></i>';
     var row='<button data-dc="'+c.code+'" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl '+(sel?'bg-mint-tint':'hover:bg-bg')+' text-left transition-colors"><img class="cico shrink-0" style="width:32px;height:32px" src="'+c.ico+'" alt=""><div class="min-w-0 flex-1"><div class="text-[14px] font-bold leading-tight truncate">'+c.name+'</div><div class="text-[11px] text-t3">'+c.code+(multi?' · '+nets.length+' networks':'')+'</div></div>'+right+check+'</button>';
-    var netBlock='';
-    if(sel&&multi){var openCls=(dep.anim===c.code)?'':' open';
-      netBlock='<div class="cp-net'+openCls+'"><div><div class="relative ml-[27px] pl-4 pr-1 pb-2 pt-1 border-l border-line">'+nets.map(function(nw){var non=(dep.net||nets[0]).n===nw.n;return '<button data-dn="'+nw.n+'" class="relative w-full flex items-center gap-2 py-2 pl-1 text-left"><span class="absolute -left-4 top-1/2 w-3 h-px bg-line"></span><span class="text-[12.5px] font-bold '+(non?'text-mint-deep':'text-t2')+'">'+nw.n+'</span><span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md '+(non?'bg-mint-tint text-mint-deep':'bg-bg text-t3 border border-line')+'">'+nw.c+'</span>'+(non?'<i class="ph-bold ph-check text-mint-deep text-[14px] ml-auto"></i>':'<i class="ph ph-circle text-t3 text-[15px] ml-auto"></i>')+'</button>';}).join('')+'</div></div></div>';
-    }
+    var netBlock=multi?'<div class="cp-net'+(sel?' open':'')+'" data-net-for="'+c.code+'"><div><div class="relative ml-[27px] pl-4 pr-1 pb-2 pt-1 border-l border-line" data-net-inner>'+netInnerHTML(nets,(sel&&dep.net?dep.net.n:nets[0].n),'data-dn')+'</div></div></div>':'';
     return row+netBlock;
   }
   function renderDepList(){
@@ -901,9 +890,8 @@ tailwind.config={theme:{extend:{
     $('#depPanecrypto').innerHTML=paneListHTML('crypto',depRow,'All assets',dep.search);
     var act2=$(actId); if(act2)act2.scrollTop=st;
     $('#depTrack').style.transform=dep.cat==='crypto'?'translateX(-50%)':'translateX(0)';
-    if(dep.anim){var nb=$(actId).querySelector('.cp-net');if(nb)requestAnimationFrame(function(){requestAnimationFrame(function(){nb.classList.add('open');});});dep.anim=null;}
-    $$('#depList [data-dc]').forEach(function(b){b.addEventListener('click',function(){var code=b.getAttribute('data-dc');dep.code=code;var nw=NETWORKS[code];dep.net=nw?nw[0]:null;dep.anim=(nw&&nw.length>1)?code:null;renderDepList();});});
-    $$('#depList [data-dn]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var nm=b.getAttribute('data-dn');var nw=NETWORKS[dep.code]||[];for(var i=0;i<nw.length;i++)if(nw[i].n===nm)dep.net=nw[i];renderDepList();});});
+    $$('#depList [data-dc]').forEach(function(b){b.addEventListener('click',function(){depSelect(b.getAttribute('data-dc'));});});
+    wireDn($('#depList'));
   }
   function updateDepCapsule(){var seg=$('#depCat');if(!seg)return;seg.setAttribute('data-cat',dep.cat);$$('#depCat button[data-cat]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-cat')===dep.cat);});}
   function renderDepRecv(){
