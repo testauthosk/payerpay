@@ -2,7 +2,7 @@
 <html lang="en" class="h-full">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>PayerPay — Exchange</title>
 <link rel="icon" type="image/png" href="favicon-64.png">
 <link rel="apple-touch-icon" href="pp-icon-180.png">
@@ -998,11 +998,12 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
     $('#wdFormBody').innerHTML=
       '<div class="flex items-center gap-3 py-3"><img class="cico" style="width:40px;height:40px" src="'+c.ico+'" alt=""><div><div class="text-[15px] font-extrabold">'+c.name+'</div><div class="text-[12px] text-t3">Balance '+fmt(wd.code,bal)+' '+wd.code+(net?' · '+net:'')+'</div></div></div>'+
       '<div class="rounded-xl border border-line bg-bg px-4 py-3.5 mb-3"><div class="flex items-center justify-between text-[11.5px] text-t3 font-semibold mb-1.5"><span>Amount</span><button id="wdMax" class="text-mint-deep font-bold">Max</button></div><div class="flex items-center gap-2"><input id="wdAmt" type="number" inputmode="decimal" value="'+(bal*0.5).toFixed(dp)+'" class="num flex-1 min-w-0 bg-transparent outline-none text-[26px] font-extrabold tracking-tight"><span class="text-[15px] font-extrabold shrink-0">'+wd.code+'</span></div><div id="wdUsd" class="text-[12px] text-t3 num mt-1"></div></div>'+
-      '<div class="rounded-xl border border-line bg-bg px-4 py-3 mb-3"><div class="text-[11.5px] text-t3 font-semibold mb-1">'+(isFiat?'Send to (account / IBAN)':'Destination address')+'</div><input id="wdDest" placeholder="'+(isFiat?'Account number or IBAN':wd.code+' address'+(net?' ('+(wd.net||nets[0]).c+')':''))+'" class="w-full bg-transparent outline-none text-[13px] font-semibold"></div>'+
+      '<div class="rounded-xl border border-line bg-bg px-4 py-3 mb-3"><div class="text-[11.5px] text-t3 font-semibold mb-1">'+(isFiat?'Send to (account / IBAN)':'Destination address')+'</div><div class="flex items-center gap-2"><input id="wdDest" placeholder="'+(isFiat?'Account number or IBAN':wd.code+' address'+(net?' ('+(wd.net||nets[0]).c+')':''))+'" class="flex-1 min-w-0 bg-transparent outline-none text-[13px] font-semibold">'+(isFiat?'':'<button id="wdScan" type="button" aria-label="Scan QR" class="shrink-0 w-9 h-9 -mr-1 rounded-lg bg-surf border border-line grid place-items-center text-mint-deep hover:border-mint transition-colors"><i class="ph-bold ph-qr-code text-[18px]"></i></button>')+'</div></div>'+
       '<div class="rounded-xl bg-bg border border-line px-4 py-2.5 flex items-center justify-between text-[12px]"><span class="text-t3">Network fee</span><span class="num font-semibold">'+(isFiat?'Free · instant':'~ '+(wd.code==='BTC'?'0.00012 BTC':(wd.code==='ETH'?'0.0009 ETH':'1.0 '+wd.code)))+'</span></div>';
     function upd(){var v=parseFloat($('#wdAmt').value)||0;$('#wdUsd').textContent='≈ $'+fmt("USD",v*PRICE[wd.code]);}
     $('#wdAmt').addEventListener('input',upd); upd();
     $('#wdMax').addEventListener('click',function(){$('#wdAmt').value=bal.toFixed(dp);upd();});
+    var scan=$('#wdScan');if(scan)scan.addEventListener('click',function(){var chain=nets?(wd.net||nets[0]).n:(NATIVECHAIN[wd.code]||'Ethereum');$('#wdDest').value=ADDR[chain]||ADDR['Ethereum'];var i=scan.querySelector('i');i.className='ph-bold ph-check text-[18px]';setTimeout(function(){i.className='ph-bold ph-qr-code text-[18px]';},1100);});
     $('#wdDoBtn').textContent='Withdraw '+wd.code;
   }
   function openWdSheet(code){
