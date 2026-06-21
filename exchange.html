@@ -96,6 +96,10 @@ tailwind.config={theme:{extend:{
  .cp-net>div{overflow:hidden;min-height:0}
  .dep-recv{transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:2}
  #depSheet.recv .dep-recv{transform:translateX(0)}
+ .slide-track{display:flex;height:100%;width:200%;transition:transform .44s cubic-bezier(.45,0,.25,1)}
+ .slide-pane{width:50%;height:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 10px 8px}
+ .slide-pane::-webkit-scrollbar{display:none}
+ .cp-noanim .slide-track,.cp-noanim .cseg-thumb{transition:none!important}
  @media (max-width:640px){
   .cp{align-items:end;padding:0}
   .cp .cp-panel{width:100%;max-width:none;height:90vh!important;max-height:90vh!important;border-radius:22px 22px 0 0;border-bottom:0;transform:translateY(101%);transition:transform .42s cubic-bezier(.45,0,.25,1)!important}
@@ -534,7 +538,7 @@ tailwind.config={theme:{extend:{
       <button class="csheet-x" data-cp-close aria-label="Close"><i class="ph-bold ph-x text-[15px]"></i></button>
     </div>
     <div class="px-4 sm:px-5 pb-2 shrink-0"><div class="flex items-center gap-2 bg-bg border border-line rounded-xl px-3 h-10 focus-within:border-mint transition-colors"><i class="ph ph-magnifying-glass text-t3 text-[16px]"></i><input id="cpSearch" placeholder="Search name or ticker" class="flex-1 bg-transparent outline-none text-[13.5px] font-semibold"></div></div>
-    <div id="cpList" class="flex-1 min-h-0 overflow-y-auto scroll-y px-2.5 sm:px-3 pb-2"></div>
+    <div id="cpList" class="flex-1 min-h-0 overflow-hidden relative"><div class="slide-track" id="cpTrack"><div class="slide-pane" id="cpPanefiat"></div><div class="slide-pane" id="cpPanecrypto"></div></div></div>
     <div class="p-3 border-t border-line shrink-0"><button id="cpOk" class="w-full bg-mint text-ink rounded-xl py-3 text-[13.5px] font-extrabold hover:bg-mint-deep transition-colors">Confirm</button></div>
   </div>
 </div>
@@ -549,7 +553,7 @@ tailwind.config={theme:{extend:{
         <button class="csheet-x" data-dep-close aria-label="Close"><i class="ph-bold ph-x text-[15px]"></i></button>
       </div>
       <div class="px-4 sm:px-5 pb-2 shrink-0"><div class="flex items-center gap-2 bg-bg border border-line rounded-xl px-3 h-10 focus-within:border-mint transition-colors"><i class="ph ph-magnifying-glass text-t3 text-[16px]"></i><input id="depSearch" placeholder="Search asset" class="flex-1 bg-transparent outline-none text-[13.5px] font-semibold"></div></div>
-      <div id="depList" class="flex-1 min-h-0 overflow-y-auto scroll-y px-2.5 sm:px-3 pb-2"></div>
+      <div id="depList" class="flex-1 min-h-0 overflow-hidden relative"><div class="slide-track" id="depTrack"><div class="slide-pane" id="depPanefiat"></div><div class="slide-pane" id="depPanecrypto"></div></div></div>
       <div class="p-3 border-t border-line shrink-0"><button id="depGo" class="w-full bg-mint text-ink rounded-xl py-3 text-[13.5px] font-extrabold hover:bg-mint-deep transition-colors">Continue to deposit</button></div>
     </div>
     <div class="dep-recv absolute inset-0 flex flex-col bg-surf">
@@ -807,17 +811,25 @@ tailwind.config={theme:{extend:{
     }
     return row+netBlock;
   }
-  function renderCpList(){
-    var q=(cur.popSearch||'').trim().toLowerCase();
-    var list=(cur.popCat==='fiat'?FIAT:CRYPTO).filter(function(c){return !q||c.code.toLowerCase().indexOf(q)>=0||c.name.toLowerCase().indexOf(q)>=0;});
+  function paneListHTML(cat,rowFn,restLabel,searchVal){
+    var q=(searchVal||'').trim().toLowerCase();
+    var list=(cat==='fiat'?FIAT:CRYPTO).filter(function(c){return !q||c.code.toLowerCase().indexOf(q)>=0||c.name.toLowerCase().indexOf(q)>=0;});
     var held=list.filter(function(c){return HELD[c.code]!=null;}); var rest=list.filter(function(c){return HELD[c.code]==null;});
     function sec(l){return '<div class="text-[11px] font-bold uppercase tracking-wide text-t3 px-3 pt-3 pb-1">'+l+'</div>';}
     var html='';
-    if(held.length)html+=sec('Frequently used')+held.map(cpRow).join('');
-    if(rest.length)html+=(held.length?sec('Available for exchange'):'')+rest.map(cpRow).join('');
-    if(!list.length)html='<div class="text-center text-[13px] text-t3 py-12">No currencies found</div>';
-    var sc=$('#cpList'); var st=sc.scrollTop; sc.innerHTML=html; sc.scrollTop=st;
-    if(cpAnimNet){var nb=sc.querySelector('.cp-net');if(nb)requestAnimationFrame(function(){requestAnimationFrame(function(){nb.classList.add('open');});});cpAnimNet=null;}
+    if(held.length)html+=sec('Frequently used')+held.map(rowFn).join('');
+    if(rest.length)html+=(held.length?sec(restLabel):'')+rest.map(rowFn).join('');
+    if(!list.length)html='<div class="text-center text-[13px] text-t3 py-12">No results</div>';
+    return html;
+  }
+  function renderCpList(){
+    updateCapsule();
+    var actId='#cpPane'+cur.popCat; var act=$(actId); var st=act?act.scrollTop:0;
+    $('#cpPanefiat').innerHTML=paneListHTML('fiat',cpRow,'Available for exchange',cur.popSearch);
+    $('#cpPanecrypto').innerHTML=paneListHTML('crypto',cpRow,'Available for exchange',cur.popSearch);
+    var act2=$(actId); if(act2)act2.scrollTop=st;
+    $('#cpTrack').style.transform=cur.popCat==='crypto'?'translateX(-50%)':'translateX(0)';
+    if(cpAnimNet){var nb=$(actId).querySelector('.cp-net');if(nb)requestAnimationFrame(function(){requestAnimationFrame(function(){nb.classList.add('open');});});cpAnimNet=null;}
     $$('#cpList [data-cc]').forEach(function(b){b.addEventListener('click',function(){var code=b.getAttribute('data-cc');cur.popCode=code;var nw=NETWORKS[code];cur.popNet=nw?nw[0]:null;cpAnimNet=(nw&&nw.length>1)?code:null;renderCpList();});});
     $$('#cpList [data-cn]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var nm=b.getAttribute('data-cn');var nw=NETWORKS[cur.popCode]||[];for(var i=0;i<nw.length;i++)if(nw[i].n===nm)cur.popNet=nw[i];renderCpList();});});
   }
@@ -829,12 +841,15 @@ tailwind.config={theme:{extend:{
     cur.popCode=current; cur.popCat=catOf(current); var nw=NETWORKS[current]; cur.popNet=nw?nw[0]:null; cur.popSearch=''; cpAnimNet=null;
     var si=$('#cpSearch'); if(si)si.value='';
     $('#cpTitle').textContent=(side==='send'?'You send':'You get');
-    renderCurPop(); $('#curPop').classList.add('show'); var sc=$('#cpList'); if(sc)sc.scrollTop=0;
+    var panel=$('#curPop .cp-panel'); if(panel)panel.classList.add('cp-noanim');
+    renderCurPop(); $('#cpPanefiat').scrollTop=0; $('#cpPanecrypto').scrollTop=0;
+    $('#curPop').classList.add('show');
+    requestAnimationFrame(function(){requestAnimationFrame(function(){if(panel)panel.classList.remove('cp-noanim');});});
   }
   function closeCurPop(){$('#curPop').classList.remove('show');}
   (function(){
     $$('#curPop [data-cp-close]').forEach(function(b){b.addEventListener('click',closeCurPop);});
-    $$('#cpCat button[data-cat]').forEach(function(b){b.addEventListener('click',function(){var nc=b.getAttribute('data-cat');if(nc===cur.popCat)return;cur.popCat=nc;var l=nc==='fiat'?FIAT:CRYPTO;cur.popCode=l[0].code;var nw=NETWORKS[cur.popCode];cur.popNet=nw?nw[0]:null;cpAnimNet=null;updateCapsule();renderCpList();var sc=$('#cpList');if(sc)sc.scrollTop=0;});});
+    $$('#cpCat button[data-cat]').forEach(function(b){b.addEventListener('click',function(){var nc=b.getAttribute('data-cat');if(nc===cur.popCat)return;cur.popCat=nc;var l=nc==='fiat'?FIAT:CRYPTO;cur.popCode=l[0].code;var nw=NETWORKS[cur.popCode];cur.popNet=nw?nw[0]:null;cpAnimNet=null;renderCpList();var ap=$('#cpPane'+nc);if(ap)ap.scrollTop=0;});});
     var si=$('#cpSearch'); if(si)si.addEventListener('input',function(){cur.popSearch=si.value;cpAnimNet=null;renderCpList();});
     var ok=$('#cpOk'); if(ok)ok.addEventListener('click',function(){
       var sc=(cur.popSide==='send')?cur.popCat:catOf(cur.send);
@@ -880,16 +895,13 @@ tailwind.config={theme:{extend:{
     return row+netBlock;
   }
   function renderDepList(){
-    var q=(dep.search||'').trim().toLowerCase();
-    var list=(dep.cat==='fiat'?FIAT:CRYPTO).filter(function(c){return !q||c.code.toLowerCase().indexOf(q)>=0||c.name.toLowerCase().indexOf(q)>=0;});
-    var held=list.filter(function(c){return HELD[c.code]!=null;}); var rest=list.filter(function(c){return HELD[c.code]==null;});
-    function sec(l){return '<div class="text-[11px] font-bold uppercase tracking-wide text-t3 px-3 pt-3 pb-1">'+l+'</div>';}
-    var html='';
-    if(held.length)html+=sec('Frequently used')+held.map(depRow).join('');
-    if(rest.length)html+=(held.length?sec('All assets'):'')+rest.map(depRow).join('');
-    if(!list.length)html='<div class="text-center text-[13px] text-t3 py-12">No assets found</div>';
-    var sc=$('#depList'); var st=sc.scrollTop; sc.innerHTML=html; sc.scrollTop=st;
-    if(dep.anim){var nb=sc.querySelector('.cp-net');if(nb)requestAnimationFrame(function(){requestAnimationFrame(function(){nb.classList.add('open');});});dep.anim=null;}
+    updateDepCapsule();
+    var actId='#depPane'+dep.cat; var act=$(actId); var st=act?act.scrollTop:0;
+    $('#depPanefiat').innerHTML=paneListHTML('fiat',depRow,'All assets',dep.search);
+    $('#depPanecrypto').innerHTML=paneListHTML('crypto',depRow,'All assets',dep.search);
+    var act2=$(actId); if(act2)act2.scrollTop=st;
+    $('#depTrack').style.transform=dep.cat==='crypto'?'translateX(-50%)':'translateX(0)';
+    if(dep.anim){var nb=$(actId).querySelector('.cp-net');if(nb)requestAnimationFrame(function(){requestAnimationFrame(function(){nb.classList.add('open');});});dep.anim=null;}
     $$('#depList [data-dc]').forEach(function(b){b.addEventListener('click',function(){var code=b.getAttribute('data-dc');dep.code=code;var nw=NETWORKS[code];dep.net=nw?nw[0]:null;dep.anim=(nw&&nw.length>1)?code:null;renderDepList();});});
     $$('#depList [data-dn]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var nm=b.getAttribute('data-dn');var nw=NETWORKS[dep.code]||[];for(var i=0;i<nw.length;i++)if(nw[i].n===nm)dep.net=nw[i];renderDepList();});});
   }
@@ -922,14 +934,16 @@ tailwind.config={theme:{extend:{
     var nw=NETWORKS[dep.code];dep.net=nw?nw[0]:null;dep.search='';dep.anim=null;
     var si=$('#depSearch');if(si)si.value='';
     $('#depSheet').classList.remove('recv');
-    updateDepCapsule();renderDepList();
-    $('#depSheet').classList.add('show');var sc=$('#depList');if(sc)sc.scrollTop=0;
+    var panel=$('#depSheet .cp-panel'); if(panel)panel.classList.add('cp-noanim');
+    renderDepList(); $('#depPanefiat').scrollTop=0; $('#depPanecrypto').scrollTop=0;
+    $('#depSheet').classList.add('show');
+    requestAnimationFrame(function(){requestAnimationFrame(function(){if(panel)panel.classList.remove('cp-noanim');});});
   }
   function closeDepSheet(){$('#depSheet').classList.remove('show');}
   (function(){
     $$('#depSheet [data-dep-close]').forEach(function(b){b.addEventListener('click',closeDepSheet);});
     $$('#qrPop [data-qr-close]').forEach(function(b){b.addEventListener('click',closeQRPop);});
-    $$('#depCat button[data-cat]').forEach(function(b){b.addEventListener('click',function(){var nc=b.getAttribute('data-cat');if(nc===dep.cat)return;dep.cat=nc;var l=nc==='fiat'?FIAT:CRYPTO;dep.code=l[0].code;var nw=NETWORKS[dep.code];dep.net=nw?nw[0]:null;dep.anim=null;updateDepCapsule();renderDepList();var sc=$('#depList');if(sc)sc.scrollTop=0;});});
+    $$('#depCat button[data-cat]').forEach(function(b){b.addEventListener('click',function(){var nc=b.getAttribute('data-cat');if(nc===dep.cat)return;dep.cat=nc;var l=nc==='fiat'?FIAT:CRYPTO;dep.code=l[0].code;var nw=NETWORKS[dep.code];dep.net=nw?nw[0]:null;dep.anim=null;renderDepList();var ap=$('#depPane'+nc);if(ap)ap.scrollTop=0;});});
     var si=$('#depSearch');if(si)si.addEventListener('input',function(){dep.search=si.value;dep.anim=null;renderDepList();});
     var go=$('#depGo');if(go)go.addEventListener('click',function(){renderDepRecv();$('#depSheet').classList.add('recv');});
     var bk=$('#depBack');if(bk)bk.addEventListener('click',function(){$('#depSheet').classList.remove('recv');});
