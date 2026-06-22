@@ -60,6 +60,8 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
  .tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0);opacity:1}
  .tt-word.burst .w{transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .45s ease;transform:scale(1.16);opacity:0}
  .tt-flood{position:fixed;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:89;pointer-events:none;background:#000;transform:scale(0);opacity:1}
+ /* keep the wordmark colour instant (no theme cross-fade lag) + let its burst animate during .theming */
+ html.theming .tt-word .w{transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .45s ease!important}
  .num{font-variant-numeric:tabular-nums}
  .scroll-y{scrollbar-width:thin;scrollbar-color:rgb(var(--scroll)) transparent}
  .scroll-y::-webkit-scrollbar{width:6px}
@@ -209,7 +211,7 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
 </head>
 <body class="font-sans bg-bg text-ink">
 <div class="tt-flood" id="ttflood"></div>
-<div class="tt-word" id="ttword"><div class="w" id="ttw">Payer<b>Pay</b></div></div>
+<div class="tt-word" id="ttword"><div class="w" id="ttw">PayerPay</div></div>
 <div class="xsplash" id="xsplash">
   <div class="xsplash-stage">
     <div class="xsplash-mark"><img class="xsplash-logo" src="pp-logo.png" alt="PayerPay"></div>
@@ -755,7 +757,7 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
       doSwap(toDark);
       fl.style.transition='none'; fl.style.opacity='1'; fl.style.transform='scale(0)';
       void fl.offsetWidth;
-      fl.style.transition='transform '+(dur/1000)+'s cubic-bezier(.4,0,.2,1), opacity '+(dur/1000)+'s ease-in';
+      fl.style.setProperty('transition','transform '+(dur/1000)+'s cubic-bezier(.4,0,.2,1), opacity '+(dur/1000)+'s ease-in','important');
       requestAnimationFrame(function(){requestAnimationFrame(function(){fl.style.transform='scale('+end+')';fl.style.opacity='0';});});
       setTimeout(function(){fl.style.transition='none';fl.style.transform='scale(0)';fl.style.opacity='1';word.classList.remove('on','burst','slide');busy=false;armed=false;},dur+90);
     }
