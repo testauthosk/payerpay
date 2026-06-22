@@ -42,13 +42,11 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 .tt-word.burst .w{transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .45s ease;transform:scale(1.18);opacity:0}
 
 /* ===== water flood overlay (works in EVERY browser, no View Transitions needed) ===== */
-.tt-flood{position:fixed;inset:0;z-index:55;pointer-events:none;opacity:0;
-  -webkit-mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><defs><radialGradient id='g'><stop offset='78%' stop-color='white'/><stop offset='100%' stop-color='black'/></radialGradient></defs><circle cx='20' cy='20' r='20' fill='url(%23g)'/></svg>") 50% 50% / 0 no-repeat;
-  mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><defs><radialGradient id='g'><stop offset='78%' stop-color='white'/><stop offset='100%' stop-color='black'/></radialGradient></defs><circle cx='20' cy='20' r='20' fill='url(%23g)'/></svg>") 50% 50% / 0 no-repeat;}
-.tt-flood.go{opacity:1;animation:ttFlood var(--flood,.85s) var(--expo-out) forwards}
-.tt-flood.fade{opacity:0;transition:opacity .32s ease}
-@keyframes ttFlood{from{-webkit-mask-size:0;mask-size:0}to{-webkit-mask-size:300vmax;mask-size:300vmax}}
-:root{--expo-out:linear(0 0%,.1684 2.66%,.3165 5.49%,.446 8.52%,.5581 11.78%,.6535 15.29%,.7341 19.11%,.8011 23.3%,.8557 27.93%,.8962 32.68%,.9283 38.01%,.9529 44.08%,.9711 51.14%,.9833 59.06%,.9915 68.74%,1 100%)}
+.tt-flood{position:fixed;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:55;pointer-events:none;
+  background:#000;transform:scale(0);will-change:transform;opacity:1}
+.tt-flood.go{animation:ttScale var(--flood,.8s) cubic-bezier(.5,0,.18,1) forwards}
+.tt-flood.fade{opacity:0;transition:opacity .34s ease}
+@keyframes ttScale{from{transform:scale(0)}to{transform:scale(var(--end,42))}}
 </style>
 </head>
 <body>
@@ -110,10 +108,15 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
   function flood(){
     busy=true;
     var toDark=!isDark();
+    var nb=toDark?'#0B0F14':'#F8FAF9';                 // new theme background colour
     var fl=document.getElementById('ttflood');
-    fl.style.background=toDark?'#0B0F14':'#F8FAF9';   // new theme background colour
+    // soft-edged circle of the new bg colour (feathered edge = water/ink bleed)
+    fl.style.background='radial-gradient(circle, '+nb+' 0%, '+nb+' 80%, '+nb+'00 100%)';
+    // scale needed to cover from centre to the farthest corner (base radius 100, solid to 80%)
+    var maxd=Math.sqrt((innerWidth/2)*(innerWidth/2)+(innerHeight/2)*(innerHeight/2));
+    fl.style.setProperty('--end', Math.ceil(maxd/(100*0.8))+2);
     fl.classList.remove('fade');
-    html.style.setProperty('--flood',(canHover?'.8':'.95')+'s');
+    fl.style.setProperty('--flood',(canHover?'.8':'.95')+'s');
     var dur=canHover?800:950;
     // wordmark bursts/dissolves as the water rises
     word.classList.remove('slide'); word.classList.add('burst');
