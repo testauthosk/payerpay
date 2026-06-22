@@ -48,6 +48,8 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 .tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,150px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
 .tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
 .tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .2s ease;transform:translateX(0) scale(1.32);opacity:0}
+/* desktop: wordmark ~70% smaller than the clamp max — it is too big on wide screens (mobile keeps its vw size) */
+@media (min-width:768px){ .tt-word .w{font-size:46px} }
 </style>
 </head>
 <body>

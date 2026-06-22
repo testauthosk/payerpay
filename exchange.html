@@ -68,6 +68,8 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
  .tt-word .w{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(46px,13.5vw,136px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
  .tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
  .tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .2s ease;transform:translateX(0) scale(1.32);opacity:0}
+ /* desktop: the clamp maxes at 136px which is way too big on wide screens — shrink ~70% (mobile keeps its 13.5vw size) */
+ @media (min-width:768px){ .tt-word .w{font-size:42px} }
  .tt-flood{position:fixed;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:89;pointer-events:none;background:#000;transform:scale(0);opacity:1}
  /* keep the wordmark colour instant (no theme cross-fade lag) + let its burst animate during .theming */
  html.theming .tt-word .w{transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .5s ease!important}
