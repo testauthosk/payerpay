@@ -79,7 +79,11 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 (function(){
   var html=document.documentElement, btn=document.getElementById('tbtn'), ico=document.getElementById('tico');
   var word=document.getElementById('ttword'), w=document.getElementById('ttw'), hint=document.getElementById('hint');
-  var canHover=matchMedia('(hover:hover)').matches;
+  // Touch-capable devices (incl. iPhone/iPad-in-desktop-mode that wrongly report hover:hover)
+  // must ALWAYS take the tap path. iOS swallows the synthetic `click` after a hover-handler
+  // mutates the DOM, which would leave the desktop hover/click split doing "nothing".
+  var hasTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || matchMedia('(pointer:coarse)').matches;
+  var canHover = matchMedia('(hover:hover)').matches && !hasTouch;
   var busy=false, armed=false;
 
   function isDark(){return html.classList.contains('dark');}
@@ -139,11 +143,21 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
     btn.addEventListener('mouseleave',function(){ if(busy||!armed)return; armed=false; slideOut(); });
     btn.addEventListener('click',function(){ if(busy)return; if(!armed){prep();slideIn(true);} flood(); });
   } else {
-    // ---- mobile: click slides in, then floods ----
-    btn.addEventListener('click',function(){
-      if(busy)return; prep(); slideIn(false);
+    // ---- mobile / touch: tap slides in, then floods ----
+    // Bind to touchend AND click. iOS Safari can swallow the synthetic `click` after a tap
+    // (when a handler mutates the DOM), so touchend guarantees the sequence still runs on
+    // every iOS version (works pre-Pointer-Events too). click stays as the mouse/keyboard
+    // fallback. A short lock prevents the two from double-firing for one tap.
+    var tapLock=false;
+    function runTap(e){
+      if(e&&e.type==='touchend'&&e.cancelable)e.preventDefault(); // suppress the ghost click
+      if(busy||tapLock)return;
+      tapLock=true; setTimeout(function(){tapLock=false;},700);
+      prep(); slideIn(false);
       setTimeout(flood, 430);  // let it reach centre first
-    });
+    }
+    btn.addEventListener('touchend',runTap,{passive:false});
+    btn.addEventListener('click',runTap);
   }
   setIco();
 })();
