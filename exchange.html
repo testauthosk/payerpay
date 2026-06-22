@@ -65,11 +65,13 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
  /* theme-toggle transition: sliding PayerPay wordmark + soft water wave */
  .tt-word{position:fixed;inset:0;z-index:90;display:grid;place-items:center;pointer-events:none;visibility:hidden}
  .tt-word.on{visibility:visible}
- .tt-word .w{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(46px,13.5vw,136px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
+ .tt-word .w{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(46px,13.5vw,56px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
  .tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
  .tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .2s ease;transform:translateX(0) scale(1.32);opacity:0}
- /* desktop: the clamp maxes at 136px which is way too big on wide screens — shrink ~70% (mobile keeps its 13.5vw size) */
- @media (min-width:768px){ .tt-word .w{font-size:42px} }
+ /* graduated wordmark size: phone (~52px via clamp) -> tablet -> desktop, so it is never huge on any width.
+    base clamp max (56px) also stops the 13.5vw balloon in the large-phone/small-tablet range. */
+ @media (min-width:768px){ .tt-word .w{font-size:48px} }   /* tablets — intermediate */
+ @media (min-width:1024px){ .tt-word .w{font-size:42px} }  /* desktop */
  .tt-flood{position:fixed;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:89;pointer-events:none;background:#000;transform:scale(0);opacity:1}
  /* keep the wordmark colour instant (no theme cross-fade lag) + let its burst animate during .theming */
  html.theming .tt-word .w{transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .5s ease!important}
