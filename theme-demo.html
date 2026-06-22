@@ -93,6 +93,15 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
   function isDark(){return html.classList.contains('dark');}
   function setIco(){ico.textContent=isDark()?'☀':'☾';}
   function applyTheme(){html.classList.toggle('dark');setIco();hint.textContent='Current: '+(isDark()?'dark':'light');}
+  // full set of CSS vars for the target theme, captured without a visible repaint
+  function captureVars(toDark){
+    var was=html.classList.contains('dark');
+    html.classList.toggle('dark',toDark);
+    var cs=getComputedStyle(html), out='';
+    ['--bg','--surf','--ink','--t2','--line','--mint','--mint-deep','--mint-tint'].forEach(function(n){var v=cs.getPropertyValue(n).trim();if(v)out+=n+':'+v+';';});
+    html.classList.toggle('dark',was);
+    return out;
+  }
 
   // prepare the wordmark for the *upcoming* switch (color = reverse of CURRENT theme, dir by target)
   function prep(){
@@ -113,30 +122,35 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
     word.classList.remove('slide','burst');
     setTimeout(function(){if(!busy)word.classList.remove('on');},60);
   }
+  // theme change = a CLONE of the page rendered in the NEW theme, revealed in an expanding circle
+  // from centre via clip-path. The real text/numbers change colour exactly as the circle sweeps over
+  // them (no per-property colour transition that snaps/steps on Safari, no solid-colour fill).
   function flood(){
-    busy=true; dbg('flood');
+    busy=true; dbg('reveal');
     var toDark=!isDark();
-    var nb=toDark?'#0B0F14':'#F8FAF9';                 // new theme background colour
-    var fl=document.getElementById('ttflood');
-    // soft, feathered wave of the new bg colour (NOT a hard solid disc)
-    fl.style.background='radial-gradient(circle, '+nb+' 0%, '+nb+' 50%, '+nb+'00 76%)';
-    var maxd=Math.sqrt((innerWidth/2)*(innerWidth/2)+(innerHeight/2)*(innerHeight/2));
-    var end=Math.ceil(maxd/(100*0.5))+2;               // base r 100, solid core to 50%
-    var dur=canHover?760:880;
-    // wordmark bursts/dissolves as the wave rises
+    var vars=captureVars(toDark);
+    var box=document.createElement('div');
+    box.id='ttclone'; box.setAttribute('aria-hidden','true');
+    box.style.cssText='position:fixed;inset:0;z-index:54;pointer-events:none;overflow:hidden;'+vars+';background:rgb(var(--bg));-webkit-clip-path:circle(0px at 50% 50%);clip-path:circle(0px at 50% 50%)';
+    var clone=document.querySelector('.wrap').cloneNode(true);
+    clone.style.cssText=(clone.getAttribute('style')||'')+';'+vars;
+    box.appendChild(clone);
+    document.body.appendChild(box);
+    var maxd=Math.ceil(Math.sqrt((innerWidth/2)*(innerWidth/2)+(innerHeight/2)*(innerHeight/2)))+6;
+    var dur=canHover?720:820;
     word.classList.remove('slide'); word.classList.add('burst');
-    // swap the theme NOW so the content cross-fades (CSS .55s) underneath the wave -> no solid-colour flash
-    applyTheme();
-    // wave: expand AND fade out together (translucent ripple, never fully covers)
-    fl.style.transition='none'; fl.style.opacity='1'; fl.style.transform='scale(0)';
-    void fl.offsetWidth;
-    fl.style.transition='transform '+(dur/1000)+'s cubic-bezier(.4,0,.2,1), opacity '+(dur/1000)+'s ease-in';
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){ fl.style.transform='scale('+end+')'; fl.style.opacity='0'; }); });
+    void box.offsetWidth;
+    box.style.setProperty('transition','-webkit-clip-path '+(dur/1000)+'s cubic-bezier(.45,.02,.2,1),clip-path '+(dur/1000)+'s cubic-bezier(.45,.02,.2,1)','important');
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      box.style.setProperty('-webkit-clip-path','circle('+maxd+'px at 50% 50%)','important');
+      box.style.setProperty('clip-path','circle('+maxd+'px at 50% 50%)','important');
+    }); });
     setTimeout(function(){
-      fl.style.transition='none'; fl.style.transform='scale(0)'; fl.style.opacity='1';
+      applyTheme();                                    // real page -> new theme (instant, hidden under full-circle clone)
+      if(box.parentNode)box.parentNode.removeChild(box);
       word.classList.remove('on','burst','slide');
       busy=false; armed=false; dbg('done');
-    }, dur+80);
+    }, dur+40);
   }
 
   // ---- desktop: arm on hover, commit on click ----
