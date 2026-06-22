@@ -15,7 +15,9 @@ html.dark{
   --mint:51 230 160; --mint-deep:51 230 160; --mint-tint:18 40 32;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:rgb(var(--bg));color:rgb(var(--ink));min-height:100dvh;transition:none}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:rgb(var(--bg));color:rgb(var(--ink));min-height:100dvh;transition:background-color .55s ease,color .55s ease}
+/* smooth theme cross-fade so the swap is never a hard snap */
+.card,.sub,h1,.pill,.hint,.brand b,.card .lab,.card .big,.tbtn{transition:background-color .55s ease,color .55s ease,border-color .55s ease}
 .wrap{max-width:760px;margin:0 auto;padding:24px 18px 80px}
 header{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 26px}
 .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px}
@@ -116,28 +118,25 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
     var toDark=!isDark();
     var nb=toDark?'#0B0F14':'#F8FAF9';                 // new theme background colour
     var fl=document.getElementById('ttflood');
-    // soft-edged circle of the new bg colour (feathered edge = water/ink bleed)
-    fl.style.background='radial-gradient(circle, '+nb+' 0%, '+nb+' 80%, '+nb+'00 100%)';
-    // scale needed to cover from centre to the farthest corner (base radius 100, solid to 80%)
+    // soft, feathered wave of the new bg colour (NOT a hard solid disc)
+    fl.style.background='radial-gradient(circle, '+nb+' 0%, '+nb+' 50%, '+nb+'00 76%)';
     var maxd=Math.sqrt((innerWidth/2)*(innerWidth/2)+(innerHeight/2)*(innerHeight/2));
-    var end=Math.ceil(maxd/(100*0.8))+2;
-    var dur=canHover?800:950;
-    // wordmark bursts/dissolves as the water rises
+    var end=Math.ceil(maxd/(100*0.5))+2;               // base r 100, solid core to 50%
+    var dur=canHover?760:880;
+    // wordmark bursts/dissolves as the wave rises
     word.classList.remove('slide'); word.classList.add('burst');
-    // animate the flood with a plain transform TRANSITION (set target inline -> no @keyframes, no var() in keyframe)
+    // swap the theme NOW so the content cross-fades (CSS .55s) underneath the wave -> no solid-colour flash
+    applyTheme();
+    // wave: expand AND fade out together (translucent ripple, never fully covers)
     fl.style.transition='none'; fl.style.opacity='1'; fl.style.transform='scale(0)';
     void fl.offsetWidth;
-    fl.style.transition='transform '+(dur/1000)+'s cubic-bezier(.5,0,.18,1)';
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){ fl.style.transform='scale('+end+')'; }); });
+    fl.style.transition='transform '+(dur/1000)+'s cubic-bezier(.4,0,.2,1), opacity '+(dur/1000)+'s ease-in';
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ fl.style.transform='scale('+end+')'; fl.style.opacity='0'; }); });
     setTimeout(function(){
-      applyTheme();                // swap theme while the cover hides it
-      fl.style.transition='opacity .34s ease'; fl.style.opacity='0';   // dissolve cover -> reveal
-      setTimeout(function(){
-        fl.style.transition='none'; fl.style.transform='scale(0)'; fl.style.opacity='1';
-        word.classList.remove('on','burst','slide');
-        busy=false; armed=false; dbg('done');
-      }, 360);
-    }, dur);
+      fl.style.transition='none'; fl.style.transform='scale(0)'; fl.style.opacity='1';
+      word.classList.remove('on','burst','slide');
+      busy=false; armed=false; dbg('done');
+    }, dur+80);
   }
 
   // ---- desktop: arm on hover, commit on click ----
