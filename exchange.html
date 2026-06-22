@@ -52,9 +52,10 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
  html.dark{--ink:234 240 245;--t2:132 147 161;--t3:90 103 120;--line:40 51 64;--surf:24 32 42;--bg:11 15 20;--chip:35 46 59;--mint-tint:22 54 50;--pos:18 185 129;--neg:229 83 60;--scroll:46 58 72}
  html,body{height:100%}
  body{-webkit-font-smoothing:antialiased;margin:0;overflow:hidden}
- /* during the theme swap, kill EVERY transition so the View-Transition NEW snapshot captures the FINAL
-    colours, not a half-finished Tailwind transition-colors cross-fade (which would look like a text jump) */
- html.ttnotrans *{transition:none !important;animation:none !important}
+ /* during the theme swap, freeze TRANSITIONS only (not animations) so the View-Transition NEW snapshot
+    captures FINAL colours, not a half-finished Tailwind transition-colors cross-fade. NB: must NOT touch
+    `animation` -> toggling animation off/on re-triggers [data-screen] screenIn (translateY 8px) = a jump */
+ html.ttnotrans *{transition:none !important}
  /* ===== View Transitions API: circular "water" reveal of the NEW theme from the centre =====
     browser snapshots old+new as GPU images; kill its default cross-fade and drive a clip-path circle on
     the NEW snapshot instead -> text+background change together as one image, smooth on GPU, no jump/blink */
@@ -66,7 +67,7 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
  .tt-word.on{visibility:visible}
  .tt-word .w{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(46px,13.5vw,136px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
  .tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
- .tt-word.burst .w{transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .5s ease;transform:translateX(0) scale(1.16);opacity:0}
+ .tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .3s ease;transform:translateX(0) scale(1.32);opacity:0}
  .tt-flood{position:fixed;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:89;pointer-events:none;background:#000;transform:scale(0);opacity:1}
  /* keep the wordmark colour instant (no theme cross-fade lag) + let its burst animate during .theming */
  html.theming .tt-word .w{transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .5s ease!important}
@@ -758,7 +759,8 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
     function prep(toDark){w.style.color=isDark()?'#F4F7F5':'#0B0F14';word.style.setProperty('--from',toDark?'-130%':'130%');}
     function slideIn(){word.classList.add('on');void w.offsetWidth;word.classList.add('slide');}
     function slideOut(){word.classList.remove('slide');setTimeout(function(){if(!busy)word.classList.remove('on');},60);}
-    function endReveal(){word.classList.remove('on','slide');docEl.classList.remove('ttnotrans');busy=false;armed=false;}
+    function burst(){word.classList.remove('slide');word.classList.add('burst');}     // wordmark flies off (scale+fade) so it never just sits at centre
+    function endReveal(){word.classList.remove('on','slide','burst');docEl.classList.remove('ttnotrans');busy=false;armed=false;}
     // theme change via the View Transitions API: the browser snapshots old+new states as GPU images and we
     // reveal the NEW snapshot with an expanding clip-path circle from centre ("water"). Text + background
     // change together as ONE image -> no per-element colour transition, no jump, no blink, smooth on the GPU.
@@ -776,7 +778,14 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
       });
       t.finished.then(endReveal, endReveal);
     }
-    function trigger(toDark){if(busy)return;if(canHover){if(!armed){prep(toDark);slideIn();}reveal(toDark);}else{prep(toDark);slideIn();setTimeout(function(){reveal(toDark);},430);}}
+    // slide the wordmark in -> let it BURST off centre -> THEN run the reveal (so it is gone, never baked
+    // sitting in the View-Transition snapshot). Total: slide -> burst -> water.
+    function trigger(toDark){
+      if(busy)return; busy=true;
+      var go=function(){ burst(); setTimeout(function(){reveal(toDark);},300); };
+      if(canHover){ if(!armed){prep(toDark);slideIn();} go(); }
+      else { prep(toDark); slideIn(); setTimeout(go,430); }
+    }
     var tb=$('#themeToggle');
     if(canHover){
       tb.addEventListener('mouseenter',function(){if(busy)return;armed=true;prep(!isDark());slideIn();});

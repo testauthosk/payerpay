@@ -45,8 +45,9 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 /* ===== sliding wordmark overlay (rides ABOVE the page; dissolves into the water via reverse colour) ===== */
 .tt-word{position:fixed;inset:0;z-index:60;display:grid;place-items:center;pointer-events:none;visibility:hidden}
 .tt-word.on{visibility:visible}
-.tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,150px);transform:translateX(var(--from,-130%));opacity:0}
-.tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0);opacity:1}
+.tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,150px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
+.tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
+.tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .3s ease;transform:translateX(0) scale(1.32);opacity:0}
 </style>
 </head>
 <body>
@@ -91,7 +92,8 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
   }
   function slideIn(){ word.classList.add('on'); void w.offsetWidth; word.classList.add('slide'); }
   function slideOut(){ word.classList.remove('slide'); setTimeout(function(){if(!busy)word.classList.remove('on');},60); }
-  function endReveal(){ word.classList.remove('on','slide'); busy=false; armed=false; dbg('done'); }
+  function burst(){ word.classList.remove('slide'); word.classList.add('burst'); }   // wordmark flies off so it never just sits at centre
+  function endReveal(){ word.classList.remove('on','slide','burst'); busy=false; armed=false; dbg('done'); }
 
   // theme change via the View Transitions API: the browser snapshots old+new, we reveal the NEW
   // snapshot with an expanding clip-path circle from the centre ("water"). GPU-smooth, no clone, no blink.
@@ -114,16 +116,16 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
   if(canHover){
     btn.addEventListener('mouseenter',function(){ if(busy)return; armed=true; prep(); slideIn(); });
     btn.addEventListener('mouseleave',function(){ if(busy||!armed)return; armed=false; slideOut(); });
-    btn.addEventListener('click',function(){ if(busy)return; if(!armed){prep();slideIn();} reveal(); });
+    btn.addEventListener('click',function(){ if(busy)return; busy=true; if(!armed){prep();slideIn();} burst(); setTimeout(reveal,300); });
   } else {
-    // ---- mobile / touch: tap slides the wordmark in, then reveals ----
+    // ---- mobile / touch: tap slides the wordmark in, it bursts off, then reveals ----
     var tapLock=false;
     function runTap(e){
       if(e&&e.type==='touchend'&&e.cancelable)e.preventDefault(); // suppress the ghost click
       if(busy||tapLock)return;
       tapLock=true; setTimeout(function(){tapLock=false;},700);
       prep(); slideIn();
-      setTimeout(reveal, 430);  // let the wordmark reach the centre first
+      setTimeout(function(){ burst(); setTimeout(reveal,300); }, 430);  // reach centre -> burst off -> water
     }
     btn.addEventListener('touchend',runTap,{passive:false});
     btn.addEventListener('click',runTap);
