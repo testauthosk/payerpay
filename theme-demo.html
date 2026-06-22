@@ -38,15 +38,13 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 .tt-word{position:fixed;inset:0;z-index:60;display:grid;place-items:center;pointer-events:none;visibility:hidden}
 .tt-word.on{visibility:visible}
 .tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,150px);transform:translateX(var(--from,-130%));opacity:0}
-.tt-word.slide .w{transition:transform var(--slide,.42s) cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0);opacity:1}
+.tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0);opacity:1}
 .tt-word.burst .w{transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .45s ease;transform:scale(1.18);opacity:0}
 
 /* ===== water flood overlay (works in EVERY browser, no View Transitions needed) ===== */
+/* flood animated by a plain transform TRANSITION (no @keyframes, no var() in keyframes -> safe on every iOS Safari) */
 .tt-flood{position:fixed;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:55;pointer-events:none;
-  background:#000;transform:scale(0);will-change:transform;opacity:1}
-.tt-flood.go{animation:ttScale var(--flood,.8s) cubic-bezier(.5,0,.18,1) forwards}
-.tt-flood.fade{opacity:0;transition:opacity .34s ease}
-@keyframes ttScale{from{transform:scale(0)}to{transform:scale(var(--end,42))}}
+  background:#000;transform:scale(0);opacity:1}
 </style>
 </head>
 <body>
@@ -86,6 +84,10 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
   var canHover = matchMedia('(hover:hover)').matches && !hasTouch;
   var busy=false, armed=false;
 
+  // on-screen debug so we are not blind on a device we cannot inspect
+  function dbg(s){ try{ hint.textContent='['+s+']'; }catch(e){} }
+  window.addEventListener('error', function(ev){ try{ hint.textContent='JS ERROR: '+(ev.message||(ev.error&&ev.error.message)||ev); hint.style.color='#E5533C'; }catch(e){} });
+
   function isDark(){return html.classList.contains('dark');}
   function setIco(){ico.textContent=isDark()?'☀':'☾';}
   function applyTheme(){html.classList.toggle('dark');setIco();hint.textContent='Current: '+(isDark()?'dark':'light');}
@@ -110,7 +112,7 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
     setTimeout(function(){if(!busy)word.classList.remove('on');},60);
   }
   function flood(){
-    busy=true;
+    busy=true; dbg('flood');
     var toDark=!isDark();
     var nb=toDark?'#0B0F14':'#F8FAF9';                 // new theme background colour
     var fl=document.getElementById('ttflood');
@@ -118,22 +120,23 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
     fl.style.background='radial-gradient(circle, '+nb+' 0%, '+nb+' 80%, '+nb+'00 100%)';
     // scale needed to cover from centre to the farthest corner (base radius 100, solid to 80%)
     var maxd=Math.sqrt((innerWidth/2)*(innerWidth/2)+(innerHeight/2)*(innerHeight/2));
-    fl.style.setProperty('--end', Math.ceil(maxd/(100*0.8))+2);
-    fl.classList.remove('fade');
-    fl.style.setProperty('--flood',(canHover?'.8':'.95')+'s');
+    var end=Math.ceil(maxd/(100*0.8))+2;
     var dur=canHover?800:950;
     // wordmark bursts/dissolves as the water rises
     word.classList.remove('slide'); word.classList.add('burst');
-    // start the flood from centre
-    void fl.offsetWidth; fl.classList.add('go');
+    // animate the flood with a plain transform TRANSITION (set target inline -> no @keyframes, no var() in keyframe)
+    fl.style.transition='none'; fl.style.opacity='1'; fl.style.transform='scale(0)';
+    void fl.offsetWidth;
+    fl.style.transition='transform '+(dur/1000)+'s cubic-bezier(.5,0,.18,1)';
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ fl.style.transform='scale('+end+')'; }); });
     setTimeout(function(){
       applyTheme();                // swap theme while the cover hides it
-      fl.classList.add('fade');    // dissolve the cover -> reveal new theme
+      fl.style.transition='opacity .34s ease'; fl.style.opacity='0';   // dissolve cover -> reveal
       setTimeout(function(){
-        fl.classList.remove('go','fade');
+        fl.style.transition='none'; fl.style.transform='scale(0)'; fl.style.opacity='1';
         word.classList.remove('on','burst','slide');
-        busy=false; armed=false;
-      }, 340);
+        busy=false; armed=false; dbg('done');
+      }, 360);
     }, dur);
   }
 
@@ -152,6 +155,7 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
     function runTap(e){
       if(e&&e.type==='touchend'&&e.cancelable)e.preventDefault(); // suppress the ghost click
       if(busy||tapLock)return;
+      dbg('tap '+(e?e.type:''));
       tapLock=true; setTimeout(function(){tapLock=false;},700);
       prep(); slideIn(false);
       setTimeout(flood, 430);  // let it reach centre first
