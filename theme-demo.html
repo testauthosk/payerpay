@@ -15,12 +15,15 @@ html.dark{
   --mint:51 230 160; --mint-deep:51 230 160; --mint-tint:18 40 32;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-/* during the instant swap, freeze every transition so the real page snaps to new colours at once
-   (the .card/.sub/... colour transitions would otherwise cross-fade text AFTER the clone is gone -> a jump) */
-html.ttnotrans *{transition:none !important;animation:none !important}
-body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:rgb(var(--bg));color:rgb(var(--ink));min-height:100dvh;transition:background-color .55s ease,color .55s ease}
-/* smooth theme cross-fade so the swap is never a hard snap */
-.card,.sub,h1,.pill,.hint,.brand b,.card .lab,.card .big,.tbtn{transition:background-color .55s ease,color .55s ease,border-color .55s ease}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:rgb(var(--bg));color:rgb(var(--ink));min-height:100dvh}
+
+/* ===== View Transitions API: circular "water" reveal of the NEW theme from the centre ===== */
+/* the browser snapshots old + new states as GPU images; we kill its default cross-fade and instead
+   drive a clip-path circle on the NEW snapshot -> smooth on the GPU, no manual clone, no blink */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-old(root){z-index:0}
+::view-transition-new(root){z-index:1}
+
 .wrap{max-width:760px;margin:0 auto;padding:24px 18px 80px}
 header{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 26px}
 .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px}
@@ -39,34 +42,21 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 .pill{display:inline-block;margin-top:30px;font-size:13px;font-weight:700;color:rgb(var(--mint-deep));background:rgb(var(--mint-tint));border:1px solid rgb(var(--mint) / .3);border-radius:999px;padding:7px 16px}
 .hint{margin-top:26px;font-size:12.5px;color:rgb(var(--t2))}
 
-/* ===== sliding wordmark overlay ===== */
+/* ===== sliding wordmark overlay (rides ABOVE the page; dissolves into the water via reverse colour) ===== */
 .tt-word{position:fixed;inset:0;z-index:60;display:grid;place-items:center;pointer-events:none;visibility:hidden}
 .tt-word.on{visibility:visible}
-.tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,150px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
-.tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
-.tt-word.burst .w{transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .5s ease;transform:translateX(0) scale(1.16);opacity:0}
-
-/* ===== water flood overlay (works in EVERY browser, no View Transitions needed) ===== */
-/* flood animated by a plain transform TRANSITION (no @keyframes, no var() in keyframes -> safe on every iOS Safari) */
-.tt-flood{position:fixed;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;z-index:55;pointer-events:none;
-  background:#000;transform:scale(0);opacity:1}
+.tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,150px);transform:translateX(var(--from,-130%));opacity:0}
+.tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0);opacity:1}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <filter id="liquid">
-    <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.012 0.016" numOctaves="2" seed="7" result="noise"/>
-    <feDisplacementMap in="SourceGraphic" in2="noise" scale="48" xChannelSelector="R" yChannelSelector="G"/>
-  </filter>
-</svg>
-
 <div class="wrap">
   <header>
     <div class="brand"><span class="hex">P</span><span>Payer<b>Pay</b></span></div>
     <button class="tbtn" id="tbtn" aria-label="Toggle theme"><span class="ph" id="tico">☾</span></button>
   </header>
   <h1>Theme transition</h1>
-  <p class="sub">Tap the toggle (top-right). The PayerPay wordmark slides in, meets the centre, then floods the new theme outward like water. On desktop it begins on hover and commits on click.</p>
+  <p class="sub">Tap the toggle (top-right). The PayerPay wordmark slides in, meets the centre, then the new theme floods outward from the centre like water. On desktop it begins on hover and commits on click.</p>
   <div class="cards">
     <div class="card"><div class="lab">Total balance</div><div class="big">$24,310.84</div></div>
     <div class="card"><div class="lab">You receive</div><div class="big mint">0.01552 BTC</div></div>
@@ -75,124 +65,65 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
   <div class="hint" id="hint">Current: light</div>
 </div>
 
-<div class="tt-flood" id="ttflood"></div>
 <div class="tt-word" id="ttword"><div class="w" id="ttw">Payer<b>Pay</b></div></div>
 
 <script>
 (function(){
   var html=document.documentElement, btn=document.getElementById('tbtn'), ico=document.getElementById('tico');
   var word=document.getElementById('ttword'), w=document.getElementById('ttw'), hint=document.getElementById('hint');
-  // Touch-capable devices (incl. iPhone/iPad-in-desktop-mode that wrongly report hover:hover)
-  // must ALWAYS take the tap path. iOS swallows the synthetic `click` after a hover-handler
-  // mutates the DOM, which would leave the desktop hover/click split doing "nothing".
+  // touch-capable devices (incl. iPhone/iPad that wrongly report hover:hover) take the tap path
   var hasTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || matchMedia('(pointer:coarse)').matches;
   var canHover = matchMedia('(hover:hover)').matches && !hasTouch;
   var busy=false, armed=false;
 
-  // on-screen debug so we are not blind on a device we cannot inspect
   function dbg(s){ try{ hint.textContent='['+s+']'; }catch(e){} }
   window.addEventListener('error', function(ev){ try{ hint.textContent='JS ERROR: '+(ev.message||(ev.error&&ev.error.message)||ev); hint.style.color='#E5533C'; }catch(e){} });
 
   function isDark(){return html.classList.contains('dark');}
   function setIco(){ico.textContent=isDark()?'☀':'☾';}
-  function applyTheme(){
-    html.classList.add('ttnotrans');
-    html.classList.toggle('dark');setIco();hint.textContent='Current: '+(isDark()?'dark':'light');
-    void html.offsetWidth;
-    requestAnimationFrame(function(){html.classList.remove('ttnotrans');});
-  }
-  // full set of CSS vars for the target theme, captured without a visible repaint
-  function captureVars(toDark){
-    var was=html.classList.contains('dark');
-    html.classList.toggle('dark',toDark);
-    var cs=getComputedStyle(html), out='';
-    ['--bg','--surf','--ink','--t2','--line','--mint','--mint-deep','--mint-tint'].forEach(function(n){var v=cs.getPropertyValue(n).trim();if(v)out+=n+':'+v+';';});
-    html.classList.toggle('dark',was);
-    return out;
-  }
+  function applyTheme(){ html.classList.toggle('dark'); setIco(); hint.textContent='Current: '+(isDark()?'dark':'light'); }
 
-  // prepare the wordmark for the *upcoming* switch (color = reverse of CURRENT theme, dir by target)
+  // prepare the wordmark for the upcoming switch (colour = reverse of CURRENT theme, dir by target)
   function prep(){
     var toDark=!isDark();
-    // colour: reverse of currently-active theme
-    w.style.color=isDark()?'#EAF2EE':'#0B0F14';
-    // direction: to dark -> from left ; to light -> from right
-    word.style.setProperty('--from', toDark?'-130%':'130%');
+    w.style.color=isDark()?'#EAF2EE':'#0B0F14';            // reverse of the currently-active theme
+    word.style.setProperty('--from', toDark?'-130%':'130%'); // to dark -> from left ; to light -> from right
   }
-  function slideIn(fast){
-    word.classList.add('on');
-    word.style.setProperty('--slide', fast?'.34s':'.46s');
-    // force reflow so the transition runs from the start position
-    void w.offsetWidth;
-    word.classList.add('slide');
-  }
-  function slideOut(){
-    word.classList.remove('slide','burst');
-    setTimeout(function(){if(!busy)word.classList.remove('on');},60);
-  }
-  // theme change = a CLONE of the page rendered in the NEW theme, revealed in an expanding circle
-  // from centre via clip-path. The real text/numbers change colour exactly as the circle sweeps over
-  // them (no per-property colour transition that snaps/steps on Safari, no solid-colour fill).
-  function flood(){
+  function slideIn(){ word.classList.add('on'); void w.offsetWidth; word.classList.add('slide'); }
+  function slideOut(){ word.classList.remove('slide'); setTimeout(function(){if(!busy)word.classList.remove('on');},60); }
+  function endReveal(){ word.classList.remove('on','slide'); busy=false; armed=false; dbg('done'); }
+
+  // theme change via the View Transitions API: the browser snapshots old+new, we reveal the NEW
+  // snapshot with an expanding clip-path circle from the centre ("water"). GPU-smooth, no clone, no blink.
+  function reveal(){
     busy=true; dbg('reveal');
-    var toDark=!isDark();
-    var vars=captureVars(toDark);
-    var box=document.createElement('div');
-    box.id='ttclone'; box.setAttribute('aria-hidden','true');
-    box.style.cssText='position:fixed;inset:0;z-index:54;pointer-events:none;overflow:hidden;'+vars+';background:rgb(var(--bg));-webkit-clip-path:circle(0px at 50% 50%);clip-path:circle(0px at 50% 50%)';
-    var root=document.querySelector('.wrap');
-    var rr=root.getBoundingClientRect();
-    var clone=root.cloneNode(true);
-    // overlay the clone EXACTLY on the real content (0px offset) so text never shifts at the circle edge
-    clone.style.cssText=(clone.getAttribute('style')||'')+';position:absolute;left:'+rr.left+'px;top:'+rr.top+'px;width:'+rr.width+'px;height:'+rr.height+'px;margin:0;'+vars;
-    box.appendChild(clone);
-    document.body.appendChild(box);
-    var maxd=Math.ceil(Math.sqrt((innerWidth/2)*(innerWidth/2)+(innerHeight/2)*(innerHeight/2)))+24; // circle MUST cover the corners
-    var dur=canHover?640:760;
-    word.classList.remove('slide'); word.classList.add('burst');
-    var done=false;
-    function finish(e){
-      if(e&&(e.target!==box||(e.propertyName||'').indexOf('clip-path')<0))return; // only the box's OWN clip-path, not bubbled child transitions
-      if(done)return; done=true;
-      html.classList.add('ttnotrans');                 // freeze transitions so the real page snaps colours
-      html.classList.toggle('dark'); setIco(); hint.textContent='Current: '+(isDark()?'dark':'light'); // all real-page updates WHILE the clone still covers (masked)
-      requestAnimationFrame(function(){
-        box.style.visibility='hidden';                 // reveal the fully-updated real page in ONE frame; held frame identical -> no blink
-        html.classList.remove('ttnotrans');
-        word.classList.remove('on','burst','slide');
-        busy=false; armed=false; dbg('done');
-        setTimeout(function(){ if(box.parentNode)box.parentNode.removeChild(box); },400); // tear down the clone DOM later, off-screen
-      });
-    }
-    box.addEventListener('transitionend',finish);      // swap gated on the reveal completing
-    void box.offsetWidth;
-    box.style.setProperty('transition','-webkit-clip-path '+(dur/1000)+'s cubic-bezier(.4,0,.2,1),clip-path '+(dur/1000)+'s cubic-bezier(.4,0,.2,1)','important');
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){
-      box.style.setProperty('-webkit-clip-path','circle('+maxd+'px at 50% 50%)','important');
-      box.style.setProperty('clip-path','circle('+maxd+'px at 50% 50%)','important');
-    }); });
-    setTimeout(finish, dur+280);                       // fallback if transitionend is missed
+    if(!document.startViewTransition){ applyTheme(); endReveal(); return; }   // fallback: instant
+    var t=document.startViewTransition(function(){ applyTheme(); });
+    t.ready.then(function(){
+      var cx=innerWidth/2, cy=innerHeight/2;
+      var r=Math.hypot(Math.max(cx,innerWidth-cx), Math.max(cy,innerHeight-cy)); // reach the farthest corner
+      document.documentElement.animate(
+        { clipPath:['circle(0px at '+cx+'px '+cy+'px)','circle('+r+'px at '+cx+'px '+cy+'px)'] },
+        { duration: canHover?560:640, easing:'cubic-bezier(.4,0,.2,1)', pseudoElement:'::view-transition-new(root)' }
+      );
+    });
+    t.finished.then(endReveal, endReveal);
   }
 
   // ---- desktop: arm on hover, commit on click ----
   if(canHover){
-    btn.addEventListener('mouseenter',function(){ if(busy)return; armed=true; prep(); slideIn(true); });
+    btn.addEventListener('mouseenter',function(){ if(busy)return; armed=true; prep(); slideIn(); });
     btn.addEventListener('mouseleave',function(){ if(busy||!armed)return; armed=false; slideOut(); });
-    btn.addEventListener('click',function(){ if(busy)return; if(!armed){prep();slideIn(true);} flood(); });
+    btn.addEventListener('click',function(){ if(busy)return; if(!armed){prep();slideIn();} reveal(); });
   } else {
-    // ---- mobile / touch: tap slides in, then floods ----
-    // Bind to touchend AND click. iOS Safari can swallow the synthetic `click` after a tap
-    // (when a handler mutates the DOM), so touchend guarantees the sequence still runs on
-    // every iOS version (works pre-Pointer-Events too). click stays as the mouse/keyboard
-    // fallback. A short lock prevents the two from double-firing for one tap.
+    // ---- mobile / touch: tap slides the wordmark in, then reveals ----
     var tapLock=false;
     function runTap(e){
       if(e&&e.type==='touchend'&&e.cancelable)e.preventDefault(); // suppress the ghost click
       if(busy||tapLock)return;
-      dbg('tap '+(e?e.type:''));
       tapLock=true; setTimeout(function(){tapLock=false;},700);
-      prep(); slideIn(false);
-      setTimeout(flood, 430);  // let it reach centre first
+      prep(); slideIn();
+      setTimeout(reveal, 430);  // let the wordmark reach the centre first
     }
     btn.addEventListener('touchend',runTap,{passive:false});
     btn.addEventListener('click',runTap);

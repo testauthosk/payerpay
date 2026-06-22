@@ -52,9 +52,15 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
  html.dark{--ink:234 240 245;--t2:132 147 161;--t3:90 103 120;--line:40 51 64;--surf:24 32 42;--bg:11 15 20;--chip:35 46 59;--mint-tint:22 54 50;--pos:18 185 129;--neg:229 83 60;--scroll:46 58 72}
  html,body{height:100%}
  body{-webkit-font-smoothing:antialiased;margin:0;overflow:hidden}
- /* during the instant theme swap, kill EVERY transition so the real page snaps to the new colours
-    immediately (Tailwind transition-colors would otherwise cross-fade text AFTER the clone is gone -> a colour jump) */
+ /* during the theme swap, kill EVERY transition so the View-Transition NEW snapshot captures the FINAL
+    colours, not a half-finished Tailwind transition-colors cross-fade (which would look like a text jump) */
  html.ttnotrans *{transition:none !important;animation:none !important}
+ /* ===== View Transitions API: circular "water" reveal of the NEW theme from the centre =====
+    browser snapshots old+new as GPU images; kill its default cross-fade and drive a clip-path circle on
+    the NEW snapshot instead -> text+background change together as one image, smooth on GPU, no jump/blink */
+ ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+ ::view-transition-old(root){z-index:0}
+ ::view-transition-new(root){z-index:1}
  /* theme-toggle transition: sliding PayerPay wordmark + soft water wave */
  .tt-word{position:fixed;inset:0;z-index:90;display:grid;place-items:center;pointer-events:none;visibility:hidden}
  .tt-word.on{visibility:visible}
@@ -740,72 +746,37 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
   // theme + accent
   function syncTheme(){var d=document.documentElement.classList.contains('dark');var i=$('#themeToggle i');if(i)i.className='ph '+(d?'ph-sun':'ph-moon')+' text-[16px]';$$('.thm').forEach(function(t){var on=t.getAttribute('data-theme')===(d?'dark':'light');t.classList.toggle('bg-surf',on);t.classList.toggle('shadow-sm',on);t.classList.toggle('text-ink',on);t.classList.toggle('text-t2',!on);});}
   (function(){
-    var docEl=document.documentElement, word=$('#ttword'), w=$('#ttw'), fl=$('#ttflood');
+    var docEl=document.documentElement, word=$('#ttword'), w=$('#ttw');
     var hasTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches;
     var canHover=matchMedia('(hover:hover)').matches && !hasTouch;
     var busy=false, armed=false;
     function isDark(){return docEl.classList.contains('dark');}
-    function doSwap(toDark){
-      docEl.classList.add('ttnotrans');                 // freeze all transitions -> the real page adopts the new colours instantly
-      window.ppSetTheme(toDark?'dark':'light');syncTheme();renderAccent();
-      void docEl.offsetWidth;                            // flush the new colours to the screen this frame
-      requestAnimationFrame(function(){docEl.classList.remove('ttnotrans');});
-    }
-    // capture the FULL set of CSS variables for the target theme (incl. live accent) without a visible repaint
-    function captureVars(toDark){
-      var was=docEl.classList.contains('dark');
-      docEl.classList.toggle('dark',toDark);
-      var cs=getComputedStyle(docEl), out='';
-      ['--ink','--t2','--t3','--line','--surf','--bg','--chip','--mint','--mint-deep','--mint-tint','--mint-bright','--pos','--neg','--scroll'].forEach(function(n){var v=cs.getPropertyValue(n).trim();if(v)out+=n+':'+v+';';});
-      docEl.classList.toggle('dark',was);
-      return out;
+    function swapTheme(toDark){
+      docEl.classList.add('ttnotrans');                  // so the View-Transition NEW snapshot captures FINAL colours, not a mid Tailwind transition
+      window.ppSetTheme(toDark?'dark':'light'); syncTheme(); renderAccent();
     }
     function prep(toDark){w.style.color=isDark()?'#F4F7F5':'#0B0F14';word.style.setProperty('--from',toDark?'-130%':'130%');}
     function slideIn(){word.classList.add('on');void w.offsetWidth;word.classList.add('slide');}
-    function slideOut(){word.classList.remove('slide','burst');setTimeout(function(){if(!busy)word.classList.remove('on');},60);}
-    // theme change = a CLONE of the page rendered in the NEW theme, revealed in an expanding
-    // circle from centre via clip-path. The real text/numbers change colour exactly as the circle
-    // sweeps over them (no per-property colour transition that snaps/steps on Safari, no solid fill).
-    function wave(toDark){
+    function slideOut(){word.classList.remove('slide');setTimeout(function(){if(!busy)word.classList.remove('on');},60);}
+    function endReveal(){word.classList.remove('on','slide');docEl.classList.remove('ttnotrans');busy=false;armed=false;}
+    // theme change via the View Transitions API: the browser snapshots old+new states as GPU images and we
+    // reveal the NEW snapshot with an expanding clip-path circle from centre ("water"). Text + background
+    // change together as ONE image -> no per-element colour transition, no jump, no blink, smooth on the GPU.
+    function reveal(toDark){
       busy=true;
-      var vars=captureVars(toDark);
-      var root=document.querySelector('.h-full.flex');
-      var rr=root.getBoundingClientRect();
-      var box=document.createElement('div');
-      box.id='ttclone'; box.setAttribute('aria-hidden','true');
-      box.style.cssText='position:fixed;inset:0;z-index:88;pointer-events:none;overflow:hidden;'+vars+';background:rgb(var(--bg));-webkit-clip-path:circle(0px at 50% 50%);clip-path:circle(0px at 50% 50%)';
-      var clone=root.cloneNode(true);
-      // overlay the clone EXACTLY on the real root (0px offset) so text never shifts at the circle edge
-      clone.style.cssText=(clone.getAttribute('style')||'')+';position:absolute;left:'+rr.left+'px;top:'+rr.top+'px;width:'+rr.width+'px;height:'+rr.height+'px;margin:0;'+vars;
-      box.appendChild(clone);
-      document.body.appendChild(box);
-      var maxd=Math.ceil(Math.sqrt((innerWidth/2)*(innerWidth/2)+(innerHeight/2)*(innerHeight/2)))+24; // +margin: circle MUST cover the corners
-      var dur=canHover?640:760;
-      word.classList.remove('slide'); word.classList.add('burst');
-      var done=false;
-      function finish(e){
-        if(e&&(e.target!==box||(e.propertyName||'').indexOf('clip-path')<0))return; // only the box's OWN clip-path, not transitions bubbling up from the cloned children
-        if(done)return; done=true;
-        docEl.classList.add('ttnotrans');                 // freeze transitions so the real page snaps colours (no residual cross-fade)
-        window.ppSetTheme(toDark?'dark':'light'); syncTheme(); renderAccent(); // do ALL real-page updates WHILE the clone still covers -> masked by the static clone
-        requestAnimationFrame(function(){
-          box.style.visibility='hidden';                  // reveal the fully-updated real page in ONE frame; the held frame is identical to the clone -> no blink/blank
-          docEl.classList.remove('ttnotrans');
-          word.classList.remove('on','burst','slide');
-          busy=false; armed=false;
-          setTimeout(function(){ if(box.parentNode)box.parentNode.removeChild(box); },400); // tear the heavy clone DOM down LATER, off-screen (cost invisible)
-        });
-      }
-      box.addEventListener('transitionend',finish);       // swap is gated on the reveal actually completing
-      void box.offsetWidth;
-      box.style.setProperty('transition','-webkit-clip-path '+(dur/1000)+'s cubic-bezier(.4,0,.2,1),clip-path '+(dur/1000)+'s cubic-bezier(.4,0,.2,1)','important');
-      requestAnimationFrame(function(){requestAnimationFrame(function(){
-        box.style.setProperty('-webkit-clip-path','circle('+maxd+'px at 50% 50%)','important');
-        box.style.setProperty('clip-path','circle('+maxd+'px at 50% 50%)','important');
-      });});
-      setTimeout(finish,dur+280);                         // fallback if transitionend is missed
+      if(!document.startViewTransition){ swapTheme(toDark); endReveal(); return; }   // fallback (iOS<18): instant swap
+      var t=document.startViewTransition(function(){ swapTheme(toDark); });
+      t.ready.then(function(){
+        var cx=innerWidth/2, cy=innerHeight/2;
+        var r=Math.hypot(Math.max(cx,innerWidth-cx), Math.max(cy,innerHeight-cy));     // reach the farthest corner
+        document.documentElement.animate(
+          { clipPath:['circle(0px at '+cx+'px '+cy+'px)','circle('+r+'px at '+cx+'px '+cy+'px)'] },
+          { duration: canHover?560:640, easing:'cubic-bezier(.4,0,.2,1)', pseudoElement:'::view-transition-new(root)' }
+        );
+      });
+      t.finished.then(endReveal, endReveal);
     }
-    function trigger(toDark){if(busy)return;if(canHover){if(!armed){prep(toDark);slideIn();}wave(toDark);}else{prep(toDark);slideIn();setTimeout(function(){wave(toDark);},430);}}
+    function trigger(toDark){if(busy)return;if(canHover){if(!armed){prep(toDark);slideIn();}reveal(toDark);}else{prep(toDark);slideIn();setTimeout(function(){reveal(toDark);},430);}}
     var tb=$('#themeToggle');
     if(canHover){
       tb.addEventListener('mouseenter',function(){if(busy)return;armed=true;prep(!isDark());slideIn();});
@@ -816,7 +787,7 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
       var tap=function(e){if(e&&e.type==='touchend'&&e.cancelable)e.preventDefault();if(busy||lock)return;lock=true;setTimeout(function(){lock=false;},700);trigger(!isDark());};
       tb.addEventListener('touchend',tap,{passive:false}); tb.addEventListener('click',tap);
     }
-    $$('.thm').forEach(function(t){t.addEventListener('click',function(){var target=t.getAttribute('data-theme')==='dark';if(busy)return;if(target===isDark()){doSwap(target);}else{trigger(target);}});});
+    $$('.thm').forEach(function(t){t.addEventListener('click',function(){var target=t.getAttribute('data-theme')==='dark';if(busy)return;if(target===isDark()){window.ppSetTheme(target?'dark':'light');syncTheme();renderAccent();}else{trigger(target);}});});
   })();
   function renderAccent(){var row=$('#accentRow');if(!row)return;row.innerHTML=ACCENTS.map(function(h){var on=(window.ppAccent||'').toLowerCase()===h.toLowerCase();return '<button data-acc="'+h+'" class="w-6 h-6 rounded-full border-2 transition-transform '+(on?'scale-110':'')+'" style="background:'+h+';border-color:'+(on?'rgb(var(--ink))':'transparent')+'"></button>';}).join('');$$('#accentRow [data-acc]').forEach(function(b){b.addEventListener('click',function(){window.ppSetAccent(b.getAttribute('data-acc'));renderAccent();});});}
 
