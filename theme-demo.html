@@ -47,7 +47,7 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 .tt-word.on{visibility:visible}
 .tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,150px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
 .tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
-.tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .3s ease;transform:translateX(0) scale(1.32);opacity:0}
+.tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .2s ease;transform:translateX(0) scale(1.32);opacity:0}
 </style>
 </head>
 <body>
@@ -116,7 +116,7 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
   if(canHover){
     btn.addEventListener('mouseenter',function(){ if(busy)return; armed=true; prep(); slideIn(); });
     btn.addEventListener('mouseleave',function(){ if(busy||!armed)return; armed=false; slideOut(); });
-    btn.addEventListener('click',function(){ if(busy)return; busy=true; if(!armed){prep();slideIn();} burst(); setTimeout(reveal,300); });
+    btn.addEventListener('click',function(){ if(busy)return; busy=true; if(!armed){prep();slideIn();} burst(); setTimeout(reveal,230); });
   } else {
     // ---- mobile / touch: tap slides the wordmark in, it bursts off, then reveals ----
     var tapLock=false;
@@ -125,7 +125,7 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
       if(busy||tapLock)return;
       tapLock=true; setTimeout(function(){tapLock=false;},700);
       prep(); slideIn();
-      setTimeout(function(){ burst(); setTimeout(reveal,300); }, 430);  // reach centre -> burst off -> water
+      setTimeout(function(){ burst(); setTimeout(reveal,230); }, 430);  // reach centre -> burst off -> water (~0.3s gap)
     }
     btn.addEventListener('touchend',runTap,{passive:false});
     btn.addEventListener('click',runTap);
