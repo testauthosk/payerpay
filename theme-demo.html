@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>PayerPay — theme transition demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:248 250 249; --surf:255 255 255; --ink:11 15 20; --t2:90 105 120; --line:225 230 228;
+  --mint:18 185 129; --mint-deep:13 148 105; --mint-tint:222 247 238;
+}
+html.dark{
+  --bg:11 15 20; --surf:24 32 42; --ink:233 246 239; --t2:150 165 175; --line:38 50 62;
+  --mint:51 230 160; --mint-deep:51 230 160; --mint-tint:18 40 32;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:rgb(var(--bg));color:rgb(var(--ink));min-height:100dvh;transition:none}
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 80px}
+header{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 26px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px}
+.brand .hex{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:radial-gradient(80% 80% at 70% 25%,rgba(51,230,160,.4),transparent 50%),linear-gradient(150deg,#16271E,#0A120E);color:#33E6A0;font-weight:800}
+.brand b{color:rgb(var(--mint-deep))}
+.tbtn{width:46px;height:46px;border-radius:14px;border:1px solid rgb(var(--line));background:rgb(var(--surf));color:rgb(var(--ink));display:grid;place-items:center;cursor:pointer;font-size:20px;transition:border-color .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.tbtn:hover{border-color:rgb(var(--mint))}
+.tbtn .ph{transition:transform .4s cubic-bezier(.34,1.3,.5,1)}
+h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
+.sub{color:rgb(var(--t2));font-size:14.5px;line-height:1.6;max-width:48ch}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}
+.card{background:rgb(var(--surf));border:1px solid rgb(var(--line));border-radius:18px;padding:20px}
+.card .lab{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgb(var(--t2));font-weight:700}
+.card .big{font-size:26px;font-weight:800;margin-top:6px}
+.card .big.mint{color:rgb(var(--mint-deep))}
+.pill{display:inline-block;margin-top:30px;font-size:13px;font-weight:700;color:rgb(var(--mint-deep));background:rgb(var(--mint-tint));border:1px solid rgb(var(--mint) / .3);border-radius:999px;padding:7px 16px}
+.hint{margin-top:26px;font-size:12.5px;color:rgb(var(--t2))}
+
+/* ===== sliding wordmark overlay ===== */
+.tt-word{position:fixed;inset:0;z-index:60;display:grid;place-items:center;pointer-events:none;visibility:hidden}
+.tt-word.on{visibility:visible}
+.tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,150px);transform:translateX(var(--from,-130%));opacity:0}
+.tt-word.slide .w{transition:transform var(--slide,.42s) cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0);opacity:1}
+.tt-word.burst .w{transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .45s ease;transform:scale(1.18);opacity:0}
+
+/* ===== View Transitions: liquid water reveal ===== */
+@supports (view-transition-name: root){
+  ::view-transition-group(root){animation-timing-function:var(--expo-out)}
+  ::view-transition-old(root){animation:none;z-index:-1;animation-fill-mode:both}
+  ::view-transition-new(root){
+    mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><defs><radialGradient id='g'><stop offset='80%' stop-color='white'/><stop offset='100%' stop-color='black'/></radialGradient></defs><circle cx='20' cy='20' r='20' fill='url(%23g)'/></svg>") var(--tx,50%) var(--ty,50%) / 0 no-repeat;
+    animation:ttFlood var(--flood,.9s) both;
+    animation-timing-function:var(--expo-out);
+  }
+}
+@keyframes ttFlood{to{mask-size:280vmax}}
+:root{--expo-out:linear(0 0%,.1684 2.66%,.3165 5.49%,.446 8.52%,.5581 11.78%,.6535 15.29%,.7341 19.11%,.8011 23.3%,.8557 27.93%,.8962 32.68%,.9283 38.01%,.9529 44.08%,.9711 51.14%,.9833 59.06%,.9915 68.74%,1 100%)}
+@media (prefers-reduced-motion:reduce){.tt-word{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="liquid">
+    <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.012 0.016" numOctaves="2" seed="7" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="48" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="hex">P</span><span>Payer<b>Pay</b></span></div>
+    <button class="tbtn" id="tbtn" aria-label="Toggle theme"><span class="ph" id="tico">☾</span></button>
+  </header>
+  <h1>Theme transition</h1>
+  <p class="sub">Tap the toggle (top-right). The PayerPay wordmark slides in, meets the centre, then floods the new theme outward like water. On desktop it begins on hover and commits on click.</p>
+  <div class="cards">
+    <div class="card"><div class="lab">Total balance</div><div class="big">$24,310.84</div></div>
+    <div class="card"><div class="lab">You receive</div><div class="big mint">0.01552 BTC</div></div>
+  </div>
+  <span class="pill">Powered by PayerPay</span>
+  <div class="hint" id="hint">Current: light</div>
+</div>
+
+<div class="tt-word" id="ttword"><div class="w" id="ttw">Payer<b>Pay</b></div></div>
+
+<script>
+(function(){
+  var html=document.documentElement, btn=document.getElementById('tbtn'), ico=document.getElementById('tico');
+  var word=document.getElementById('ttword'), w=document.getElementById('ttw'), hint=document.getElementById('hint');
+  var canHover=matchMedia('(hover:hover)').matches;
+  var busy=false, armed=false;
+
+  function isDark(){return html.classList.contains('dark');}
+  function setIco(){ico.textContent=isDark()?'☀':'☾';}
+  function applyTheme(){html.classList.toggle('dark');setIco();hint.textContent='Current: '+(isDark()?'dark':'light');}
+
+  // prepare the wordmark for the *upcoming* switch (color = reverse of CURRENT theme, dir by target)
+  function prep(){
+    var toDark=!isDark();
+    // colour: reverse of currently-active theme
+    w.style.color=isDark()?'#EAF2EE':'#0B0F14';
+    // direction: to dark -> from left ; to light -> from right
+    word.style.setProperty('--from', toDark?'-130%':'130%');
+  }
+  function slideIn(fast){
+    word.classList.add('on');
+    word.style.setProperty('--slide', fast?'.34s':'.46s');
+    // force reflow so the transition runs from the start position
+    void w.offsetWidth;
+    word.classList.add('slide');
+  }
+  function slideOut(){
+    word.classList.remove('slide','burst');
+    setTimeout(function(){if(!busy)word.classList.remove('on');},60);
+  }
+  function flood(){
+    busy=true;
+    var swap=function(){applyTheme();};
+    var fire=function(){
+      // origin = centre of the wordmark (≈ screen centre)
+      html.style.setProperty('--tx','50%'); html.style.setProperty('--ty','50%');
+      html.style.setProperty('--flood', canHover?'.85s':'1s');
+      if(!document.startViewTransition){ swap(); finish(); return; }
+      var vt=document.startViewTransition(swap);
+      vt.finished.finally(finish);
+    };
+    function finish(){
+      word.classList.remove('slide'); word.classList.remove('burst');
+      word.classList.remove('on'); busy=false; armed=false;
+    }
+    // wordmark bursts/dissolves as the water takes over
+    word.classList.remove('slide'); word.classList.add('burst');
+    fire();
+  }
+
+  // ---- desktop: arm on hover, commit on click ----
+  if(canHover){
+    btn.addEventListener('mouseenter',function(){ if(busy)return; armed=true; prep(); slideIn(true); });
+    btn.addEventListener('mouseleave',function(){ if(busy||!armed)return; armed=false; slideOut(); });
+    btn.addEventListener('click',function(){ if(busy)return; if(!armed){prep();slideIn(true);} flood(); });
+  } else {
+    // ---- mobile: click slides in, then floods ----
+    btn.addEventListener('click',function(){
+      if(busy)return; prep(); slideIn(false);
+      setTimeout(flood, 430);  // let it reach centre first
+    });
+  }
+  setIco();
+})();
+</script>
+</body>
+</html>
