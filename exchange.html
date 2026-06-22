@@ -783,12 +783,18 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
       var dur=canHover?640:760;
       word.classList.remove('slide'); word.classList.add('burst');
       var done=false;
-      function finish(){
+      function finish(e){
+        if(e&&(e.target!==box||(e.propertyName||'').indexOf('clip-path')<0))return; // only the box's OWN clip-path, not transitions bubbling up from the cloned children
         if(done)return; done=true;
-        doSwap(toDark);                                   // real page -> new theme, ONLY after the circle has FULLY covered (no edge snap)
-        if(box.parentNode)box.parentNode.removeChild(box);// remove clone in the SAME tick -> seamless
-        word.classList.remove('on','burst','slide');
-        busy=false; armed=false;
+        docEl.classList.add('ttnotrans');                 // freeze transitions so the real page snaps colours (no residual cross-fade)
+        window.ppSetTheme(toDark?'dark':'light'); syncTheme(); renderAccent(); // do ALL real-page updates WHILE the clone still covers -> masked by the static clone
+        requestAnimationFrame(function(){
+          box.style.visibility='hidden';                  // reveal the fully-updated real page in ONE frame; the held frame is identical to the clone -> no blink/blank
+          docEl.classList.remove('ttnotrans');
+          word.classList.remove('on','burst','slide');
+          busy=false; armed=false;
+          setTimeout(function(){ if(box.parentNode)box.parentNode.removeChild(box); },400); // tear the heavy clone DOM down LATER, off-screen (cost invisible)
+        });
       }
       box.addEventListener('transitionend',finish);       // swap is gated on the reveal actually completing
       void box.offsetWidth;

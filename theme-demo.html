@@ -151,12 +151,18 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
     var dur=canHover?640:760;
     word.classList.remove('slide'); word.classList.add('burst');
     var done=false;
-    function finish(){
+    function finish(e){
+      if(e&&(e.target!==box||(e.propertyName||'').indexOf('clip-path')<0))return; // only the box's OWN clip-path, not bubbled child transitions
       if(done)return; done=true;
-      applyTheme();                                    // real page -> new theme, ONLY after the circle fully covered (no edge snap)
-      if(box.parentNode)box.parentNode.removeChild(box);
-      word.classList.remove('on','burst','slide');
-      busy=false; armed=false; dbg('done');
+      html.classList.add('ttnotrans');                 // freeze transitions so the real page snaps colours
+      html.classList.toggle('dark'); setIco(); hint.textContent='Current: '+(isDark()?'dark':'light'); // all real-page updates WHILE the clone still covers (masked)
+      requestAnimationFrame(function(){
+        box.style.visibility='hidden';                 // reveal the fully-updated real page in ONE frame; held frame identical -> no blink
+        html.classList.remove('ttnotrans');
+        word.classList.remove('on','burst','slide');
+        busy=false; armed=false; dbg('done');
+        setTimeout(function(){ if(box.parentNode)box.parentNode.removeChild(box); },400); // tear down the clone DOM later, off-screen
+      });
     }
     box.addEventListener('transitionend',finish);      // swap gated on the reveal completing
     void box.offsetWidth;
