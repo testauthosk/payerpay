@@ -68,6 +68,7 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
  .tt-word .w{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(46px,13.5vw,56px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
  .tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
  .tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .2s ease;transform:translateX(0) scale(1.32);opacity:0}
+ .tt-word.through .w{transition:transform .42s cubic-bezier(.35,0,.45,1),opacity .34s ease;transform:translateX(var(--to,130%)) scale(1);opacity:0} /* hover w/o click: keep going & exit the FAR side */
  /* graduated wordmark size: phone (~52px via clamp) -> tablet -> desktop, so it is never huge on any width.
     base clamp max (56px) also stops the 13.5vw balloon in the large-phone/small-tablet range. */
  @media (min-width:768px){ .tt-word .w{font-size:48px} }   /* tablets — intermediate */
@@ -760,9 +761,10 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
       docEl.classList.add('ttnotrans');                  // so the View-Transition NEW snapshot captures FINAL colours, not a mid Tailwind transition
       window.ppSetTheme(toDark?'dark':'light'); syncTheme(); renderAccent();
     }
-    function prep(toDark){w.style.color=isDark()?'#F4F7F5':'#0B0F14';word.style.setProperty('--from',toDark?'-130%':'130%');}
+    function prep(toDark){w.style.color=isDark()?'#F4F7F5':'#0B0F14';word.style.setProperty('--from',toDark?'-130%':'130%');word.style.setProperty('--to',toDark?'130%':'-130%');}
     function slideIn(){word.classList.add('on');void w.offsetWidth;word.classList.add('slide');}
     function slideOut(){word.classList.remove('slide');setTimeout(function(){if(!busy)word.classList.remove('on');},60);}
+    function slideThrough(){word.classList.remove('slide');word.classList.add('through');setTimeout(function(){if(!busy)word.classList.remove('on','through');},460);} // no click: wordmark keeps going & exits the FAR side (not back), theme unchanged
     function burst(){word.classList.remove('slide');word.classList.add('burst');}     // wordmark flies off (scale+fade) so it never just sits at centre
     function endReveal(){word.classList.remove('on','slide','burst');docEl.classList.remove('ttnotrans');busy=false;armed=false;}
     // theme change via the View Transitions API: the browser snapshots old+new states as GPU images and we
@@ -792,9 +794,10 @@ tailwind.config={future:{hoverOnlyWhenSupported:true},theme:{extend:{
     }
     var tb=$('#themeToggle');
     if(canHover){
-      tb.addEventListener('mouseenter',function(){if(busy)return;armed=true;prep(!isDark());slideIn();});
-      tb.addEventListener('mouseleave',function(){if(busy||!armed)return;armed=false;slideOut();});
-      tb.addEventListener('click',function(){trigger(!isDark());});
+      var holdOff=false;   // after a commit, swallow the View-Transition phantom mouseenter so the wordmark does NOT re-slide while the cursor stays on the button
+      tb.addEventListener('mouseenter',function(){if(busy||holdOff)return;armed=true;prep(!isDark());slideIn();});
+      tb.addEventListener('mouseleave',function(){if(busy)return;holdOff=false;if(!armed)return;armed=false;slideThrough();}); // genuine leave (not the in-VT phantom, which fires while busy): wordmark exits forward
+      tb.addEventListener('click',function(){if(busy||holdOff)return;holdOff=true;trigger(!isDark());});
     } else {
       var lock=false;
       var tap=function(e){if(e&&e.type==='touchend'&&e.cancelable)e.preventDefault();if(busy||lock)return;lock=true;setTimeout(function(){lock=false;},700);trigger(!isDark());};

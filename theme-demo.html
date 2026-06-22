@@ -48,6 +48,7 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 .tt-word .w{font-weight:800;letter-spacing:-.02em;white-space:nowrap;will-change:transform,opacity;font-size:clamp(54px,15vw,60px);transform:translateX(var(--from,-130%)) scale(1);opacity:0}
 .tt-word.slide .w{transition:transform .42s cubic-bezier(.22,.7,.25,1),opacity .25s ease;transform:translateX(0) scale(1);opacity:1}
 .tt-word.burst .w{transition:transform .34s cubic-bezier(.4,0,.2,1),opacity .2s ease;transform:translateX(0) scale(1.32);opacity:0}
+.tt-word.through .w{transition:transform .42s cubic-bezier(.35,0,.45,1),opacity .34s ease;transform:translateX(var(--to,130%)) scale(1);opacity:0} /* hover w/o click: keep going & exit the FAR side */
 /* graduated: phone -> tablet -> desktop, never huge on any width (base clamp max caps the vw balloon) */
 @media (min-width:768px){ .tt-word .w{font-size:50px} }   /* tablets — intermediate */
 @media (min-width:1024px){ .tt-word .w{font-size:46px} }  /* desktop */
@@ -92,9 +93,11 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
     var toDark=!isDark();
     w.style.color=isDark()?'#EAF2EE':'#0B0F14';            // reverse of the currently-active theme
     word.style.setProperty('--from', toDark?'-130%':'130%'); // to dark -> from left ; to light -> from right
+    word.style.setProperty('--to',   toDark?'130%':'-130%'); // exit the FAR side if no click
   }
   function slideIn(){ word.classList.add('on'); void w.offsetWidth; word.classList.add('slide'); }
   function slideOut(){ word.classList.remove('slide'); setTimeout(function(){if(!busy)word.classList.remove('on');},60); }
+  function slideThrough(){ word.classList.remove('slide'); word.classList.add('through'); setTimeout(function(){if(!busy)word.classList.remove('on','through');},460); } // no click: keep going & exit the FAR side, theme unchanged
   function burst(){ word.classList.remove('slide'); word.classList.add('burst'); }   // wordmark flies off so it never just sits at centre
   function endReveal(){ word.classList.remove('on','slide','burst'); busy=false; armed=false; dbg('done'); }
 
@@ -117,9 +120,10 @@ h1{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:6px 0 8px}
 
   // ---- desktop: arm on hover, commit on click ----
   if(canHover){
-    btn.addEventListener('mouseenter',function(){ if(busy)return; armed=true; prep(); slideIn(); });
-    btn.addEventListener('mouseleave',function(){ if(busy||!armed)return; armed=false; slideOut(); });
-    btn.addEventListener('click',function(){ if(busy)return; busy=true; if(!armed){prep();slideIn();} burst(); setTimeout(reveal,230); });
+    var holdOff=false;   // after a commit, swallow the View-Transition phantom mouseenter so the wordmark does not re-slide while the cursor stays on the button
+    btn.addEventListener('mouseenter',function(){ if(busy||holdOff)return; armed=true; prep(); slideIn(); });
+    btn.addEventListener('mouseleave',function(){ if(busy)return; holdOff=false; if(!armed)return; armed=false; slideThrough(); }); // genuine leave: wordmark exits forward
+    btn.addEventListener('click',function(){ if(busy||holdOff)return; holdOff=true; busy=true; if(!armed){prep();slideIn();} burst(); setTimeout(reveal,230); });
   } else {
     // ---- mobile / touch: tap slides the wordmark in, it bursts off, then reveals ----
     var tapLock=false;
