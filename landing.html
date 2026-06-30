@@ -153,13 +153,32 @@ h2{font-size:clamp(28px,4.2vw,44px);line-height:1.1;letter-spacing:-.03em;font-w
 .cta-band p{color:var(--sub);font-size:16.5px;margin:16px auto 32px;max-width:440px;position:relative}
 .cta-band .btn{position:relative}
 
+/* worldmap in big bento */
+.bx-top{display:flex;gap:16px;align-items:flex-start}
+.bx-top .ci{flex:0 0 42px;margin-bottom:0}
+.bx-top h3{margin-top:0}
+.bx-top p{color:var(--sub);font-size:14px;margin-top:8px;line-height:1.55;max-width:340px}
+.worldmap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;margin:6px -8px}
+.wm{width:100%;max-height:230px}
+.route{stroke-dasharray:5 8;animation:flow 1.15s linear infinite;opacity:.9}
+.route:nth-child(2){animation-delay:-.3s}.route:nth-child(3){animation-delay:-.6s}.route:nth-child(4){animation-delay:-.2s}.route:nth-child(5){animation-delay:-.45s}
+@keyframes flow{to{stroke-dashoffset:-13}}
+.pulse{animation:pulse 2.6s ease-out infinite}
+@keyframes pulse{0%{r:6;opacity:.7}100%{r:24;opacity:0}}
+
 /* footer */
-footer{border-top:1px solid var(--line);margin-top:130px;padding:64px 0 40px}
-.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
-.foot-grid h5{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--mut);margin-bottom:16px;font-weight:500}
-.foot-grid a{display:block;color:var(--sub);font-size:14px;padding:6px 0;transition:color .2s}
-.foot-grid a:hover{color:var(--ink)}
-.foot-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:26px;border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;flex-wrap:wrap;gap:12px;font-family:var(--mono)}
+footer{border-top:1px solid var(--line);margin-top:130px;padding:72px 0 30px;overflow:hidden}
+.foot-top{display:grid;grid-template-columns:1.5fr 2fr;gap:48px}
+.foot-brand .logo{font-size:23px;margin-bottom:18px}
+.foot-brand p{color:var(--sub);font-size:14.5px;max-width:300px;line-height:1.6}
+.foot-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:24px}
+.foot-meta span{font-family:var(--mono);font-size:11px;color:var(--mut);border:1px solid var(--line2);padding:4px 9px;border-radius:6px}
+.foot-links{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.foot-links h5{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--mut);margin-bottom:14px;font-weight:500}
+.foot-links a{display:block;color:var(--sub);font-size:14px;padding:6px 0;transition:color .2s}
+.foot-links a:hover{color:var(--ink)}
+.foot-word{font-weight:800;font-size:clamp(64px,17vw,210px);letter-spacing:-.05em;line-height:.78;color:transparent;-webkit-text-stroke:1px var(--line2);margin:54px 0 -8px;user-select:none;pointer-events:none;white-space:nowrap}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:30px;padding-top:26px;border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;flex-wrap:wrap;gap:12px;font-family:var(--mono)}
 
 .rv{opacity:0;transform:translateY(28px)}
 
@@ -173,11 +192,11 @@ footer{border-top:1px solid var(--line);margin-top:130px;padding:64px 0 40px}
   .bento{grid-template-columns:1fr}
   .b-big,.b-sm,.b-wide{grid-column:auto;grid-row:auto}
   .nav-links{display:none}
-  .foot-grid{grid-template-columns:1fr 1fr}
+  .foot-top{grid-template-columns:1fr;gap:34px}
   .sec{padding:80px 0}
   .hero-stats .s{padding-right:20px;margin-right:20px}
 }
-@media(max-width:520px){.acc{width:260px}.foot-grid{grid-template-columns:1fr}.hero-stats{flex-wrap:wrap;gap:16px}}
+@media(max-width:520px){.acc{width:260px}.foot-links{grid-template-columns:1fr 1fr}.hero-stats{flex-wrap:wrap;gap:16px}}
 </style>
 </head>
 <body>
@@ -295,8 +314,26 @@ footer{border-top:1px solid var(--line);margin-top:130px;padding:64px 0 40px}
     <h2>Больше, чем просто счёт</h2>
     <p class="sec-lead">Деньги без границ — от переводов до карты, в одном приложении.</p></div>
     <div class="bento">
-      <div class="bx b-big rv"><div class="ci"><svg class="ico"><use href="#i-globe"/></svg></div>
-        <h3>Переводы по всему миру</h3><p>60+ стран и локальные рельсы — деньги доходят быстро и дёшево, без посредников.</p>
+      <div class="bx b-big rv">
+        <div class="bx-top"><div class="ci"><svg class="ico"><use href="#i-globe"/></svg></div>
+          <div><h3>Переводы по всему миру</h3><p>60+ стран и локальные рельсы — деньги доходят быстро и дёшево, без посредников.</p></div></div>
+        <div class="worldmap"><svg class="wm" viewBox="0 0 520 230" preserveAspectRatio="xMidYMid meet">
+          <defs><pattern id="wmd" width="13" height="13" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="#202A35"/></pattern></defs>
+          <rect width="520" height="230" fill="url(#wmd)"/>
+          <g class="routes" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round">
+            <path class="route" d="M268 78 Q160 56 92 150"/>
+            <path class="route" d="M268 78 Q210 46 158 92"/>
+            <path class="route" d="M268 78 Q352 50 424 116"/>
+            <path class="route" d="M268 78 Q372 122 452 178"/>
+            <path class="route" d="M268 78 Q248 132 274 170"/>
+          </g>
+          <g class="nodes" fill="#34E3A1">
+            <circle cx="92" cy="150" r="3.5"/><circle cx="158" cy="92" r="2.6"/>
+            <circle cx="424" cy="116" r="3.5"/><circle cx="452" cy="178" r="2.6"/><circle cx="274" cy="170" r="2.6"/>
+            <circle class="pulse" cx="268" cy="78" r="6" fill="none" stroke="#34E3A1" stroke-width="1.5"/>
+            <circle cx="268" cy="78" r="5.5"/>
+          </g>
+        </svg></div>
         <div class="rail-chips"><span class="rc">SEPA</span><span class="rc">ACH / Wire</span><span class="rc">FedNow</span><span class="rc">Faster Payments</span><span class="rc">UPI</span><span class="rc">PIX</span><span class="rc">Mobile money</span></div>
       </div>
       <div class="bx b-sm rv"><div class="ci"><svg class="ico"><use href="#i-swap"/></svg></div><h3>Конвертация валют</h3><p>EUR, USD, GBP и крипта по честному курсу.</p></div>
@@ -320,16 +357,20 @@ footer{border-top:1px solid var(--line);margin-top:130px;padding:64px 0 40px}
 <!-- FOOTER -->
 <footer>
   <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <div class="logo" style="margin-bottom:16px">PayerPay<span class="d"></span></div>
-        <p style="color:var(--sub);font-size:14px;max-width:260px;line-height:1.6">Мультивалютные счета, крипта и переводы по всему миру в одном приложении.</p>
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="logo">PayerPay<span class="d"></span></div>
+        <p>Мультивалютные счета, крипта и переводы по всему миру в одном аккаунте.</p>
+        <div class="foot-meta"><span>EUR</span><span>USD</span><span>GBP</span><span>USDT</span><span>BTC</span><span>ETH</span></div>
       </div>
-      <div><h5>ПРОДУКТ</h5><a href="#accounts">Счета</a><a href="#crypto">Крипта</a><a href="#features">Карта</a><a href="#how">Как работает</a></div>
-      <div><h5>КОМПАНИЯ</h5><a href="#">О нас</a><a href="#">Тарифы</a><a href="#">Контакты</a><a href="#">Блог</a></div>
-      <div><h5>ПРАВОВОЕ</h5><a href="#">Условия</a><a href="#">Конфиденциальность</a><a href="#">AML / KYC</a></div>
+      <div class="foot-links">
+        <div><h5>ПРОДУКТ</h5><a href="#accounts">Счета</a><a href="#crypto">Крипта</a><a href="#features">Карта</a><a href="#how">Как работает</a></div>
+        <div><h5>КОМПАНИЯ</h5><a href="#">О нас</a><a href="#">Тарифы</a><a href="#">Контакты</a><a href="#">Блог</a></div>
+        <div><h5>ПРАВОВОЕ</h5><a href="#">Условия</a><a href="#">Конфиденциальность</a><a href="#">AML / KYC</a></div>
+      </div>
     </div>
-    <div class="foot-bottom"><span>© 2026 PayerPay</span><span>Деньги без границ</span></div>
+    <div class="foot-word" aria-hidden="true">PayerPay</div>
+    <div class="foot-bottom"><span>© 2026 PayerPay · Деньги без границ</span><span>EN · RU</span></div>
   </div>
 </footer>
 
