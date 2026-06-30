@@ -4,208 +4,209 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>PayerPay — Счёт в Европе, США и криптокошелёк за 5 минут</title>
-<meta name="description" content="Откройте счёт в Европе, счёт в США и криптокошелёк за 5 минут. Мультивалютные счета, переводы по миру, крипта и карта в одном приложении." />
+<meta name="description" content="Откройте счёт в Европе, счёт в США и криптокошелёк за 5 минут. Мультивалютные счета с реальными реквизитами, переводы по миру, крипта и карта." />
 <meta name="theme-color" content="#0B0F14" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --bg:#0B0F14; --bg2:#0E141B; --surf:#18202A; --surf2:#1F2935;
-  --line:#26303C; --ink:#EAF0F5; --sub:#8493A1; --mut:#5C6B78;
-  --mint:#12B981; --mint-d:#0E9E6E; --mint-bright:#33E6A0; --mint-tint:rgba(18,185,129,.12);
-  --pos:#33E6A0; --neg:#E5533C;
-  --card1:#16202B; --card2:#0C141C;
-  --r:18px; --rl:26px;
-  --max:1180px;
+  --bg:#0A0E13; --bg2:#0D131A; --surf:#11181F; --surf2:#161F28;
+  --line:#1E2731; --line2:#283341; --ink:#F0F4F8; --sub:#8А97A4; --sub:#8B97A4; --mut:#566270;
+  --mint:#10B981; --mint-d:#0C9D6E; --mint-bright:#34E3A1;
+  --pos:#34E3A1; --hair:rgba(255,255,255,.06);
+  --r:14px; --rl:20px; --max:1160px;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:auto;overflow-x:hidden}
-body{
-  background:var(--bg); color:var(--ink);
-  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased; overflow-x:hidden;
-  font-feature-settings:"tnum" 1; line-height:1.5;
-}
+body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.5}
 a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
+svg{display:block}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
-.mint{color:var(--mint-bright)}
-.tnum{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono);font-feature-settings:"tnum" 1}
+.ico{width:20px;height:20px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* ===== PRELOADER ===== */
-#pre{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px}
-#pre.hide{opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
-.pre-mark{display:flex;align-items:center;gap:0;transform:translateY(6px)}
-.pre-logo{font-weight:800;font-size:40px;letter-spacing:-.02em;display:flex;align-items:center}
-.pre-logo .d{width:11px;height:11px;border-radius:50%;background:var(--mint-bright);margin-left:3px;margin-top:-16px;box-shadow:0 0 18px rgba(51,230,160,.7);animation:jelly 1.1s ease-in-out infinite}
-@keyframes jelly{0%,100%{transform:scale(1)}25%{transform:scale(1.35,.7)}50%{transform:scale(.85,1.2)}75%{transform:scale(1.1,.9)}}
-.pre-bar{width:140px;height:3px;border-radius:3px;background:var(--surf);overflow:hidden}
-.pre-bar i{display:block;height:100%;width:30%;border-radius:3px;background:linear-gradient(90deg,var(--mint),var(--mint-bright));animation:load 1.1s ease-in-out infinite}
-@keyframes load{0%{transform:translateX(-120%)}100%{transform:translateX(460%)}}
+/* PRELOADER */
+#pre{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px}
+#pre.hide{opacity:0;visibility:hidden;transition:opacity .55s ease,visibility 0s linear .55s}
+.pre-logo{font-weight:800;font-size:34px;letter-spacing:-.03em;display:flex;align-items:flex-start}
+.pre-logo .d{width:8px;height:8px;border-radius:50%;background:var(--mint-bright);margin-left:2px;margin-top:6px;animation:jelly 1s ease-in-out infinite}
+@keyframes jelly{0%,100%{transform:scale(1)}30%{transform:scale(1.4,.65)}60%{transform:scale(.8,1.25)}}
+.pre-bar{width:120px;height:2px;background:var(--line);overflow:hidden;border-radius:2px}
+.pre-bar i{display:block;height:100%;width:34%;background:var(--mint);border-radius:2px;animation:load 1s ease-in-out infinite}
+@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(400%)}}
 
-/* ===== NAV ===== */
+/* NAV */
 header{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .35s,backdrop-filter .35s,border-color .35s;border-bottom:1px solid transparent}
-header.scrolled{background:rgba(11,15,20,.72);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:70px}
-.logo{font-weight:800;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center}
-.logo .d{width:7px;height:7px;border-radius:50%;background:var(--mint-bright);margin-left:2px;margin-top:-12px;box-shadow:0 0 12px rgba(51,230,160,.6)}
-.nav-links{display:flex;gap:30px;align-items:center}
-.nav-links a{color:var(--sub);font-size:14.5px;font-weight:500;transition:color .2s}
+header.scrolled{background:rgba(10,14,19,.78);backdrop-filter:blur(16px) saturate(1.4);border-bottom-color:var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font-weight:800;font-size:21px;letter-spacing:-.03em;display:flex;align-items:flex-start}
+.logo .d{width:6px;height:6px;border-radius:50%;background:var(--mint-bright);margin-left:2px;margin-top:3px}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{color:var(--sub);font-size:14px;font-weight:500;transition:color .2s}
 .nav-links a:hover{color:var(--ink)}
-.seg{display:inline-flex;background:var(--surf);border:1px solid var(--line);border-radius:99px;padding:3px;position:relative}
-.seg button{position:relative;z-index:1;border:0;background:transparent;color:var(--sub);font-family:inherit;font-weight:600;font-size:13px;padding:7px 16px;border-radius:99px;cursor:pointer;transition:color .3s}
-.seg button.on{color:#06140E}
-.seg .thumb{position:absolute;top:3px;left:3px;height:calc(100% - 6px);width:calc(50% - 3px);background:linear-gradient(180deg,var(--mint-bright),var(--mint));border-radius:99px;transition:transform .34s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 14px rgba(18,185,129,.35)}
+.seg{display:inline-flex;background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:3px;position:relative}
+.seg button{position:relative;z-index:1;border:0;background:transparent;color:var(--sub);font-family:inherit;font-weight:600;font-size:13px;padding:7px 15px;border-radius:8px;cursor:pointer;transition:color .3s}
+.seg button.on{color:#04140D}
+.seg .thumb{position:absolute;top:3px;left:3px;height:calc(100% - 6px);width:calc(50% - 3px);background:var(--mint);border-radius:8px;transition:transform .32s cubic-bezier(.4,0,.2,1)}
 .seg.biz .thumb{transform:translateX(100%)}
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:inherit;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:99px;cursor:pointer;border:1px solid transparent;transition:transform .2s,box-shadow .25s,background .25s,border-color .25s;white-space:nowrap}
-.btn-primary{background:linear-gradient(180deg,var(--mint-bright),var(--mint));color:#06140E;box-shadow:0 6px 20px rgba(18,185,129,.3)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(18,185,129,.45)}
-.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
-.btn-ghost:hover{border-color:var(--mint);color:var(--mint-bright)}
-.nav .btn{padding:9px 18px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:inherit;font-weight:600;font-size:14px;padding:11px 19px;border-radius:11px;cursor:pointer;border:1px solid transparent;transition:transform .2s,background .25s,border-color .25s,color .25s;white-space:nowrap}
+.btn-primary{background:var(--mint);color:#04140D}
+.btn-primary:hover{background:var(--mint-bright);transform:translateY(-1px)}
+.btn-ghost{background:transparent;border-color:var(--line2);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--sub)}
+.nav .btn{padding:9px 17px}
+.arrow{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* ===== HERO ===== */
+/* HERO */
 .hero{position:relative;min-height:100vh;display:flex;align-items:center;padding-top:90px;overflow:hidden}
-.glow{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;pointer-events:none}
-.glow.g1{width:520px;height:520px;background:radial-gradient(circle,rgba(18,185,129,.5),transparent 70%);top:-120px;right:-80px}
-.glow.g2{width:460px;height:460px;background:radial-gradient(circle,rgba(51,230,160,.22),transparent 70%);bottom:-160px;left:-120px}
-.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;width:100%}
-.pill{display:inline-flex;align-items:center;gap:8px;background:var(--mint-tint);border:1px solid rgba(18,185,129,.3);color:var(--mint-bright);font-size:13px;font-weight:600;padding:7px 14px;border-radius:99px;margin-bottom:24px}
-.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--mint-bright);box-shadow:0 0 8px var(--mint-bright)}
-h1{font-size:clamp(38px,6vw,68px);line-height:1.04;letter-spacing:-.03em;font-weight:800}
-h1 em{font-style:normal;color:transparent;background:linear-gradient(120deg,var(--mint-bright),var(--mint));-webkit-background-clip:text;background-clip:text}
-.lead{color:var(--sub);font-size:clamp(16px,2.2vw,19px);margin-top:22px;max-width:520px;line-height:1.6}
-.hero-cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
-.hero-stats{display:flex;gap:34px;margin-top:42px}
-.hero-stats .s b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em}
-.hero-stats .s span{color:var(--mut);font-size:13px}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--hair) 1px,transparent 1px),linear-gradient(90deg,var(--hair) 1px,transparent 1px);background-size:64px 64px;-webkit-mask:radial-gradient(120% 90% at 70% 10%,#000 30%,transparent 75%);mask:radial-gradient(120% 90% at 70% 10%,#000 30%,transparent 75%);opacity:.6;pointer-events:none}
+.hero-sheen{position:absolute;top:-10%;right:-5%;width:600px;height:600px;background:radial-gradient(circle,rgba(16,185,129,.10),transparent 65%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center;width:100%;position:relative}
+.kicker{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.02em;color:var(--mint-bright);margin-bottom:26px}
+.kicker .ln{width:26px;height:1px;background:var(--mint);opacity:.6}
+h1{font-size:clamp(40px,6vw,70px);line-height:1.02;letter-spacing:-.035em;font-weight:800}
+.lead{color:var(--sub);font-size:clamp(15px,2.1vw,18px);margin-top:24px;max-width:500px;line-height:1.62}
+.hero-cta{display:flex;gap:13px;margin-top:36px;flex-wrap:wrap}
+.hero-stats{display:flex;gap:0;margin-top:46px;border-top:1px solid var(--line)}
+.hero-stats .s{padding:22px 32px 0 0;margin-right:32px;border-right:1px solid var(--line)}
+.hero-stats .s:last-child{border-right:0}
+.hero-stats .s b{display:block;font-size:24px;font-weight:700;letter-spacing:-.02em;font-family:var(--mono)}
+.hero-stats .s span{color:var(--mut);font-size:12.5px;margin-top:3px;display:block}
 
-/* hero visual — floating account cards */
 .visual{position:relative;height:510px}
-.acc{position:absolute;background:linear-gradient(160deg,var(--card1),var(--card2));border:1px solid var(--line);border-radius:var(--rl);padding:22px;width:300px;box-shadow:0 30px 70px rgba(0,0,0,.45);backdrop-filter:blur(4px)}
-.acc .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.acc .flag{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--surf2)}
-.acc .cur{font-size:13px;color:var(--sub);font-weight:600}
-.acc .bal{font-size:30px;font-weight:800;letter-spacing:-.02em}
-.acc .iban{font-size:12.5px;color:var(--mut);margin-top:6px;letter-spacing:.04em}
-.acc .chg{font-size:12px;color:var(--pos);font-weight:600;margin-top:14px;display:inline-flex;align-items:center;gap:5px}
+.acc{position:absolute;background:var(--surf);border:1px solid var(--line2);border-radius:var(--rl);padding:22px;width:300px;box-shadow:0 24px 50px rgba(0,0,0,.5)}
+.acc .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.acc .badge{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:17px;background:var(--bg);border:1px solid var(--line2);color:var(--ink)}
+.acc .cur{font-family:var(--mono);font-size:11.5px;color:var(--mut);letter-spacing:.04em}
+.acc .bal{font-size:27px;font-weight:600;letter-spacing:-.01em;font-family:var(--mono)}
+.acc .iban{font-family:var(--mono);font-size:12px;color:var(--mut);margin-top:7px;letter-spacing:.02em}
+.acc .chg{font-size:12px;color:var(--mut);margin-top:16px;display:inline-flex;align-items:center;gap:7px;padding-top:14px;border-top:1px solid var(--line)}
+.acc .chg b{color:var(--pos);font-weight:600}
 .acc.a1{top:0;right:10px;z-index:3}
-.acc.a2{top:150px;right:96px;z-index:2;opacity:.97}
-.acc.a3{top:300px;right:0;z-index:1;opacity:.94}
-.float{animation:fl 6s ease-in-out infinite}
-.float.b{animation-delay:-2s;animation-duration:7s}
-.float.c{animation-delay:-4s;animation-duration:8s}
-@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.acc.a2{top:150px;right:96px;z-index:2}
+.acc.a3{top:300px;right:0;z-index:1}
+.float{animation:fl 6s ease-in-out infinite}.float.b{animation-delay:-2s;animation-duration:7s}.float.c{animation-delay:-4s;animation-duration:8s}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-/* ===== SECTIONS ===== */
-section{position:relative}
-.sec{padding:120px 0}
-.eyebrow{color:var(--mint-bright);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
-h2{font-size:clamp(30px,4.5vw,48px);line-height:1.08;letter-spacing:-.025em;font-weight:800}
-.sec-lead{color:var(--sub);font-size:17px;margin-top:18px;max-width:620px;line-height:1.6}
+/* SECTIONS */
+.sec{padding:130px 0;position:relative}
+.eyebrow{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;color:var(--mut);margin-bottom:18px;display:flex;align-items:center;gap:9px}
+.eyebrow::before{content:"";width:6px;height:6px;background:var(--mint);border-radius:1px}
+h2{font-size:clamp(28px,4.2vw,44px);line-height:1.1;letter-spacing:-.03em;font-weight:800}
+.sec-lead{color:var(--sub);font-size:16.5px;margin-top:18px;max-width:560px;line-height:1.6}
 
-/* feature cards grid */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:54px}
-.card{background:var(--surf);border:1px solid var(--line);border-radius:var(--rl);padding:30px;transition:transform .35s,border-color .35s,background .35s}
-.card:hover{transform:translateY(-6px);border-color:rgba(18,185,129,.4);background:var(--surf2)}
-.card .ico{width:50px;height:50px;border-radius:14px;background:var(--mint-tint);border:1px solid rgba(18,185,129,.25);display:flex;align-items:center;justify-content:center;margin-bottom:20px;color:var(--mint-bright)}
-.card h3{font-size:20px;font-weight:700;letter-spacing:-.01em}
-.card p{color:var(--sub);font-size:15px;margin-top:10px;line-height:1.6}
-.card .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-.tag{font-size:12px;font-weight:600;color:var(--sub);background:var(--bg2);border:1px solid var(--line);padding:5px 11px;border-radius:99px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:52px;background:var(--line);border:1px solid var(--line);border-radius:var(--rl);overflow:hidden}
+.card{background:var(--bg2);padding:32px;transition:background .3s}
+.card:hover{background:var(--surf)}
+.card .ci{width:44px;height:44px;border-radius:11px;background:var(--surf2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;margin-bottom:22px;color:var(--mint-bright)}
+.card h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.card p{color:var(--sub);font-size:14.5px;margin-top:10px;line-height:1.58}
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:20px}
+.tag{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--sub);background:var(--surf);border:1px solid var(--line2);padding:5px 10px;border-radius:6px}
 
-/* steps / 5 minutes */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:54px}
-.step{position:relative;padding:30px;border-radius:var(--rl);background:linear-gradient(160deg,var(--surf),var(--bg2));border:1px solid var(--line)}
-.step .n{font-size:14px;font-weight:800;color:#06140E;width:34px;height:34px;border-radius:50%;background:linear-gradient(180deg,var(--mint-bright),var(--mint));display:flex;align-items:center;justify-content:center;margin-bottom:18px}
-.step h4{font-size:18px;font-weight:700}
-.step p{color:var(--sub);font-size:14.5px;margin-top:8px;line-height:1.55}
-.step .t{position:absolute;top:28px;right:28px;font-size:12px;color:var(--mut);font-weight:600}
-
-/* split feature */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;margin-top:30px}
-.split.rev{direction:rtl}.split.rev>*{direction:ltr}
-.feature-list{margin-top:26px;display:flex;flex-direction:column;gap:16px}
-.fl-item{display:flex;gap:14px;align-items:flex-start}
-.fl-item .ck{flex:0 0 24px;width:24px;height:24px;border-radius:50%;background:var(--mint-tint);border:1px solid rgba(18,185,129,.3);display:flex;align-items:center;justify-content:center;color:var(--mint-bright);margin-top:1px}
-.fl-item b{font-weight:600;font-size:15.5px}
-.fl-item span{color:var(--sub);font-size:14.5px;display:block;margin-top:2px}
-.panel{background:linear-gradient(160deg,var(--card1),var(--card2));border:1px solid var(--line);border-radius:var(--rl);padding:30px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
-.panel .row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+/* crypto split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.feature-list{margin-top:30px;display:flex;flex-direction:column;gap:2px}
+.fl-item{display:flex;gap:15px;align-items:flex-start;padding:18px 0;border-top:1px solid var(--line)}
+.fl-item:last-child{border-bottom:1px solid var(--line)}
+.fl-item .ck{flex:0 0 22px;width:22px;height:22px;color:var(--mint-bright);margin-top:1px}
+.fl-item b{font-weight:600;font-size:15px}
+.fl-item span{color:var(--sub);font-size:14px;display:block;margin-top:3px;line-height:1.5}
+.panel{background:var(--bg2);border:1px solid var(--line);border-radius:var(--rl);padding:8px 26px}
+.panel .row{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--line)}
 .panel .row:last-child{border-bottom:0}
-.panel .row .l{display:flex;align-items:center;gap:13px}
-.panel .row .ci{width:38px;height:38px;border-radius:10px;background:var(--surf2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
-.panel .row .nm{font-weight:600;font-size:15px}
-.panel .row .sb{font-size:12.5px;color:var(--mut)}
-.panel .row .am{font-weight:700;font-variant-numeric:tabular-nums}
-.panel .row .pc{font-size:12px;color:var(--pos);font-weight:600}
+.panel .l{display:flex;align-items:center;gap:14px}
+.panel .ci{width:38px;height:38px;border-radius:10px;background:var(--surf);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:16px;font-weight:600}
+.panel .nm{font-weight:600;font-size:14.5px}
+.panel .sb{font-family:var(--mono);font-size:11.5px;color:var(--mut);margin-top:2px}
+.panel .am{font-weight:600;font-family:var(--mono);font-size:15px;text-align:right}
+.panel .pc{font-family:var(--mono);font-size:11.5px;color:var(--pos);text-align:right;margin-top:2px}
 
-/* marquee rails */
-.rails{margin-top:40px;display:flex;flex-direction:column;gap:14px;overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
-.rail{display:flex;gap:14px;width:max-content;animation:scrollx 32s linear infinite}
-.rail.r2{animation-duration:40s;animation-direction:reverse}
-@keyframes scrollx{to{transform:translateX(-50%)}}
-.chip{display:inline-flex;align-items:center;gap:9px;background:var(--surf);border:1px solid var(--line);border-radius:99px;padding:11px 18px;font-weight:600;font-size:14px;color:var(--sub);white-space:nowrap}
-.chip .e{font-size:16px}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:54px;border-top:1px solid var(--line)}
+.step{padding:34px 30px 34px 0;margin-right:30px;border-right:1px solid var(--line);position:relative}
+.step:last-child{border-right:0;margin-right:0}
+.step .n{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--mint-bright);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.step .n .t{color:var(--mut)}
+.step h4{font-size:18px;font-weight:700}
+.step p{color:var(--sub);font-size:14px;margin-top:9px;line-height:1.55}
 
-/* CTA band */
-.cta-band{margin:40px 0 0;padding:70px 40px;border-radius:var(--rl);background:linear-gradient(135deg,rgba(18,185,129,.16),rgba(51,230,160,.06)),var(--surf);border:1px solid rgba(18,185,129,.28);text-align:center;position:relative;overflow:hidden}
-.cta-band .glow{opacity:.6}
-.cta-band h2{font-size:clamp(28px,4vw,44px)}
-.cta-band p{color:var(--sub);font-size:17px;margin:16px auto 30px;max-width:480px}
+/* BENTO features */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:1fr;gap:1px;margin-top:54px;background:var(--line);border:1px solid var(--line);border-radius:var(--rl);overflow:hidden}
+.bx{background:var(--bg2);padding:30px;transition:background .3s;display:flex;flex-direction:column}
+.bx:hover{background:var(--surf)}
+.bx .ci{width:42px;height:42px;border-radius:11px;background:var(--surf2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;margin-bottom:auto;color:var(--mint-bright)}
+.bx h3{font-size:18px;font-weight:700;margin-top:22px;letter-spacing:-.01em}
+.bx p{color:var(--sub);font-size:14px;margin-top:9px;line-height:1.55}
+.b-big{grid-column:span 4;grid-row:span 2}
+.b-sm{grid-column:span 2}
+.b-wide{grid-column:span 3}
+.rail-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.rc{font-family:var(--mono);font-size:12px;color:var(--sub);background:var(--surf);border:1px solid var(--line2);padding:7px 12px;border-radius:7px}
+
+/* CTA */
+.cta-band{margin-top:0;padding:80px 48px;border-radius:var(--rl);background:var(--bg2);border:1px solid var(--line);text-align:center;position:relative;overflow:hidden}
+.cta-band .grid-bg{opacity:.5}
+.cta-band h2{font-size:clamp(28px,4vw,42px);position:relative}
+.cta-band p{color:var(--sub);font-size:16.5px;margin:16px auto 32px;max-width:440px;position:relative}
+.cta-band .btn{position:relative}
 
 /* footer */
-footer{border-top:1px solid var(--line);margin-top:120px;padding:60px 0 40px}
-.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px}
-.foot-grid h5{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);margin-bottom:16px;font-weight:700}
-.foot-grid a{display:block;color:var(--sub);font-size:14.5px;padding:6px 0;transition:color .2s}
-.foot-grid a:hover{color:var(--mint-bright)}
-.foot-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:46px;padding-top:26px;border-top:1px solid var(--line);color:var(--mut);font-size:13px;flex-wrap:wrap;gap:12px}
+footer{border-top:1px solid var(--line);margin-top:130px;padding:64px 0 40px}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
+.foot-grid h5{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--mut);margin-bottom:16px;font-weight:500}
+.foot-grid a{display:block;color:var(--sub);font-size:14px;padding:6px 0;transition:color .2s}
+.foot-grid a:hover{color:var(--ink)}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:26px;border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;flex-wrap:wrap;gap:12px;font-family:var(--mono)}
 
-/* reveal */
-.rv{opacity:0;transform:translateY(34px)}
+.rv{opacity:0;transform:translateY(28px)}
 
 @media(max-width:920px){
   .hero-grid{grid-template-columns:1fr;gap:30px}
-  .visual{height:500px;margin-top:10px}
-  .cards,.steps{grid-template-columns:1fr}
-  .split,.split.rev{grid-template-columns:1fr;direction:ltr;gap:30px}
+  .visual{height:500px;margin-top:6px}
+  .cards{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr;gap:32px}
+  .steps{grid-template-columns:1fr;border-top:0}
+  .step{border-right:0;margin-right:0;padding:24px 0;border-top:1px solid var(--line)}
+  .bento{grid-template-columns:1fr}
+  .b-big,.b-sm,.b-wide{grid-column:auto;grid-row:auto}
   .nav-links{display:none}
   .foot-grid{grid-template-columns:1fr 1fr}
   .sec{padding:80px 0}
+  .hero-stats .s{padding-right:20px;margin-right:20px}
 }
-@media(max-width:520px){
-  .acc{width:260px}
-  .hero-stats{gap:22px}
-  .foot-grid{grid-template-columns:1fr}
-}
+@media(max-width:520px){.acc{width:260px}.foot-grid{grid-template-columns:1fr}.hero-stats{flex-wrap:wrap;gap:16px}}
 </style>
 </head>
 <body>
 
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+<symbol id="i-swap" viewBox="0 0 24 24"><path d="m16 3 4 4-4 4M20 7H4m4 14-4-4 4-4M4 17h16"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></symbol>
+<symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 21h18M4 10h16M5 10 12 4l7 6M6 10v11M10 10v11M14 10v11M18 10v11"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+</defs></svg>
+
 <!-- PRELOADER -->
-<div id="pre">
-  <div class="pre-mark"><span class="pre-logo">PayerPay<span class="d"></span></span></div>
-  <div class="pre-bar"><i></i></div>
-</div>
+<div id="pre"><div class="pre-logo">PayerPay<span class="d"></span></div><div class="pre-bar"><i></i></div></div>
 
 <!-- NAV -->
 <header id="hdr">
   <div class="wrap nav">
     <div class="logo">PayerPay<span class="d"></span></div>
     <nav class="nav-links">
-      <a href="#accounts">Счета</a>
-      <a href="#crypto">Крипта</a>
-      <a href="#how">Как это работает</a>
-      <a href="#features">Возможности</a>
+      <a href="#accounts">Счета</a><a href="#crypto">Крипта</a><a href="#how">Как это работает</a><a href="#features">Возможности</a>
     </nav>
     <div style="display:flex;gap:14px;align-items:center">
-      <div class="seg" id="seg">
-        <span class="thumb"></span>
-        <button class="on" data-mode="personal">Личный</button>
-        <button data-mode="business">Бизнес</button>
-      </div>
+      <div class="seg" id="seg"><span class="thumb"></span><button class="on" data-mode="personal">Личный</button><button data-mode="business">Бизнес</button></div>
       <button class="btn btn-primary">Открыть счёт</button>
     </div>
   </div>
@@ -213,26 +214,26 @@ footer{border-top:1px solid var(--line);margin-top:120px;padding:60px 0 40px}
 
 <!-- HERO -->
 <section class="hero">
-  <div class="glow g1"></div><div class="glow g2"></div>
+  <div class="grid-bg"></div><div class="hero-sheen"></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="pill"><span class="dot"></span> Онбординг за 5 минут</span>
-      <h1>Счёт в Европе,<br>счёт в США и<br><em>криптокошелёк.</em></h1>
-      <p class="lead">Один аккаунт — мультивалютные счета с реальными реквизитами, переводы по всему миру, крипта и карта. Регистрация и проверка занимают пять минут.</p>
+      <span class="kicker"><span class="ln"></span> Онбординг за 5 минут</span>
+      <h1>Счёт в Европе,<br>счёт в США и<br>криптокошелёк.</h1>
+      <p class="lead">Мультивалютные счета с настоящими реквизитами, переводы по всему миру, крипта и карта — в одном аккаунте. Регистрация и проверка занимают пять минут.</p>
       <div class="hero-cta">
-        <button class="btn btn-primary">Открыть счёт за 5 минут →</button>
-        <button class="btn btn-ghost">Смотреть возможности</button>
+        <button class="btn btn-primary">Открыть счёт <svg class="arrow"><use href="#i-arrow"/></svg></button>
+        <button class="btn btn-ghost">Возможности</button>
       </div>
       <div class="hero-stats">
-        <div class="s"><b class="tnum" data-count="60">60+</b><span>стран выплат</span></div>
-        <div class="s"><b class="tnum" data-count="3">3</b><span>валютные зоны</span></div>
+        <div class="s"><b data-count="60" data-suf="+">60+</b><span>стран выплат</span></div>
+        <div class="s"><b data-count="3">3</b><span>валютные зоны</span></div>
         <div class="s"><b>24ч</b><span>до активации</span></div>
       </div>
     </div>
     <div class="visual">
-      <div class="acc a1 float"><div class="top"><div class="flag">🇪🇺</div><div class="cur">EUR · IBAN</div></div><div class="bal tnum">€ 12 480,00</div><div class="iban">DE89 •••• •••• 4021</div><div class="chg">↑ SEPA · мгновенно</div></div>
-      <div class="acc a2 float b"><div class="top"><div class="flag">🇺🇸</div><div class="cur">USD · ACH/Wire</div></div><div class="bal tnum">$ 18 200,00</div><div class="iban">ROUTING •••• 6650</div><div class="chg">↑ FedNow · 24/7</div></div>
-      <div class="acc a3 float c"><div class="top"><div class="flag">◈</div><div class="cur">CRYPTO · Wallet</div></div><div class="bal tnum">$ 7 940,00</div><div class="iban">USDT · USDC · BTC · ETH</div><div class="chg">↑ 0% внутри сети</div></div>
+      <div class="acc a1 float"><div class="top"><div class="badge">€</div><div class="cur">EUR · IBAN</div></div><div class="bal">12 480,00</div><div class="iban">DE89 •••• •••• 4021</div><div class="chg">SEPA · <b>мгновенно</b></div></div>
+      <div class="acc a2 float b"><div class="top"><div class="badge">$</div><div class="cur">USD · ACH/WIRE</div></div><div class="bal">18 200,00</div><div class="iban">ROUTING •••• 6650</div><div class="chg">FedNow · <b>24/7</b></div></div>
+      <div class="acc a3 float c"><div class="top"><div class="badge">◇</div><div class="cur">CRYPTO · WALLET</div></div><div class="bal">7 940,00</div><div class="iban">USDT · USDC · BTC · ETH</div><div class="chg">Внутри сети · <b>0%</b></div></div>
     </div>
   </div>
 </section>
@@ -240,92 +241,80 @@ footer{border-top:1px solid var(--line);margin-top:120px;padding:60px 0 40px}
 <!-- ACCOUNTS -->
 <section id="accounts" class="sec">
   <div class="wrap">
-    <div class="rv"><div class="eyebrow">Мультивалютные счета</div>
-    <h2>Реальные реквизиты<br>в трёх валютных зонах</h2>
-    <p class="sec-lead">Принимайте зарплату, платежи и переводы как местный — в евро, долларах и фунтах. Каждый счёт с настоящими реквизитами, а не «кошелёк».</p></div>
+    <div class="rv" style="max-width:640px"><div class="eyebrow">Мультивалютные счета</div>
+    <h2>Три счёта. Настоящие реквизиты.</h2>
+    <p class="sec-lead">Принимайте зарплату, платежи и переводы как местный — в евро, долларах и фунтах. Не «кошелёк», а полноценные банковские реквизиты.</p></div>
     <div class="cards">
-      <div class="card rv"><div class="ico">🇪🇺</div><h3>Счёт в Европе</h3><p>Личный IBAN в евро. Приём и отправка по SEPA — мгновенно и без скрытых комиссий.</p><div class="tags"><span class="tag">EUR</span><span class="tag">IBAN</span><span class="tag">SEPA</span></div></div>
-      <div class="card rv"><div class="ico">🇺🇸</div><h3>Счёт в США</h3><p>Долларовый счёт с ACH, Wire, RTP и FedNow. Получайте платежи из США без посредников.</p><div class="tags"><span class="tag">USD</span><span class="tag">ACH</span><span class="tag">Wire</span><span class="tag">FedNow</span></div></div>
-      <div class="card rv"><div class="ico">🇬🇧</div><h3>Счёт в Великобритании</h3><p>Фунтовый счёт с сортировочным кодом. Локальные переводы Faster Payments.</p><div class="tags"><span class="tag">GBP</span><span class="tag">Faster Payments</span></div></div>
+      <div class="card rv"><div class="ci"><svg class="ico"><use href="#i-bank"/></svg></div><h3>Счёт в Европе</h3><p>Личный IBAN в евро. Приём и отправка по SEPA — мгновенно и без скрытых комиссий.</p><div class="tags"><span class="tag">EUR</span><span class="tag">IBAN</span><span class="tag">SEPA</span></div></div>
+      <div class="card rv"><div class="ci"><svg class="ico"><use href="#i-bank"/></svg></div><h3>Счёт в США</h3><p>Долларовый счёт с ACH, Wire, RTP и FedNow. Получайте платежи из США без посредников.</p><div class="tags"><span class="tag">USD</span><span class="tag">ACH</span><span class="tag">WIRE</span><span class="tag">FedNow</span></div></div>
+      <div class="card rv"><div class="ci"><svg class="ico"><use href="#i-bank"/></svg></div><h3>Счёт в Британии</h3><p>Фунтовый счёт с сортировочным кодом. Локальные переводы Faster Payments.</p><div class="tags"><span class="tag">GBP</span><span class="tag">Faster Payments</span></div></div>
     </div>
   </div>
 </section>
 
-<!-- CRYPTO split -->
+<!-- CRYPTO -->
 <section id="crypto" class="sec">
-  <div class="wrap">
-    <div class="split">
-      <div class="rv">
-        <div class="eyebrow">Криптокошелёк</div>
-        <h2>Крипта и фиат<br>в одном балансе</h2>
-        <p class="sec-lead">Покупайте, храните и отправляйте USDT, USDC, BTC и ETH. Мгновенная конвертация в любую валюту счёта.</p>
-        <div class="feature-list">
-          <div class="fl-item"><span class="ck">✓</span><div><b>0% на внутренние переводы</b><span>Отправляйте крипту между аккаунтами PayerPay без комиссий.</span></div></div>
-          <div class="fl-item"><span class="ck">✓</span><div><b>Конвертация фиат ↔ крипта</b><span>По рыночному курсу, прямо внутри приложения.</span></div></div>
-          <div class="fl-item"><span class="ck">✓</span><div><b>Сети ERC20 · TRC20 · BEP20 · SOL</b><span>Пополнение и вывод в популярных сетях.</span></div></div>
-        </div>
-      </div>
-      <div class="panel rv">
-        <div class="row"><div class="l"><div class="ci" style="color:#26A17B">₮</div><div><div class="nm">Tether</div><div class="sb">USDT</div></div></div><div style="text-align:right"><div class="am tnum">4 120,00</div><div class="pc">+0,01%</div></div></div>
-        <div class="row"><div class="l"><div class="ci" style="color:#2775CA">$</div><div><div class="nm">USD Coin</div><div class="sb">USDC</div></div></div><div style="text-align:right"><div class="am tnum">1 850,00</div><div class="pc">+0,00%</div></div></div>
-        <div class="row"><div class="l"><div class="ci" style="color:#F7931A">₿</div><div><div class="nm">Bitcoin</div><div class="sb">BTC</div></div></div><div style="text-align:right"><div class="am tnum">0,094</div><div class="pc">+2,4%</div></div></div>
-        <div class="row"><div class="l"><div class="ci" style="color:#627EEA">Ξ</div><div><div class="nm">Ethereum</div><div class="sb">ETH</div></div></div><div style="text-align:right"><div class="am tnum">1,21</div><div class="pc">+1,1%</div></div></div>
+  <div class="wrap"><div class="split">
+    <div class="rv">
+      <div class="eyebrow">Криптокошелёк</div>
+      <h2>Крипта и фиат<br>в одном балансе</h2>
+      <p class="sec-lead">Покупайте, храните и отправляйте USDT, USDC, BTC и ETH. Мгновенная конвертация в любую валюту счёта.</p>
+      <div class="feature-list">
+        <div class="fl-item"><svg class="ico ck"><use href="#i-check"/></svg><div><b>0% на внутренние переводы</b><span>Отправляйте крипту между аккаунтами PayerPay без комиссий.</span></div></div>
+        <div class="fl-item"><svg class="ico ck"><use href="#i-check"/></svg><div><b>Конвертация фиат ↔ крипта</b><span>По рыночному курсу, прямо внутри приложения.</span></div></div>
+        <div class="fl-item"><svg class="ico ck"><use href="#i-check"/></svg><div><b>Сети ERC20 · TRC20 · BEP20 · SOL</b><span>Пополнение и вывод в популярных сетях.</span></div></div>
       </div>
     </div>
-  </div>
+    <div class="panel rv">
+      <div class="row"><div class="l"><div class="ci" style="color:#26A17B">₮</div><div><div class="nm">Tether</div><div class="sb">USDT</div></div></div><div><div class="am">4 120,00</div><div class="pc">+0,01%</div></div></div>
+      <div class="row"><div class="l"><div class="ci" style="color:#2775CA">$</div><div><div class="nm">USD Coin</div><div class="sb">USDC</div></div></div><div><div class="am">1 850,00</div><div class="pc">+0,00%</div></div></div>
+      <div class="row"><div class="l"><div class="ci" style="color:#F7931A">₿</div><div><div class="nm">Bitcoin</div><div class="sb">BTC</div></div></div><div><div class="am">0,094</div><div class="pc">+2,4%</div></div></div>
+      <div class="row"><div class="l"><div class="ci" style="color:#627EEA">Ξ</div><div><div class="nm">Ethereum</div><div class="sb">ETH</div></div></div><div><div class="am">1,21</div><div class="pc">+1,1%</div></div></div>
+    </div>
+  </div></div>
 </section>
 
-<!-- HOW / 5 minutes -->
+<!-- HOW -->
 <section id="how" class="sec">
   <div class="wrap">
-    <div class="rv"><div class="eyebrow">Пять минут</div>
-    <h2>От регистрации<br>до реквизитов — за 5 минут</h2>
-    <p class="sec-lead">Никаких визитов в офис и ожидания неделями. Три шага, и счета готовы к работе.</p></div>
+    <div class="rv" style="max-width:600px"><div class="eyebrow">Пять минут</div>
+    <h2>От регистрации до реквизитов — за 5 минут</h2>
+    <p class="sec-lead">Никаких визитов в офис и ожидания неделями. Три шага — и счета готовы к работе.</p></div>
     <div class="steps">
-      <div class="step rv"><div class="n">1</div><div class="t">~1 мин</div><h4>Регистрация</h4><p>Email и телефон — аккаунт создан. Личный или бизнес-профиль на выбор.</p></div>
-      <div class="step rv"><div class="n">2</div><div class="t">~3 мин</div><h4>Верификация</h4><p>Загрузите документ, пройдите KYC. Быстрая автоматическая проверка.</p></div>
-      <div class="step rv"><div class="n">3</div><div class="t">готово</div><h4>Реквизиты на руках</h4><p>IBAN, US-реквизиты и криптокошелёк активны. Принимайте и отправляйте.</p></div>
+      <div class="step rv"><div class="n"><span>01</span><span class="t">~1 мин</span></div><h4>Регистрация</h4><p>Email и телефон — аккаунт создан. Личный или бизнес-профиль на выбор.</p></div>
+      <div class="step rv"><div class="n"><span>02</span><span class="t">~3 мин</span></div><h4>Верификация</h4><p>Загрузите документ, пройдите KYC. Быстрая автоматическая проверка.</p></div>
+      <div class="step rv"><div class="n"><span>03</span><span class="t">готово</span></div><h4>Реквизиты на руках</h4><p>IBAN, US-реквизиты и криптокошелёк активны. Принимайте и отправляйте.</p></div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
+<!-- FEATURES bento -->
 <section id="features" class="sec">
   <div class="wrap">
-    <div class="rv"><div class="eyebrow">Возможности</div>
-    <h2>Полноценный банк<br>в одном приложении</h2>
-    <p class="sec-lead">Всё, что нужно для денег без границ — от переводов до карты.</p></div>
-    <div class="cards">
-      <div class="card rv"><div class="ico">🌍</div><h3>Переводы по миру</h3><p>60+ стран и локальные рельсы — UPI, PIX, SEPA, mobile money. Деньги доходят быстро.</p></div>
-      <div class="card rv"><div class="ico">🔄</div><h3>Конвертация валют</h3><p>Меняйте EUR, USD, GBP и крипту по честному курсу в пару тапов.</p></div>
-      <div class="card rv"><div class="ico">💳</div><h3>Мультивалютная карта</h3><p>Платите с любого баланса — фиат или крипта — где принимают карты.</p></div>
-      <div class="card rv"><div class="ico">⚡</div><h3>Мгновенные платежи</h3><p>FedNow, RTP, Faster Payments — отправка и приём 24/7, включая выходные.</p></div>
-      <div class="card rv"><div class="ico">🔒</div><h3>KYC / AML защита</h3><p>Регуляторный комплаенс и проверка операций — ваши деньги под защитой.</p></div>
-      <div class="card rv"><div class="ico">🧩</div><h3>Единый API</h3><p>Для бизнеса — интеграция платежей и выплат через один API.</p></div>
-    </div>
-    <div class="rails rv">
-      <div class="rail">
-        <span class="chip"><span class="e">🇪🇺</span> EUR IBAN</span><span class="chip"><span class="e">🇺🇸</span> USD ACH/Wire</span><span class="chip"><span class="e">🇬🇧</span> GBP Faster Payments</span><span class="chip"><span class="e">⚡</span> FedNow</span><span class="chip"><span class="e">₮</span> USDT</span><span class="chip"><span class="e">🟣</span> SOL</span>
-        <span class="chip"><span class="e">🇪🇺</span> EUR IBAN</span><span class="chip"><span class="e">🇺🇸</span> USD ACH/Wire</span><span class="chip"><span class="e">🇬🇧</span> GBP Faster Payments</span><span class="chip"><span class="e">⚡</span> FedNow</span><span class="chip"><span class="e">₮</span> USDT</span><span class="chip"><span class="e">🟣</span> SOL</span>
+    <div class="rv" style="max-width:560px"><div class="eyebrow">Возможности</div>
+    <h2>Больше, чем просто счёт</h2>
+    <p class="sec-lead">Деньги без границ — от переводов до карты, в одном приложении.</p></div>
+    <div class="bento">
+      <div class="bx b-big rv"><div class="ci"><svg class="ico"><use href="#i-globe"/></svg></div>
+        <h3>Переводы по всему миру</h3><p>60+ стран и локальные рельсы — деньги доходят быстро и дёшево, без посредников.</p>
+        <div class="rail-chips"><span class="rc">SEPA</span><span class="rc">ACH / Wire</span><span class="rc">FedNow</span><span class="rc">Faster Payments</span><span class="rc">UPI</span><span class="rc">PIX</span><span class="rc">Mobile money</span></div>
       </div>
-      <div class="rail r2">
-        <span class="chip"><span class="e">🇮🇳</span> UPI</span><span class="chip"><span class="e">🇧🇷</span> PIX</span><span class="chip"><span class="e">📱</span> Mobile money</span><span class="chip"><span class="e">₿</span> BTC</span><span class="chip"><span class="e">Ξ</span> ETH</span><span class="chip"><span class="e">💳</span> Карта</span>
-        <span class="chip"><span class="e">🇮🇳</span> UPI</span><span class="chip"><span class="e">🇧🇷</span> PIX</span><span class="chip"><span class="e">📱</span> Mobile money</span><span class="chip"><span class="e">₿</span> BTC</span><span class="chip"><span class="e">Ξ</span> ETH</span><span class="chip"><span class="e">💳</span> Карта</span>
-      </div>
+      <div class="bx b-sm rv"><div class="ci"><svg class="ico"><use href="#i-swap"/></svg></div><h3>Конвертация валют</h3><p>EUR, USD, GBP и крипта по честному курсу.</p></div>
+      <div class="bx b-sm rv"><div class="ci"><svg class="ico"><use href="#i-card"/></svg></div><h3>Мультивалютная карта</h3><p>Платите с любого баланса — фиат или крипта.</p></div>
+      <div class="bx b-sm rv"><div class="ci"><svg class="ico"><use href="#i-zap"/></svg></div><h3>Мгновенные платежи</h3><p>FedNow, RTP, Faster Payments — 24/7.</p></div>
+      <div class="bx b-sm rv"><div class="ci"><svg class="ico"><use href="#i-shield"/></svg></div><h3>KYC / AML защита</h3><p>Комплаенс и проверка операций.</p></div>
+      <div class="bx b-sm rv"><div class="ci"><svg class="ico"><use href="#i-code"/></svg></div><h3>Единый API</h3><p>Платежи и выплаты через один API.</p></div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="sec" style="padding-top:0">
-  <div class="wrap">
-    <div class="cta-band rv">
-      <div class="glow g1" style="top:-180px;right:-60px"></div>
-      <h2>Откройте счета за 5 минут</h2>
-      <p>Европа, США и криптокошелёк — в одном приложении. Начните прямо сейчас.</p>
-      <button class="btn btn-primary" style="font-size:16px;padding:14px 28px">Создать аккаунт →</button>
-    </div>
-  </div>
+  <div class="wrap"><div class="cta-band rv"><div class="grid-bg"></div>
+    <h2>Откройте счета за 5 минут</h2>
+    <p>Европа, США и криптокошелёк — в одном приложении. Начните прямо сейчас.</p>
+    <button class="btn btn-primary" style="font-size:15px;padding:14px 26px">Создать аккаунт <svg class="arrow"><use href="#i-arrow"/></svg></button>
+  </div></div>
 </section>
 
 <!-- FOOTER -->
@@ -333,69 +322,34 @@ footer{border-top:1px solid var(--line);margin-top:120px;padding:60px 0 40px}
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <div class="logo" style="margin-bottom:14px">PayerPay<span class="d"></span></div>
-        <p style="color:var(--sub);font-size:14.5px;max-width:280px;line-height:1.6">Мультивалютные счета, крипта и переводы по всему миру в одном приложении.</p>
+        <div class="logo" style="margin-bottom:16px">PayerPay<span class="d"></span></div>
+        <p style="color:var(--sub);font-size:14px;max-width:260px;line-height:1.6">Мультивалютные счета, крипта и переводы по всему миру в одном приложении.</p>
       </div>
-      <div><h5>Продукт</h5><a href="#accounts">Счета</a><a href="#crypto">Крипта</a><a href="#features">Карта</a><a href="#how">Как работает</a></div>
-      <div><h5>Компания</h5><a href="#">О нас</a><a href="#">Тарифы</a><a href="#">Контакты</a><a href="#">Блог</a></div>
-      <div><h5>Правовое</h5><a href="#">Условия</a><a href="#">Конфиденциальность</a><a href="#">AML / KYC</a></div>
+      <div><h5>ПРОДУКТ</h5><a href="#accounts">Счета</a><a href="#crypto">Крипта</a><a href="#features">Карта</a><a href="#how">Как работает</a></div>
+      <div><h5>КОМПАНИЯ</h5><a href="#">О нас</a><a href="#">Тарифы</a><a href="#">Контакты</a><a href="#">Блог</a></div>
+      <div><h5>ПРАВОВОЕ</h5><a href="#">Условия</a><a href="#">Конфиденциальность</a><a href="#">AML / KYC</a></div>
     </div>
-    <div class="foot-bottom">
-      <span>© 2026 PayerPay. Все права защищены.</span>
-      <span>Сделано для денег без границ</span>
-    </div>
+    <div class="foot-bottom"><span>© 2026 PayerPay</span><span>Деньги без границ</span></div>
   </div>
 </footer>
 
-<!-- LIBS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
-// preloader
-window.addEventListener('load', ()=>{ setTimeout(()=>document.getElementById('pre').classList.add('hide'), 700); });
-
-// Lenis smooth scroll
-const lenis = new Lenis({ duration:1.1, easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)), smoothWheel:true });
-function raf(t){ lenis.raf(t); requestAnimationFrame(raf); } requestAnimationFrame(raf);
-
+window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('pre').classList.add('hide'),650)});
+const lenis=new Lenis({duration:1.1,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smoothWheel:true});
+function raf(t){lenis.raf(t);requestAnimationFrame(raf)}requestAnimationFrame(raf);
 gsap.registerPlugin(ScrollTrigger);
-lenis.on('scroll', ScrollTrigger.update);
-
-// nav scrolled
+lenis.on('scroll',ScrollTrigger.update);
 const hdr=document.getElementById('hdr');
-lenis.on('scroll', ({scroll})=>{ hdr.classList.toggle('scrolled', scroll>30); });
-
-// Personal/Business toggle
+lenis.on('scroll',({scroll})=>hdr.classList.toggle('scrolled',scroll>30));
 const seg=document.getElementById('seg');
-seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
-  seg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
-  b.classList.add('on');
-  seg.classList.toggle('biz', b.dataset.mode==='business');
-}));
-
-// reveal on scroll
-gsap.utils.toArray('.rv').forEach(el=>{
-  gsap.to(el,{opacity:1,y:0,duration:.9,ease:'power3.out',
-    scrollTrigger:{trigger:el,start:'top 85%'}});
-});
-
-// hero copy intro
-gsap.from('.hero-copy > *',{opacity:0,y:30,duration:.9,stagger:.1,ease:'power3.out',delay:1});
-gsap.from('.acc',{opacity:0,y:50,scale:.95,duration:1,stagger:.14,ease:'power3.out',delay:1.2});
-
-// count up
-gsap.utils.toArray('[data-count]').forEach(el=>{
-  const end=+el.dataset.count, suf=el.textContent.includes('+')?'+':'';
-  ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>{
-    gsap.fromTo(el,{innerText:0},{innerText:end,duration:1.4,ease:'power2.out',snap:{innerText:1},
-      onUpdate:function(){el.textContent=Math.round(this.targets()[0].innerText)+suf;}});
-  }});
-});
-
-// subtle hero glow parallax
-gsap.to('.g1',{y:80,scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}});
-gsap.to('.g2',{y:-60,scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}});
+seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{seg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');seg.classList.toggle('biz',b.dataset.mode==='business')}));
+gsap.utils.toArray('.rv').forEach(el=>gsap.to(el,{opacity:1,y:0,duration:.85,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 86%'}}));
+gsap.from('.hero-copy>*',{opacity:0,y:26,duration:.85,stagger:.09,ease:'power3.out',delay:.95});
+gsap.from('.acc',{opacity:0,y:44,duration:.9,stagger:.13,ease:'power3.out',delay:1.15});
+gsap.utils.toArray('[data-count]').forEach(el=>{const end=+el.dataset.count,suf=el.dataset.suf||'';ScrollTrigger.create({trigger:el,start:'top 92%',once:true,onEnter:()=>gsap.fromTo(el,{innerText:0},{innerText:end,duration:1.3,ease:'power2.out',snap:{innerText:1},onUpdate:function(){el.textContent=Math.round(this.targets()[0].innerText)+suf}})})});
 </script>
 </body>
 </html>
