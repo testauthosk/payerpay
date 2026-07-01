@@ -450,9 +450,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     sz(); window.addEventListener('resize',sz);
     var N=820,dots=[];
     for(var i=0;i<N;i++){ var y=1-(i/(N-1))*2, rr=Math.sqrt(1-y*y), th=i*2.399963; dots.push([Math.cos(th)*rr,y,Math.sin(th)*rr]); }
-    var cityN=13,cities=[];
+    var cityN=16,cities=[];
     for(var ci=0;ci<cityN;ci++){ var cyy=1-(ci/(cityN-1))*2, crr=Math.sqrt(1-cyy*cyy), cth=ci*2.399963; cities.push([Math.cos(cth)*crr,cyy,Math.sin(cth)*crr]); }
-    var arcs=[]; for(var ai=0;ai<cityN;ai++){ arcs.push({a:ai,b:(ai+5)%cityN,ph:ai/cityN}); }
+    /* independent (disjoint) arcs — each node used once, no chain */
+    var half=cityN/2,arcs=[];
+    for(var ai=0;ai<half;ai++){ arcs.push({a:ai,b:ai+half,ph:ai/half}); }
     function rot(p,a){ var x=p[0]*Math.cos(a)+p[2]*Math.sin(a), z=-p[0]*Math.sin(a)+p[2]*Math.cos(a), y=p[1];
       var y2=y*Math.cos(tilt)-z*Math.sin(tilt), z2=y*Math.sin(tilt)+z*Math.cos(tilt); return [x,y2,z2]; }
     function slerp(p0,p1,t){ var d=p0[0]*p1[0]+p0[1]*p1[1]+p0[2]*p1[2]; d=Math.max(-1,Math.min(1,d)); var o=Math.acos(d),so=Math.sin(o),a,b;
