@@ -183,6 +183,11 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 .pb-item b{font-size:15px;font-weight:600}
 .pb-item p{color:var(--sub);font-size:13px;margin-top:2px;line-height:1.5}
 .pb-only{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--mint);border:1px solid var(--tline);border-radius:5px;padding:1px 6px;margin-left:8px;vertical-align:middle}
+.pb-onboard{display:flex;align-items:center;gap:15px;background:var(--tint);border:1px solid var(--tline);border-left:3px solid var(--mint);border-radius:14px;padding:15px 18px;margin-bottom:28px}
+.pb-onboard .oi{width:44px;height:44px;border-radius:12px;background:var(--bg);border:1px solid var(--tline);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pb-onboard .oi svg{width:22px;height:22px}
+.pb-onboard b{font-size:15px;font-weight:700;color:var(--ink)}
+.pb-onboard p{font-size:13px;color:var(--sub);margin-top:2px;line-height:1.45}
 
 /* CTA scene */
 .cta{background:linear-gradient(155deg,var(--mint),var(--mint-dd));border-radius:28px;padding:78px 40px;text-align:center;position:relative;overflow:hidden;width:100%}
@@ -382,13 +387,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   <div class="wrap" style="width:100%">
     <div style="text-align:center;max-width:600px;margin:0 auto 48px">
       <span class="eyebrow reveal" style="justify-content:center">Кому</span>
-      <h2 class="reveal">Два профиля — один продукт</h2>
+      <h2 class="reveal">Физлицам — за минуты.<br>Бизнесу — по-взрослому.</h2>
+      <p class="s-lead reveal" style="margin-left:auto;margin-right:auto;text-align:center">Один продукт, два пути входа: личный счёт открывается за минуты, бизнесу — больше возможностей и проверка компании.</p>
     </div>
     <div class="pb reveal">
       <div class="pb-top">
         <div><h3 id="pbTitle">Для личного использования</h3><p id="pbSub">Личный мультивалютный счёт, крипта и карта — для жизни и работы по миру.</p></div>
         <div class="seg" id="pbSeg"><div class="thumb"></div><button class="on" data-pb="personal">Личный</button><button data-pb="business">Бизнес</button></div>
       </div>
+      <div class="pb-onboard" id="pbOnboard"></div>
       <div class="pb-body" id="pbBody"></div>
     </div>
   </div>
@@ -443,17 +450,20 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
   /* PERSONAL/BUSINESS */
   var DATA={
-    personal:{title:'Для личного использования',sub:'Личный мультивалютный счёт, крипта и карта — для жизни и работы по миру.',items:[
+    personal:{title:'Для личного использования',sub:'Личный мультивалютный счёт, крипта и карта — для жизни и работы по миру.',
+      onIcon:'<path d="M13 3L5 13h6l-1 8 8-12h-6l1-6Z"/>',onTag:'Открытие за ~5 минут · KYC',onDesc:'Верификация физлица — паспорт и селфи, полностью онлайн.',items:[
       ['Мультивалютный счёт','Реквизиты США и Европы на ваше имя'],['Приём зарплаты','Выплаты и зарплата на реальные US/EU-счета'],
       ['Криптокошелёк','Купить, продать, перевести и вывести крипту'],['Карта Visa / Mastercard','Траты мультивалютой и криптой'],
       ['Переводы по миру','Банки и локальные рельсы — куда угодно'],['Обмен фиат ↔ крипто','Конвертация прямо в кабинете']]},
-    business:{title:'Для бизнеса',sub:'Всё из личного профиля плюс приём платежей, массовые выплаты и виртуальные счета.',items:[
+    business:{title:'Для бизнеса',sub:'Всё из личного профиля плюс приём платежей, массовые выплаты и виртуальные счета.',
+      onIcon:'<path d="M4 21h16M6 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16M15 9h3a1 1 0 0 1 1 1v11M9 8h3M9 12h3M9 16h3"/>',onTag:'Онбординг с проверкой компании · KYB',onDesc:'Документы компании, бенефициары и AML — тщательнее, чем у физлиц, и не за 5 минут.',items:[
       ['Всё из «Личного»','Счета, крипта, карта, переводы, обмен',true],['Эквайринг на сайте','Приём карт и крипты: checkout, ссылки, API'],
       ['Global Payout','Массовые выплаты в 120+ валют, 60+ стран'],['Виртуальные счета','Выделенные IBAN на каждого клиента'],
-      ['Крипто-эквайринг','Приём крипты без чарджбэков, мгновенный settle'],['KYB и AML','Верификация бизнеса и контроль транзакций']]}
+      ['Крипто-эквайринг','Приём крипты без чарджбэков, мгновенный settle'],['KYB и AML','Проверка компании и контроль транзакций']]}
   };
   var pbBody=document.getElementById('pbBody');
   function renderPB(m){var d=DATA[m];document.getElementById('pbTitle').textContent=d.title;document.getElementById('pbSub').textContent=d.sub;
+    document.getElementById('pbOnboard').innerHTML='<div class="oi"><svg class="ic" viewBox="0 0 24 24">'+d.onIcon+'</svg></div><div><b>'+d.onTag+'</b><p>'+d.onDesc+'</p></div>';
     pbBody.innerHTML=d.items.map(function(it){return '<div class="pb-item"><div class="ck"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></div><div><b>'+it[0]+(it[2]?'<span class="pb-only">включено</span>':'')+'</b><p>'+it[1]+'</p></div></div>';}).join('');
     if(G&&!reduce)gsap.fromTo(pbBody.children,{opacity:0,y:12},{opacity:1,y:0,duration:.4,stagger:.05,ease:'power2.out',overwrite:true});}
   function setPB(m){document.getElementById('navSeg').classList.toggle('biz',m==='business');document.getElementById('pbSeg').classList.toggle('biz',m==='business');
