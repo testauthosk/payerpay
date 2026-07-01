@@ -450,10 +450,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     sz(); window.addEventListener('resize',sz);
     var N=820,dots=[];
     for(var i=0;i<N;i++){ var y=1-(i/(N-1))*2, rr=Math.sqrt(1-y*y), th=i*2.399963; dots.push([Math.cos(th)*rr,y,Math.sin(th)*rr]); }
-    function ll(lat,lon){ lat*=Math.PI/180; lon*=Math.PI/180; return [Math.cos(lat)*Math.sin(lon),Math.sin(lat),Math.cos(lat)*Math.cos(lon)]; }
-    var cities=[ll(40.7,-74),ll(51.5,-0.1),ll(52.5,13.4),ll(25.2,55.3),ll(19.1,72.9),ll(-23.5,-46.6),ll(6.5,3.4)];
-    var pairs=[[1,0],[1,2],[0,5],[2,3],[3,4],[4,6],[6,0],[2,5]];
-    var arcs=pairs.map(function(pr,i){ return {a:pr[0],b:pr[1],ph:(i*0.29)%1}; });
+    var cityN=13,cities=[];
+    for(var ci=0;ci<cityN;ci++){ var cyy=1-(ci/(cityN-1))*2, crr=Math.sqrt(1-cyy*cyy), cth=ci*2.399963; cities.push([Math.cos(cth)*crr,cyy,Math.sin(cth)*crr]); }
+    var arcs=[]; for(var ai=0;ai<cityN;ai++){ arcs.push({a:ai,b:(ai+5)%cityN,ph:ai/cityN}); }
     function rot(p,a){ var x=p[0]*Math.cos(a)+p[2]*Math.sin(a), z=-p[0]*Math.sin(a)+p[2]*Math.cos(a), y=p[1];
       var y2=y*Math.cos(tilt)-z*Math.sin(tilt), z2=y*Math.sin(tilt)+z*Math.cos(tilt); return [x,y2,z2]; }
     function slerp(p0,p1,t){ var d=p0[0]*p1[0]+p0[1]*p1[1]+p0[2]*p1[2]; d=Math.max(-1,Math.min(1,d)); var o=Math.acos(d),so=Math.sin(o),a,b;
