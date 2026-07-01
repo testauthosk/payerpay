@@ -485,8 +485,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         if(head<1){ var hi=Math.round(head*seg); if(hi>seg)hi=seg; var hp=pts[hi];
           if(hp&&hp[2]>-0.1){ var hd=hp[2]+0.5; hd=hd<0?0:(hd>1?1:hd);
             ctx.fillStyle='rgba(52,224,161,'+(0.30*hd).toFixed(3)+')'; ctx.beginPath(); ctx.arc(hp[0],hp[1],7*DPR,0,7); ctx.fill();
-            ctx.fillStyle='rgba(210,255,236,'+(0.98*hd).toFixed(3)+')'; ctx.beginPath(); ctx.arc(hp[0],hp[1],2.7*DPR,0,7); ctx.fill(); } } }
-      /* no static endpoint nodes — only flying comets */
+            ctx.fillStyle='rgba(210,255,236,'+(0.98*hd).toFixed(3)+')'; ctx.beginPath(); ctx.arc(hp[0],hp[1],2.7*DPR,0,7); ctx.fill(); } }
+        var env=Math.min(frac/(fl.fly*0.14),(fl.fly-frac)/(fl.fly*0.14),1); if(env<0)env=0;
+        var pa=rot(A,ang); if(pa[2]>0.02){ var ax=cx+pa[0]*R,ay=cy-pa[1]*R,ad=pa[2]+0.5; ad=ad>1?1:ad;
+          ctx.fillStyle='rgba(52,224,161,'+(0.20*env*ad).toFixed(3)+')'; ctx.beginPath(); ctx.arc(ax,ay,6*DPR,0,7); ctx.fill();
+          ctx.fillStyle='rgba(120,245,200,'+(0.9*env*ad).toFixed(3)+')'; ctx.beginPath(); ctx.arc(ax,ay,2.3*DPR,0,7); ctx.fill(); }
+        var pb=rot(B,ang); if(pb[2]>0.02){ var bx=cx+pb[0]*R,by=cy-pb[1]*R,bd=pb[2]+0.5; bd=bd>1?1:bd;
+          ctx.fillStyle='rgba(52,224,161,'+(0.20*env*bd).toFixed(3)+')'; ctx.beginPath(); ctx.arc(bx,by,6*DPR,0,7); ctx.fill();
+          ctx.fillStyle='rgba(210,255,236,'+(0.95*env*bd).toFixed(3)+')'; ctx.beginPath(); ctx.arc(bx,by,2.6*DPR,0,7); ctx.fill();
+          if(cyc>0.82){ var rp=(cyc-0.82)/0.18; rp=rp>1?1:rp; ctx.strokeStyle='rgba(52,224,161,'+((1-rp)*0.6*bd).toFixed(3)+')'; ctx.lineWidth=1.4*DPR; ctx.beginPath(); ctx.arc(bx,by,(3+rp*9)*DPR,0,7); ctx.stroke(); } }
+      }
+      /* endpoints (from/to) drawn per-flight above — fade in/out with each cycle */
       if(!reduce) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
