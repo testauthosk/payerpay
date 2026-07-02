@@ -562,15 +562,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var prog=cl((sy-aTop)/Math.max(1,aEnd-aTop),0,1);
         if(prog<0.07){ var t=prog/0.07; st.p=[lp(W*0.22,dcx,t), lp(H*0.40,dcy,t)]; st.scale=cl(1-t,0,1); st.inPhone=(t>0.55); return st; }
         if(prog<0.82){ st.p=[dcx,dcy]; st.scale=0; st.inPhone=true; return st; }
-        var e=cl((prog-0.82)/0.18,0,1); st.p=[dcx, lp(dcy, dr.bottom+22, e)]; return st;
+        var e=cl((prog-0.82)/0.18,0,1); st.p=[dcx, lp(dcy, dr.bottom+20, e)]; st.scale=cl((e-0.55)/0.3,0,1); return st;
       }
       if(gcv){ var gr=gcv.getBoundingClientRect(), G=[gr.left+gr.width/2, gr.top+gr.height/2], gR=gr.width/2;
         var frac=cl((H*1.15-G[1])/(H*1.25),0,1);
-        if(frac<0.45 && device){ var d2=device.getBoundingClientRect(), src=[d2.left+d2.width/2, d2.bottom+22], gE=[G[0],G[1]-gR];
-          var bt=cl(frac/0.45,0,1); bt=bt*bt*(3-2*bt);
+        if(frac<0.35 && device){ var d2=device.getBoundingClientRect(), src=[d2.left+d2.width/2, d2.bottom+22], gE=[G[0],G[1]-gR];
+          var bt=cl(frac/0.35,0,1); bt=bt*bt*(3-2*bt);
           st.p=cb(src,[src[0]+30,lp(src[1],gE[1],0.42)],[gE[0]+gR*0.75,lp(src[1],gE[1],0.72)],gE,bt);
           st.inGlobe=false; st.lit=false;
-        } else { var pt=cl((frac-0.45)/0.55,0,1), yOff=lp(-gR,gR*1.2,pt);
+        } else { var pt=cl((frac-0.35)/0.65,0,1), yOff=lp(-gR,gR*1.2,pt);
           st.p=[G[0]-Math.sin(pt*Math.PI)*gR*0.12, G[1]+yOff];
           st.inGlobe=Math.abs(yOff)<gR*0.72; st.lit=pt>0.15; if(st.inGlobe)st.scale=0; }
         return st; }
@@ -596,7 +596,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       if(st.inPhone && !phoneWas) phoneFT=0; phoneWas=st.inPhone;
       if(st.inPhone) phoneEntered=true;
       if(phoneFT<1.3) phoneFT+=dt/0.7;
-      if(dsc){ if(W>900 && sy<(window.__asmEnd||9e9)) dsc.style.opacity=(phoneEntered?cl((phoneFT-0.6)/0.35,0,1):0); else dsc.style.opacity=1; }
+      if(dsc){ if(W>900){ var aT2=(asm?asm.offsetTop:0), aE2=(window.__asmEnd||9e9); if(sy<aE2){ var pg2=(sy-aT2)/Math.max(1,aE2-aT2); dsc.style.opacity=cl((pg2-0.05)/0.06,0,1); } else dsc.style.opacity=1; } else dsc.style.opacity=1; }
       var want=((!moving||sy<6)&&!st.portals&&!st.inGlobe)?1:0; orbA+=(want-orbA)*0.06;
       var orb=12*orbA, hx=st.p[0]+Math.cos(tnow*1.05)*orb, hy=st.p[1]+Math.sin(tnow*1.05)*orb;
       var prevLit=window.__globeLit; window.__globeLit=st.lit;
