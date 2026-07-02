@@ -482,10 +482,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       var y2=y*Math.cos(tilt)-z*Math.sin(tilt), z2=y*Math.sin(tilt)+z*Math.cos(tilt); return [x,y2,z2]; }
     function slerp(p0,p1,t){ var d=p0[0]*p1[0]+p0[1]*p1[1]+p0[2]*p1[2]; d=Math.max(-1,Math.min(1,d)); var o=Math.acos(d),so=Math.sin(o),a,b;
       if(so<1e-4){a=1-t;b=t;}else{a=Math.sin((1-t)*o)/so;b=Math.sin(t*o)/so;} return [a*p0[0]+b*p1[0],a*p0[1]+b*p1[1],a*p0[2]+b*p1[2]]; }
-    var ang=0,t0=null,litP=0,cometsOn=false;
+    var ang=0,t0=null,litP=0,cometsOn=false,cometFade=0;
     function frame(ts){ if(t0===null)t0=ts; var dt=(ts-t0)/1000; t0=ts; if(!reduce) ang+=dt*0.16;
       var lt=window.__globeLit?1:0; litP+=(lt-litP)*Math.min(1,dt*1.8); if(litP<0.002)litP=0; if(litP>0.998)litP=1;
-      var fcx=cx, fcy=cy-R*0.7, floodR=litP*2.25*R;
+      var fcx=cx, fcy=cy-R*0.82, floodR=litP*2.25*R;
       function cov(px,py){ var d=Math.sqrt((px-fcx)*(px-fcx)+(py-fcy)*(py-fcy)), c=(floodR-d)/(0.3*R); return c<0?0:(c>1?1:c); }
       ctx.clearRect(0,0,cv.width,cv.height);
       var g=ctx.createRadialGradient(cx,cy,R*0.15,cx,cy,R*1.3); g.addColorStop(0,'rgba(52,224,161,0.06)'); g.addColorStop(0.65,'rgba(52,224,161,0.02)'); g.addColorStop(1,'rgba(52,224,161,0)');
@@ -503,9 +503,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var wg=ctx.createRadialGradient(fcx,fcy,0,fcx,fcy,wr); wg.addColorStop(0,'rgba(52,224,161,'+wa.toFixed(3)+')'); wg.addColorStop(0.7,'rgba(52,224,161,'+(wa*0.3).toFixed(3)+')'); wg.addColorStop(1,'rgba(52,224,161,0)');
         ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.clip(); ctx.fillStyle=wg; ctx.beginPath(); ctx.arc(fcx,fcy,wr,0,7); ctx.fill(); ctx.restore(); }
       var wantC=litP>0.9;
-      if(wantC&&!cometsOn){ cometsOn=true; for(var fj=0;fj<flights.length;fj++){ flights[fj].phase=-ts/flights[fj].cl+0.002; flights[fj].lastIdx=-1; } }
-      if(!wantC) cometsOn=false;
-      ctx.lineCap='round'; var TL=0.30;
+      if(wantC&&!cometsOn){ cometsOn=true; cometFade=0; for(var fj=0;fj<flights.length;fj++){ flights[fj].phase=-ts/flights[fj].cl-fj*0.05; flights[fj].lastIdx=-1; } }
+      if(!wantC){ cometsOn=false; cometFade=0; }
+      if(cometsOn&&cometFade<1){ cometFade+=dt*0.7; if(cometFade>1)cometFade=1; }
+      ctx.lineCap='round'; var TL=0.30; ctx.globalAlpha=cometFade;
       if(cometsOn) for(var k=0;k<flights.length;k++){ var fl=flights[k]; var pos=ts/fl.cl+fl.phase, idx=Math.floor(pos);
         if(idx!==fl.lastIdx){ fl.lastIdx=idx; var np2=newPair(); fl.a=np2[0]; fl.b=np2[1]; }
         var frac=pos-idx; if(frac>fl.fly)continue;
@@ -533,6 +534,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           if(cyc>0.82){ var rp=(cyc-0.82)/0.18; rp=rp>1?1:rp; ctx.strokeStyle='rgba(52,224,161,'+((1-rp)*0.6*bd).toFixed(3)+')'; ctx.lineWidth=1.4*DPR; ctx.beginPath(); ctx.arc(bx,by,(3+rp*9)*DPR,0,7); ctx.stroke(); } }
       }
       /* endpoints (from/to) drawn per-flight above — fade in/out with each cycle */
+      ctx.globalAlpha=1;
       if(!reduce) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -548,6 +550,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     function cl(v,a,b){return v<a?a:(v>b?b:v);}
     function lp(a,b,t){return a+(b-a)*t;}
     function qb(p0,p1,p2,t){var u=1-t;return [u*u*p0[0]+2*u*t*p1[0]+t*t*p2[0], u*u*p0[1]+2*u*t*p1[1]+t*t*p2[1]];}
+    function cb(p0,p1,p2,p3,t){var u=1-t;return [u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0], u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]];}
     function back(t){ var s=1.9; t=cl(t,0,1); var u=t-1; return 1+u*u*((s+1)*u+s); }
     var asm=document.getElementById('asm'), device=document.getElementById('device'), gcv=document.getElementById('globeCv'), send=document.getElementById('send'), dsc=device?device.querySelector('.dev-screen'):null, tnow=0;
     function state(sy){
@@ -559,14 +562,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var prog=cl((sy-aTop)/Math.max(1,aEnd-aTop),0,1);
         if(prog<0.07){ var t=prog/0.07; st.p=[lp(W*0.22,dcx,t), lp(H*0.40,dcy,t)]; st.scale=cl(1-t,0,1); st.inPhone=(t>0.55); return st; }
         if(prog<0.82){ st.p=[dcx,dcy]; st.scale=0; st.inPhone=true; return st; }
-        var e=cl((prog-0.82)/0.18,0,1); st.p=[W*0.5, lp(dr.bottom-10, H*1.04, e)]; return st;
+        var e=cl((prog-0.82)/0.18,0,1); st.p=[dcx, lp(dcy, dr.bottom+22, e)]; return st;
       }
       if(gcv){ var gr=gcv.getBoundingClientRect(), G=[gr.left+gr.width/2, gr.top+gr.height/2], gR=gr.width/2;
-        var frac=cl((H*1.15-G[1])/(H*1.25),0,1), yOff=lp(-gR*1.3,gR*1.3,frac);
-        var passX=G[0]-Math.sin(frac*Math.PI)*gR*0.12, passY=G[1]+yOff;
-        if(frac<0.28){ var bt=frac/0.28; bt=bt*bt*(3-2*bt); st.p=[lp(W*0.5,passX,bt), lp(H*1.05,passY,bt)]; }
-        else st.p=[passX,passY];
-        st.inGlobe=Math.abs(yOff)<gR*0.72; st.lit=frac>0.46; if(st.inGlobe)st.scale=0;
+        var frac=cl((H*1.15-G[1])/(H*1.25),0,1);
+        if(frac<0.45 && device){ var d2=device.getBoundingClientRect(), src=[d2.left+d2.width/2, d2.bottom+22], gE=[G[0],G[1]-gR];
+          var bt=cl(frac/0.45,0,1); bt=bt*bt*(3-2*bt);
+          st.p=cb(src,[src[0]+30,lp(src[1],gE[1],0.42)],[gE[0]+gR*0.75,lp(src[1],gE[1],0.72)],gE,bt);
+          st.inGlobe=false; st.lit=false;
+        } else { var pt=cl((frac-0.45)/0.55,0,1), yOff=lp(-gR,gR*1.2,pt);
+          st.p=[G[0]-Math.sin(pt*Math.PI)*gR*0.12, G[1]+yOff];
+          st.inGlobe=Math.abs(yOff)<gR*0.72; st.lit=pt>0.15; if(st.inGlobe)st.scale=0; }
         return st; }
       st.p=[W/2,H*0.5]; return st;
     }
