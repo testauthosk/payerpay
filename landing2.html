@@ -603,7 +603,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       if(phoneFT<1.3) phoneFT+=dt/0.7;
       if(dsc){ if(W>900){ var aT2=(asm?asm.offsetTop:0), aE2=(window.__asmEnd||9e9); if(sy<aE2){ var pg2=(sy-aT2)/Math.max(1,aE2-aT2); dsc.style.opacity=cl((pg2-0.05)/0.06,0,1); } else dsc.style.opacity=1; } else dsc.style.opacity=1; }
       var want=((!moving||sy<6)&&!st.portals&&!st.inGlobe)?1:0; orbA+=(want-orbA)*0.06;
-      var orb=12*orbA, hx=st.p[0]+Math.cos(tnow*1.05)*orb, hy=st.p[1]+Math.sin(tnow*1.05)*orb;
+      var amp=(sy<30?56:26)*orbA, hx=st.p[0]+Math.sin(tnow*1.15)*amp, hy=st.p[1]+Math.sin(tnow*2.3)*2.5*orbA;
       var prevLit=window.__globeLit; window.__globeLit=st.lit;
       if(!prevLit && st.lit){ burstT=0; burstP=[hx,hy]; }
       if(burstT<1) burstT+=dt*2.0;
