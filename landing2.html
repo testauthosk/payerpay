@@ -592,7 +592,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           /* last card outlined → the two trails merge into one dot that exits from its bottom */
           for(var cj=0;cj<N;cj++) track.children[cj].classList.add('lit');
           var lac=track.children[N-1].getBoundingClientRect(), et=cl((fp-0.88)/0.12,0,1); et=et*et*(3-2*et);
-          st.p=[lp(lac.right, lac.left+lac.width*0.5, et), lp((lac.top+lac.bottom)/2, lac.bottom+30, et)];
+          st.p=[lp(lac.left+lac.width*0.5, W*0.5, et), lp((lac.top+lac.bottom)/2, 70, et)];
           return st;
         }
         var fsec=document.getElementById('feat'), fRect=fsec?fsec.getBoundingClientRect():null, ftop=fRect?fRect.top:H;
@@ -611,18 +611,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var lc=(track&&track.children.length)?track.children[track.children.length-1].getBoundingClientRect():{left:W*0.68,width:W*0.18,bottom:H*0.52};
         var ctaR=ctaEl?ctaEl.getBoundingClientRect():{top:H*2,left:0,width:W,height:0}, ctaMid=ctaR.top+ctaR.height/2;
         if(ctaMid>H*0.62){
-          /* --- PB PHASE: descend, cross the top border (vanish), pass through, appear from the bottom --- */
-          var pbCx=pb.left+pb.width*0.5, pbCy=pb.top+pb.height*0.5;
-          var exitPt=[lc.left+lc.width*0.5, lc.bottom];
-          var frac=cl((H*1.02-pbCy)/Math.max(1,H*1.06),0,1), TH=0.34;
-          if(frac<TH){ var t=frac/TH; t=t*t*(3-2*t); st.beforeBlock=true;
-            st.p=cb(exitPt,[exitPt[0]-W*0.03,lp(exitPt[1],pb.top,0.5)],[pbCx+W*0.11,pb.top-H*0.07],[pbCx,pb.top],t);
-          } else { var pt=(frac-TH)/(1-TH);
-            var yy=lp(pb.top-24,pb.bottom+H*0.34,pt); st.p=[pbCx,yy];
-            st.inBlock=(yy>pb.top&&yy<pb.bottom); st.scale=st.inBlock?0:1;
-          }
-          /* headline reveals when ~20% of the approach is left, before the dot lands */
-          st.headLit=(frac>=TH*0.8);
+          /* --- PB PHASE: dot descends LINEARLY with scroll as the block passes; crosses in/out of the block --- */
+          var pbCx=pb.left+pb.width*0.5;
+          var featEnd=window.__featEnd||0;
+          var blockProg=cl((sy-featEnd)/(H*1.5),0,1);   /* linear with scroll from the end of the feature pin — no dead zone */
+          var dotY=lp(70, H+40, blockProg);
+          st.p=[pbCx, dotY];
+          st.inBlock=(dotY>pb.top && dotY<pb.bottom); st.scale=st.inBlock?0:1;
+          st.beforeBlock=(dotY<=pb.top);
+          /* headline reveals ~20% before the dot reaches the block top */
+          st.headLit=(blockProg>=0.26);
           return st;
         }
         /* CTA + FOOTER — kept working; to be reworked block-by-block next */
@@ -808,7 +806,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       var track=document.getElementById('featTrack'),bar=document.getElementById('featBar');
       var dist=track.scrollWidth-window.innerWidth+40; if(dist<0)dist=0;
       gsap.to(track,{x:-dist,ease:'none',scrollTrigger:{trigger:'#feat',start:'top top',end:'+='+(dist+400),scrub:1,pin:'.feat-pin',anticipatePin:1,
-        onUpdate:function(s){bar.style.width=(20+s.progress*80)+'%';window.__featProg=s.progress;},
+        onRefresh:function(s){window.__featEnd=s.end;},
+        onUpdate:function(s){bar.style.width=(20+s.progress*80)+'%';window.__featProg=s.progress;window.__featEnd=s.end;},
         onToggle:function(s){window.__featActive=s.isActive;}}});
     });
     mm.add('(max-width:900px)',function(){
