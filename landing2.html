@@ -607,14 +607,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           var pbCx=pb.left+pb.width*0.5, pbCy=pb.top+pb.height*0.5;
           var exitPt=[lc.left+lc.width*0.5, lc.bottom];
           var frac=cl((H*1.02-pbCy)/Math.max(1,H*1.06),0,1), TH=0.34;
-          if(frac<TH){ var t=frac/TH; t=t*t*(3-2*t);
+          if(frac<TH){ var t=frac/TH; t=t*t*(3-2*t); st.beforeBlock=true;
             st.p=cb(exitPt,[exitPt[0]-W*0.03,lp(exitPt[1],pb.top,0.5)],[pbCx+W*0.11,pb.top-H*0.07],[pbCx,pb.top],t);
           } else { var pt=(frac-TH)/(1-TH);
             var yy=lp(pb.top-24,pb.bottom+H*0.34,pt); st.p=[pbCx,yy];
             st.inBlock=(yy>pb.top&&yy<pb.bottom); st.scale=st.inBlock?0:1;
           }
-          /* reveal the text a bit BEFORE the dot lands, so a quick scroll can't skip it */
-          st.blockLit=(st.p[1]>pb.top-150);
+          /* headline reveals when ~20% of the approach is left, before the dot lands */
+          st.headLit=(frac>=TH*0.8);
           return st;
         }
         /* CTA + FOOTER — kept working; to be reworked block-by-block next */
@@ -624,7 +624,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       }
       st.p=[W/2,H*0.5]; return st;
     }
-    var trail=[], trailA=[], trailB=[], lastSY=-1, orbA=0, pt0=null, STEP=5, MAXLEN=74, curScale=1, burstT=99, burstP=[0,0], phoneFT=99, phoneWas=false, phoneEntered=false, pbFT=99, pbWas=false, pbBurstT=99, pbBurstP=[0,0], inBlockWas=false;
+    var trail=[], trailA=[], trailB=[], lastSY=-1, orbA=0, pt0=null, STEP=5, MAXLEN=74, curScale=1, burstT=99, burstP=[0,0], phoneFT=99, phoneWas=false, phoneEntered=false, headWas=false, blockWas=false, waveStarted=false, pbBurstT=99, pbBurstP=[0,0], inBlockWas=false;
     function pushArr(tr,p,maxL){
       if(!tr.length){ tr.push(p); return tr; }
       var l=tr[tr.length-1], dx=p[0]-l[0], dy=p[1]-l[1], d=Math.sqrt(dx*dx+dy*dy);
@@ -672,11 +672,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       if(st.inPhone && !phoneWas) phoneFT=0; phoneWas=st.inPhone;
       if(st.inPhone) phoneEntered=true;
       if(phoneFT<1.3) phoneFT+=dt/0.7;
-      if(st.blockLit && !pbWas){ if(window.__whoReveal) window.__whoReveal(true); pbWas=true; }
-      else if(!st.blockLit && pbWas){ if(window.__whoReveal) window.__whoReveal(false); pbWas=false; }
-      if(st.inBlock && !inBlockWas){ pbBurstT=0; pbBurstP=[st.p[0],st.p[1]]; }
+      /* headline reveals ~20% before the dot lands */
+      if(st.headLit && !headWas){ if(window.__headReveal) window.__headReveal(true); headWas=true; }
+      else if(!st.headLit && headWas){ if(window.__headReveal) window.__headReveal(false); headWas=false; }
+      /* green wave fires the instant the dot touches the block */
+      if(st.inBlock && !inBlockWas){ pbBurstT=0; pbBurstP=[st.p[0],st.p[1]]; waveStarted=true; }
       inBlockWas=!!st.inBlock;
       if(pbBurstT<1) pbBurstT+=dt*1.05;
+      /* block content appears ONLY after the wave has run ~40% — independent of whether the dot is still inside */
+      var wantBlk=waveStarted && pbBurstT>0.4;
+      if(wantBlk && !blockWas){ if(window.__blockReveal) window.__blockReveal(true); blockWas=true; }
+      else if((st.beforeBlock||!st.headLit) && (blockWas||waveStarted)){ if(blockWas&&window.__blockReveal) window.__blockReveal(false); blockWas=false; waveStarted=false; }
       if(dsc){ if(W>900){ var aT2=(asm?asm.offsetTop:0), aE2=(window.__asmEnd||9e9); if(sy<aE2){ var pg2=(sy-aT2)/Math.max(1,aE2-aT2); dsc.style.opacity=cl((pg2-0.05)/0.06,0,1); } else dsc.style.opacity=1; } else dsc.style.opacity=1; }
       var want=((!moving||sy<6)&&!st.portals&&!st.inGlobe)?1:0; orbA+=(want-orbA)*0.06;
       var amp=(sy<30?44:24)*orbA, hx=st.p[0]+Math.sin(tnow*1.15)*amp, hy=st.p[1]+Math.sin(tnow*2.3)*2.2*orbA;
@@ -805,10 +811,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     mm.add('(min-width:901px)',function(){
       gsap.set('#who .rline',{yPercent:120});
       gsap.set('#who .fade-up',{opacity:0,y:26});
-      var whoTl=gsap.timeline({paused:true});
-      whoTl.fromTo('#who .rline',{yPercent:120},{yPercent:0,duration:.9,stagger:.12,ease:'power4.out'})
-           .fromTo('#who .fade-up',{opacity:0,y:26},{opacity:1,y:0,duration:.6,stagger:.05,ease:'power2.out'},'-=.55');
-      window.__whoReveal=function(show){ window.__whoShown=show; if(show)whoTl.play(); else whoTl.reverse(); };
+      var headTl=gsap.timeline({paused:true});
+      headTl.fromTo('#who .rline',{yPercent:120},{yPercent:0,duration:.9,stagger:.12,ease:'power4.out'});
+      var blockTl=gsap.timeline({paused:true});
+      blockTl.fromTo('#who .fade-up',{opacity:0,y:26},{opacity:1,y:0,duration:.55,stagger:.06,ease:'power2.out'});
+      window.__headReveal=function(show){ if(show)headTl.play(); else headTl.reverse(); };
+      window.__blockReveal=function(show){ window.__whoShown=show; if(show)blockTl.play(); else blockTl.reverse(); };
     });
 
     ScrollTrigger.refresh();
