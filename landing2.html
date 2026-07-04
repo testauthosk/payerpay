@@ -592,7 +592,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           /* last card outlined → the two trails merge into one dot that exits from its bottom */
           for(var cj=0;cj<N;cj++) track.children[cj].classList.add('lit');
           var lac=track.children[N-1].getBoundingClientRect(), et=cl((fp-0.88)/0.12,0,1); et=et*et*(3-2*et);
-          st.p=[lac.left+lac.width*0.5, lp((lac.top+lac.bottom)/2, lac.bottom, et)];
+          st.p=[lac.left+lac.width*0.5, lp((lac.top+lac.bottom)/2, lac.bottom, et)]; st.scale=0;
           return st;
         }
         var fsec=document.getElementById('feat'), fRect=fsec?fsec.getBoundingClientRect():null, ftop=fRect?fRect.top:H;
@@ -619,7 +619,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           var lacc=track.children[N-1].getBoundingClientRect(), xt=cl(blockProg/0.4,0,1); xt=xt*xt*(3-2*xt);
           var px=lp(lacc.left+lacc.width*0.5, pbCx, xt);   /* X starts under the last card, eases to block-center as it descends */
           st.p=[px, dotY];
-          st.inBlock=(dotY>pb.top && dotY<pb.bottom); st.scale=st.inBlock?0:1;
+          st.inBlock=(dotY>pb.top && dotY<pb.bottom);
+          /* invisible while still within the cards area; appears only once it clears the cards' bottom; hidden again inside the block */
+          st.scale=(st.inBlock || dotY<=lacc.bottom) ? 0 : 1;
           st.beforeBlock=(dotY<=pb.top);
           /* headline reveals ~20% before the dot reaches the block top */
           st.headLit=(blockProg>=0.26);
