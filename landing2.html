@@ -172,10 +172,10 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
   .fcard .chip-ic,.fcard h3,.fcard p,.fcard .no{opacity:.07;transition:opacity .5s ease}
   .fcard.lit .chip-ic,.fcard.lit h3,.fcard.lit p,.fcard.lit .no{opacity:1}
   .fcard.lit{border-color:rgba(52,224,161,.45);box-shadow:0 0 34px rgba(52,224,161,.10)}
-  /* PB block sleeps black until the pilot dot lands (globe logic) */
-  #who .pb-top,#who .pb-onboard,#who .pb-body{opacity:.04;transition:opacity .6s ease}
-  #who .pb.lit .pb-top,#who .pb.lit .pb-onboard,#who .pb.lit .pb-body{opacity:1}
-  #who .pb.lit{border-color:rgba(52,224,161,.4);box-shadow:0 0 40px rgba(52,224,161,.10)}
+  /* whole #who section (headline + block) sleeps black until the pilot dot lands (globe logic) */
+  #who .eyebrow,#who h2,#who .s-lead,#who .pb-top,#who .pb-onboard,#who .pb-body{opacity:.04;transition:opacity .6s ease}
+  #who.lit .eyebrow,#who.lit h2,#who.lit .s-lead,#who.lit .pb-top,#who.lit .pb-onboard,#who.lit .pb-body{opacity:1}
+  #who.lit .pb{border-color:rgba(52,224,161,.4);box-shadow:0 0 40px rgba(52,224,161,.10)}
 }
 
 /* PB */
@@ -373,9 +373,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <section class="scene" id="who">
   <div class="wrap" style="width:100%">
     <div style="text-align:center;max-width:600px;margin:0 auto 48px">
-      <span class="eyebrow reveal" style="justify-content:center">Who it's for</span>
-      <h2 class="reveal">Personal or business</h2>
-      <p class="s-lead reveal" style="margin-left:auto;margin-right:auto;text-align:center">One product, two ways in. A personal account opens in minutes; business unlocks more tools.</p>
+      <span class="eyebrow" style="justify-content:center">Who it's for</span>
+      <h2>Personal or business</h2>
+      <p class="s-lead" style="margin-left:auto;margin-right:auto;text-align:center">One product, two ways in. A personal account opens in minutes; business unlocks more tools.</p>
     </div>
     <div class="pb reveal">
       <div class="pb-top">
@@ -613,7 +613,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             st.p=cb(exitPt,[exitPt[0]-W*0.03,lp(exitPt[1],pbTopC[1],0.5)],[pbTopC[0]+W*0.12,pbTopC[1]-H*0.08],pbTopC,t);
           } else { var t2=(wp-0.72)/0.28; t2=t2*t2*(3-2*t2);
             st.p=[lp(pbTopC[0],pbIn[0],t2), lp(pbTopC[1],pbIn[1],t2)];
-            st.scale=cl(1-(t2-0.5)/0.4,0,1); st.inBlock=true; st.blockLit=true; st.blockRect={l:pb.left,t:pb.top,w:pb.width,h:pb.height};
+            st.scale=cl(1-(t2-0.5)/0.4,0,1); st.inBlock=true; st.blockLit=true;
+            var wrapEl=document.querySelector('#who .wrap'), wr=wrapEl?wrapEl.getBoundingClientRect():pb;
+            st.blockRect={l:wr.left,t:wr.top,w:wr.width,h:wr.bottom-wr.top,fx:pbTopC[0],fy:pbTopC[1]};
           }
           return st;
         }
@@ -669,7 +671,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       var sy=window.scrollY, moving=Math.abs(sy-lastSY)>0.6; lastSY=sy;
       var st=state(sy);
       var ctaBox=document.querySelector('#cta .cta'); if(ctaBox) ctaBox.classList.toggle('lit',!!st.ctaLit);
-      var pbBox=document.querySelector('.pb'); if(pbBox) pbBox.classList.toggle('lit',!!st.blockLit);
+      var whoSec=document.getElementById('who'); if(whoSec) whoSec.classList.toggle('lit',!!st.blockLit);
       if(st.inPhone && !phoneWas) phoneFT=0; phoneWas=st.inPhone;
       if(st.inPhone) phoneEntered=true;
       if(phoneFT<1.3) phoneFT+=dt/0.7;
@@ -700,17 +702,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         ctx.fillStyle=pg; ctx.beginPath(); ctx.arc(pcx,pcy,prad,0,7); ctx.fill();
         ctx.restore(); }
       if(pbFT<1.35 && st.blockRect){ var br=st.blockRect;
-        var bcx=(br.l+br.w/2)*DPR, bcy=(br.t+br.h*0.30)*DPR, brad=Math.max(1,Math.max(br.w,br.h)*0.95*pbFT*DPR);
-        var ba=0.28*(1-Math.abs(pbFT-0.5)*1.55); if(ba<0)ba=0;
+        var fx=(br.fx!=null?br.fx:br.l+br.w/2)*DPR, fy=(br.fy!=null?br.fy:br.t+br.h*0.3)*DPR, brad=Math.max(1,Math.max(br.w,br.h)*1.25*pbFT*DPR);
+        var ba=0.26*(1-Math.abs(pbFT-0.5)*1.55); if(ba<0)ba=0;
         ctx.save(); ctx.beginPath();
         var bl=br.l*DPR, bt=br.t*DPR, bw=br.w*DPR, bh=br.h*DPR, brr=26*DPR;
         if(ctx.roundRect) ctx.roundRect(bl,bt,bw,bh,brr); else ctx.rect(bl,bt,bw,bh);
         ctx.clip();
-        var bg=ctx.createRadialGradient(bcx,bcy,0,bcx,bcy,brad); bg.addColorStop(0,'rgba(52,224,161,'+ba.toFixed(3)+')'); bg.addColorStop(0.55,'rgba(52,224,161,'+(ba*0.4).toFixed(3)+')'); bg.addColorStop(1,'rgba(52,224,161,0)');
-        ctx.fillStyle=bg; ctx.beginPath(); ctx.arc(bcx,bcy,brad,0,7); ctx.fill();
-        ctx.restore();
-        var rp2=cl(pbFT/1.1,0,1); ctx.strokeStyle='rgba(120,245,205,'+((1-rp2)*0.5).toFixed(3)+')'; ctx.lineWidth=1.5*DPR;
-        if(ctx.roundRect){ ctx.beginPath(); ctx.roundRect(bl,bt,bw,bh,brr); ctx.stroke(); } }
+        var bg=ctx.createRadialGradient(fx,fy,0,fx,fy,brad); bg.addColorStop(0,'rgba(52,224,161,'+ba.toFixed(3)+')'); bg.addColorStop(0.55,'rgba(52,224,161,'+(ba*0.4).toFixed(3)+')'); bg.addColorStop(1,'rgba(52,224,161,0)');
+        ctx.fillStyle=bg; ctx.beginPath(); ctx.arc(fx,fy,brad,0,7); ctx.fill();
+        ctx.restore(); }
       if(burstT<1){ var br=burstT, bx=burstP[0]*DPR, by=burstP[1]*DPR, rr=(22+br*90)*DPR;
         ctx.strokeStyle='rgba(130,255,214,'+((1-br)*0.75).toFixed(3)+')'; ctx.lineWidth=(3.5*(1-br)+0.5)*DPR; ctx.beginPath(); ctx.arc(bx,by,rr,0,7); ctx.stroke(); }
       if(st.card){ drawContour(st.card); }
