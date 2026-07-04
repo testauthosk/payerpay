@@ -583,10 +583,18 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         return st; } }
       var track=document.getElementById('featTrack');
       if(track && track.children.length){ var N=track.children.length;
-        if(window.__featActive){ var fp=cl(window.__featProg||0,0,1), af=fp*N, ai=Math.min(N-1,Math.floor(af)), loc=cl(af-ai,0,1);
-          var cr=track.children[ai].getBoundingClientRect(), L=cr.left, R=cr.right, T=cr.top, B=cr.bottom, MY=(T+B)/2;
-          for(var ci=0;ci<N;ci++) track.children[ci].classList.toggle('lit', ci<=ai);
-          st.split=[ contour(L,R,T,MY,loc), contour(L,R,B,MY,loc) ]; st.card={L:L,R:R,T:T,B:B,MY:MY,loc:loc}; return st; }
+        if(window.__featActive){ var fp=cl(window.__featProg||0,0,1);
+          if(fp<0.88){ var afp=fp/0.88, af=afp*N, ai=Math.min(N-1,Math.floor(af)), loc=cl(af-ai,0,1);
+            var cr=track.children[ai].getBoundingClientRect(), L=cr.left, R=cr.right, T=cr.top, B=cr.bottom, MY=(T+B)/2;
+            for(var ci=0;ci<N;ci++) track.children[ci].classList.toggle('lit', ci<=ai);
+            st.split=[ contour(L,R,T,MY,loc), contour(L,R,B,MY,loc) ]; st.card={L:L,R:R,T:T,B:B,MY:MY,loc:loc}; return st;
+          }
+          /* last card outlined → the two trails merge into one dot that exits from its bottom */
+          for(var cj=0;cj<N;cj++) track.children[cj].classList.add('lit');
+          var lac=track.children[N-1].getBoundingClientRect(), et=cl((fp-0.88)/0.12,0,1); et=et*et*(3-2*et);
+          st.p=[lp(lac.right, lac.left+lac.width*0.5, et), lp((lac.top+lac.bottom)/2, lac.bottom+30, et)];
+          return st;
+        }
         var fsec=document.getElementById('feat'), fRect=fsec?fsec.getBoundingClientRect():null, ftop=fRect?fRect.top:H;
         if(ftop>-20){
           var fc0=track.children[0].getBoundingClientRect(), cardEntry=[fc0.left, fc0.top+fc0.height/2];
