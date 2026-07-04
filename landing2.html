@@ -603,19 +603,18 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var lc=(track&&track.children.length)?track.children[track.children.length-1].getBoundingClientRect():{left:W*0.68,width:W*0.18,bottom:H*0.52};
         var ctaR=ctaEl?ctaEl.getBoundingClientRect():{top:H*2,left:0,width:W,height:0}, ctaMid=ctaR.top+ctaR.height/2;
         if(ctaMid>H*0.62){
-          /* --- PB PHASE --- */
+          /* --- PB PHASE: descend, cross the top border (vanish), pass through, appear from the bottom --- */
+          var pbCx=pb.left+pb.width*0.5, pbCy=pb.top+pb.height*0.5;
           var exitPt=[lc.left+lc.width*0.5, lc.bottom];
-          var pbTopC=[pb.left+pb.width*0.5, pb.top];
-          var pbIn=[pb.left+pb.width*0.5, pb.top+pb.height*0.30];
-          var enterY=H*0.34, wp=cl((H-pb.top)/Math.max(1,H-enterY),0,1);
-          if(wp<0.72){ var t=wp/0.72; t=t*t*(3-2*t);
-            st.p=cb(exitPt,[exitPt[0]-W*0.03,lp(exitPt[1],pbTopC[1],0.5)],[pbTopC[0]+W*0.12,pbTopC[1]-H*0.08],pbTopC,t);
-          } else { var t2=(wp-0.72)/0.28; t2=t2*t2*(3-2*t2);
-            st.p=[lp(pbTopC[0],pbIn[0],t2), lp(pbTopC[1],pbIn[1],t2)];
-            st.scale=cl(1-(t2-0.5)/0.4,0,1); st.inBlock=true; st.blockLit=true;
-            var wrapEl=document.querySelector('#who .wrap'), wr=wrapEl?wrapEl.getBoundingClientRect():pb;
-            st.blockRect={l:wr.left,t:wr.top,w:wr.width,h:wr.bottom-wr.top,fx:pbTopC[0],fy:pbTopC[1]};
+          var frac=cl((H*1.02-pbCy)/Math.max(1,H*1.06),0,1), TH=0.34;
+          if(frac<TH){ var t=frac/TH; t=t*t*(3-2*t);
+            st.p=cb(exitPt,[exitPt[0]-W*0.03,lp(exitPt[1],pb.top,0.5)],[pbCx+W*0.11,pb.top-H*0.07],[pbCx,pb.top],t);
+          } else { var pt=(frac-TH)/(1-TH);
+            var yy=lp(pb.top-24,pb.bottom+24,pt); st.p=[pbCx,yy];
+            st.inBlock=(yy>pb.top&&yy<pb.bottom); st.scale=st.inBlock?0:1;
           }
+          /* reveal the text a bit BEFORE the dot lands, so a quick scroll can't skip it */
+          st.blockLit=(st.p[1]>pb.top-150);
           return st;
         }
         /* CTA + FOOTER — kept working; to be reworked block-by-block next */
@@ -673,8 +672,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       if(st.inPhone && !phoneWas) phoneFT=0; phoneWas=st.inPhone;
       if(st.inPhone) phoneEntered=true;
       if(phoneFT<1.3) phoneFT+=dt/0.7;
-      if(st.inBlock && !pbWas){ if(window.__whoReveal) window.__whoReveal(true); pbWas=true; }
-      else if(!st.inBlock && pbWas){ if(window.__whoReveal) window.__whoReveal(false); pbWas=false; }
+      if(st.blockLit && !pbWas){ if(window.__whoReveal) window.__whoReveal(true); pbWas=true; }
+      else if(!st.blockLit && pbWas){ if(window.__whoReveal) window.__whoReveal(false); pbWas=false; }
       if(dsc){ if(W>900){ var aT2=(asm?asm.offsetTop:0), aE2=(window.__asmEnd||9e9); if(sy<aE2){ var pg2=(sy-aT2)/Math.max(1,aE2-aT2); dsc.style.opacity=cl((pg2-0.05)/0.06,0,1); } else dsc.style.opacity=1; } else dsc.style.opacity=1; }
       var want=((!moving||sy<6)&&!st.portals&&!st.inGlobe)?1:0; orbA+=(want-orbA)*0.06;
       var amp=(sy<30?44:24)*orbA, hx=st.p[0]+Math.sin(tnow*1.15)*amp, hy=st.p[1]+Math.sin(tnow*2.3)*2.2*orbA;
