@@ -172,10 +172,9 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
   .fcard .chip-ic,.fcard h3,.fcard p,.fcard .no{opacity:.07;transition:opacity .5s ease}
   .fcard.lit .chip-ic,.fcard.lit h3,.fcard.lit p,.fcard.lit .no{opacity:1}
   .fcard.lit{border-color:rgba(52,224,161,.45);box-shadow:0 0 34px rgba(52,224,161,.10)}
-  /* whole #who section (headline + block) sleeps black until the pilot dot lands (globe logic) */
-  #who .eyebrow,#who h2,#who .s-lead,#who .pb-top,#who .pb-onboard,#who .pb-body{opacity:.04;transition:opacity .6s ease}
-  #who.lit .eyebrow,#who.lit h2,#who.lit .s-lead,#who.lit .pb-top,#who.lit .pb-onboard,#who.lit .pb-body{opacity:1}
-  #who.lit .pb{border-color:rgba(52,224,161,.4);box-shadow:0 0 40px rgba(52,224,161,.10)}
+  /* #who text slides up (like the hero) when the pilot dot lands — no area glow */
+  #who .rmask{overflow:hidden;display:block}
+  #who .rline{display:block;will-change:transform}
 }
 
 /* PB */
@@ -373,16 +372,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <section class="scene" id="who">
   <div class="wrap" style="width:100%">
     <div style="text-align:center;max-width:600px;margin:0 auto 48px">
-      <span class="eyebrow" style="justify-content:center">Who it's for</span>
-      <h2>Personal or business</h2>
-      <p class="s-lead" style="margin-left:auto;margin-right:auto;text-align:center">One product, two ways in. A personal account opens in minutes; business unlocks more tools.</p>
+      <span class="eyebrow fade-up" style="justify-content:center">Who it's for</span>
+      <h2><span class="rmask"><span class="rline">Personal or business</span></span></h2>
+      <p class="s-lead" style="text-align:center"><span class="rmask" style="max-width:480px;margin:0 auto"><span class="rline">One product, two ways in. A personal account opens in minutes; business unlocks more tools.</span></span></p>
     </div>
     <div class="pb reveal">
-      <div class="pb-top">
+      <div class="pb-top fade-up">
         <div><h3 id="pbTitle">For personal use</h3><p id="pbSub">A personal multi-currency account, crypto and a card — for life and work worldwide.</p></div>
         <div class="seg" id="pbSeg"><div class="thumb"></div><button class="on" data-pb="personal">Personal</button><button data-pb="business">Business</button></div>
       </div>
-      <div class="pb-onboard" id="pbOnboard"></div>
+      <div class="pb-onboard fade-up" id="pbOnboard"></div>
       <div class="pb-body" id="pbBody"></div>
     </div>
   </div>
@@ -446,8 +445,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   var pbBody=document.getElementById('pbBody');
   function renderPB(m){var d=DATA[m];document.getElementById('pbTitle').textContent=d.title;document.getElementById('pbSub').textContent=d.sub;
     document.getElementById('pbOnboard').innerHTML='<div class="oi"><svg class="ic" viewBox="0 0 24 24">'+d.onIcon+'</svg></div><div><b>'+d.onTag+'</b><p>'+d.onDesc+'</p></div>';
-    pbBody.innerHTML=d.items.map(function(it){return '<div class="pb-item"><div class="ck"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></div><div><b>'+it[0]+(it[2]?'<span class="pb-only">included</span>':'')+'</b><p>'+it[1]+'</p></div></div>';}).join('');
-    if(G&&!reduce)gsap.fromTo(pbBody.children,{opacity:0,y:12},{opacity:1,y:0,duration:.4,stagger:.05,ease:'power2.out',overwrite:true});}
+    pbBody.innerHTML=d.items.map(function(it){return '<div class="pb-item fade-up"><div class="ck"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></div><div><b>'+it[0]+(it[2]?'<span class="pb-only">included</span>':'')+'</b><p>'+it[1]+'</p></div></div>';}).join('');
+    if(G&&!reduce){ if(window.__whoShown||window.innerWidth<901) gsap.fromTo(pbBody.children,{opacity:0,y:12},{opacity:1,y:0,duration:.4,stagger:.05,ease:'power2.out',overwrite:true}); else gsap.set(pbBody.children,{opacity:0,y:26}); }}
   function setPB(m){document.getElementById('navSeg').classList.toggle('biz',m==='business');document.getElementById('pbSeg').classList.toggle('biz',m==='business');
     document.querySelectorAll('#navSeg button,#pbSeg button').forEach(function(b){b.classList.toggle('on',b.dataset.pb===m);});renderPB(m);}
   document.querySelectorAll('#navSeg button,#pbSeg button').forEach(function(b){b.addEventListener('click',function(){setPB(b.dataset.pb);});});
@@ -671,12 +670,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       var sy=window.scrollY, moving=Math.abs(sy-lastSY)>0.6; lastSY=sy;
       var st=state(sy);
       var ctaBox=document.querySelector('#cta .cta'); if(ctaBox) ctaBox.classList.toggle('lit',!!st.ctaLit);
-      var whoSec=document.getElementById('who'); if(whoSec) whoSec.classList.toggle('lit',!!st.blockLit);
       if(st.inPhone && !phoneWas) phoneFT=0; phoneWas=st.inPhone;
       if(st.inPhone) phoneEntered=true;
       if(phoneFT<1.3) phoneFT+=dt/0.7;
-      if(st.inBlock && !pbWas) pbFT=0; pbWas=!!st.inBlock;
-      if(pbFT<1.4) pbFT+=dt/0.75;
+      if(st.inBlock && !pbWas){ if(window.__whoReveal) window.__whoReveal(true); pbWas=true; }
+      else if(!st.inBlock && pbWas){ if(window.__whoReveal) window.__whoReveal(false); pbWas=false; }
       if(dsc){ if(W>900){ var aT2=(asm?asm.offsetTop:0), aE2=(window.__asmEnd||9e9); if(sy<aE2){ var pg2=(sy-aT2)/Math.max(1,aE2-aT2); dsc.style.opacity=cl((pg2-0.05)/0.06,0,1); } else dsc.style.opacity=1; } else dsc.style.opacity=1; }
       var want=((!moving||sy<6)&&!st.portals&&!st.inGlobe)?1:0; orbA+=(want-orbA)*0.06;
       var amp=(sy<30?44:24)*orbA, hx=st.p[0]+Math.sin(tnow*1.15)*amp, hy=st.p[1]+Math.sin(tnow*2.3)*2.2*orbA;
@@ -700,16 +698,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         ctx.clip();
         var pg=ctx.createRadialGradient(pcx,pcy,0,pcx,pcy,prad); pg.addColorStop(0,'rgba(52,224,161,'+pa.toFixed(3)+')'); pg.addColorStop(0.7,'rgba(52,224,161,'+(pa*0.35).toFixed(3)+')'); pg.addColorStop(1,'rgba(52,224,161,0)');
         ctx.fillStyle=pg; ctx.beginPath(); ctx.arc(pcx,pcy,prad,0,7); ctx.fill();
-        ctx.restore(); }
-      if(pbFT<1.35 && st.blockRect){ var br=st.blockRect;
-        var fx=(br.fx!=null?br.fx:br.l+br.w/2)*DPR, fy=(br.fy!=null?br.fy:br.t+br.h*0.3)*DPR, brad=Math.max(1,Math.max(br.w,br.h)*1.25*pbFT*DPR);
-        var ba=0.26*(1-Math.abs(pbFT-0.5)*1.55); if(ba<0)ba=0;
-        ctx.save(); ctx.beginPath();
-        var bl=br.l*DPR, bt=br.t*DPR, bw=br.w*DPR, bh=br.h*DPR, brr=26*DPR;
-        if(ctx.roundRect) ctx.roundRect(bl,bt,bw,bh,brr); else ctx.rect(bl,bt,bw,bh);
-        ctx.clip();
-        var bg=ctx.createRadialGradient(fx,fy,0,fx,fy,brad); bg.addColorStop(0,'rgba(52,224,161,'+ba.toFixed(3)+')'); bg.addColorStop(0.55,'rgba(52,224,161,'+(ba*0.4).toFixed(3)+')'); bg.addColorStop(1,'rgba(52,224,161,0)');
-        ctx.fillStyle=bg; ctx.beginPath(); ctx.arc(fx,fy,brad,0,7); ctx.fill();
         ctx.restore(); }
       if(burstT<1){ var br=burstT, bx=burstP[0]*DPR, by=burstP[1]*DPR, rr=(22+br*90)*DPR;
         ctx.strokeStyle='rgba(130,255,214,'+((1-br)*0.75).toFixed(3)+')'; ctx.lineWidth=(3.5*(1-br)+0.5)*DPR; ctx.beginPath(); ctx.arc(bx,by,rr,0,7); ctx.stroke(); }
@@ -798,6 +786,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       track.style.flexWrap='wrap'; track.style.overflowX='auto'; track.style.paddingBottom='10px';
       document.querySelector('.feat-pin').style.height='auto';
       document.querySelector('.feat-pin').style.padding='90px 0';
+    });
+
+    /* #who text slides up (hero-style) when the pilot dot enters the block */
+    mm.add('(min-width:901px)',function(){
+      gsap.set('#who .rline',{yPercent:120});
+      gsap.set('#who .fade-up',{opacity:0,y:26});
+      var whoTl=gsap.timeline({paused:true});
+      whoTl.fromTo('#who .rline',{yPercent:120},{yPercent:0,duration:.9,stagger:.12,ease:'power4.out'})
+           .fromTo('#who .fade-up',{opacity:0,y:26},{opacity:1,y:0,duration:.6,stagger:.05,ease:'power2.out'},'-=.55');
+      window.__whoReveal=function(show){ window.__whoShown=show; if(show)whoTl.play(); else whoTl.reverse(); };
     });
 
     ScrollTrigger.refresh();
