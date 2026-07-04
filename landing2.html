@@ -632,7 +632,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       }
       st.p=[W/2,H*0.5]; return st;
     }
-    var trail=[], trailA=[], trailB=[], lastSY=-1, orbA=0, pt0=null, STEP=5, MAXLEN=74, curScale=1, burstT=99, burstP=[0,0], phoneFT=99, phoneWas=false, phoneEntered=false, headWas=false, blockWas=false, waveStarted=false, pbBurstT=99, pbBurstP=[0,0], inBlockWas=false;
+    var trail=[], trailA=[], trailB=[], lastSY=-1, orbA=0, pt0=null, STEP=5, MAXLEN=74, curScale=1, burstT=99, burstP=[0,0], phoneFT=99, phoneWas=false, phoneEntered=false, headWas=false, blockWas=false, waveStarted=false, pbBurstT=99, pbBurstP=[0,0], inBlockWas=false, followX=null, followY=null;
     function pushArr(tr,p,maxL){
       if(!tr.length){ tr.push(p); return tr; }
       var l=tr[tr.length-1], dx=p[0]-l[0], dy=p[1]-l[1], d=Math.sqrt(dx*dx+dy*dy);
@@ -693,7 +693,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       else if((st.beforeBlock||!st.headLit) && (blockWas||waveStarted)){ if(blockWas&&window.__blockReveal) window.__blockReveal(false); blockWas=false; waveStarted=false; }
       if(dsc){ if(W>900){ var aT2=(asm?asm.offsetTop:0), aE2=(window.__asmEnd||9e9); if(sy<aE2){ var pg2=(sy-aT2)/Math.max(1,aE2-aT2); dsc.style.opacity=cl((pg2-0.05)/0.06,0,1); } else dsc.style.opacity=1; } else dsc.style.opacity=1; }
       var want=((!moving||sy<6)&&!st.portals&&!st.inGlobe)?1:0; orbA+=(want-orbA)*0.06;
-      var amp=(sy<30?44:24)*orbA, hx=st.p[0]+Math.sin(tnow*1.15)*amp, hy=st.p[1]+Math.sin(tnow*2.3)*2.2*orbA;
+      /* smooth follower: the dot keeps gliding to its target after the scroll stops (no hard stop) */
+      var tgx=st.p[0], tgy=st.p[1]; if(followX===null){followX=tgx;followY=tgy;}
+      var fk=Math.min(1,dt*6); followX+=(tgx-followX)*fk; followY+=(tgy-followY)*fk;
+      var amp=(sy<30?44:9)*orbA, hx=followX+Math.sin(tnow*1.15)*amp, hy=followY+Math.sin(tnow*2.3)*2.2*orbA;
       var prevLit=window.__globeLit; window.__globeLit=st.lit;
       if(!prevLit && st.lit){ burstT=0; burstP=[hx,hy]; }
       if(burstT<1) burstT+=dt*2.0;
