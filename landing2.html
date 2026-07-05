@@ -556,7 +556,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     function lp(a,b,t){return a+(b-a)*t;}
     function qb(p0,p1,p2,t){var u=1-t;return [u*u*p0[0]+2*u*t*p1[0]+t*t*p2[0], u*u*p0[1]+2*u*t*p1[1]+t*t*p2[1]];}
     function cb(p0,p1,p2,p3,t){var u=1-t;return [u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0], u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]];}
-    function contour(L,R,eY,MY,loc){ if(loc<0.22)return[L,lp(MY,eY,loc/0.22)]; if(loc<0.78)return[lp(L,R,(loc-0.22)/0.56),eY]; return[R,lp(eY,MY,(loc-0.78)/0.22)]; }
+    function contour(L,R,eY,MY,loc){
+      var rad=22, up=(eY<MY)?1:-1;                      /* follow the card's rounded corners (border-radius 22) */
+      var vSide=Math.abs(MY-(eY+up*rad)), hEdge=(R-rad)-(L+rad), arc=rad*Math.PI/2;
+      var total=vSide*2+hEdge+arc*2, d=cl(loc,0,1)*total;
+      if(d<vSide) return [L, lp(MY, eY+up*rad, d/vSide)]; d-=vSide;
+      if(d<arc){ var a=d/arc*(Math.PI/2); return [L+rad-Math.cos(a)*rad, eY+up*rad-up*Math.sin(a)*rad]; } d-=arc;
+      if(d<hEdge) return [lp(L+rad,R-rad,d/hEdge), eY]; d-=hEdge;
+      if(d<arc){ var a2=d/arc*(Math.PI/2); return [R-rad+Math.sin(a2)*rad, eY+up*rad-up*Math.cos(a2)*rad]; } d-=arc;
+      return [R, lp(eY+up*rad, MY, cl(d/vSide,0,1))];
+    }
     function back(t){ var s=1.9; t=cl(t,0,1); var u=t-1; return 1+u*u*((s+1)*u+s); }
     var asm=document.getElementById('asm'), device=document.getElementById('device'), gcv=document.getElementById('globeCv'), send=document.getElementById('send'), dsc=device?device.querySelector('.dev-screen'):null, logoEl=document.querySelector('.logo'), tnow=0;
     function state(sy){
@@ -634,7 +643,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       }
       st.p=[W/2,H*0.5]; return st;
     }
-    var trail=[], trailA=[], trailB=[], lastSY=-1, orbA=0, pt0=null, STEP=5, MAXLEN=74, curScale=1, burstT=99, burstP=[0,0], phoneFT=99, phoneWas=false, phoneEntered=false, headWas=false, blockWas=false, waveStarted=false, pbBurstT=99, pbBurstP=[0,0], inBlockWas=false, followX=null, followY=null;
+    var trail=[], trailA=[], trailB=[], lastSY=-1, orbA=0, pt0=null, STEP=5, MAXLEN=74, curScale=1, burstT=99, burstP=[0,0], phoneFT=99, phoneWas=false, phoneEntered=false, headWas=false, blockWas=false, waveStarted=false, pbBurstT=99, pbBurstP=[0,0], inBlockWas=false, followX=null, followY=null, pilotPrevSY=0;
     function pushArr(tr,p,maxL){
       if(!tr.length){ tr.push(p); return tr; }
       var l=tr[tr.length-1], dx=p[0]-l[0], dy=p[1]-l[1], d=Math.sqrt(dx*dx+dy*dy);
@@ -690,14 +699,19 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       inBlockWas=!!st.inBlock;
       if(pbBurstT<1) pbBurstT+=dt*1.05;
       /* block content appears ONLY after the wave has run ~40% — independent of whether the dot is still inside */
-      var wantBlk=waveStarted && pbBurstT>0.4;
+      var pbb2=document.querySelector('.pb'), pbr2=pbb2?pbb2.getBoundingClientRect():null;
+      var pbVis=pbr2 && pbr2.top<H*0.85 && pbr2.bottom>H*0.15;
+      var goingUp=sy<pilotPrevSY-0.5; pilotPrevSY=sy;
+      /* down: reveal only after the wave; up: reveal as soon as the block is in view; hide only once it leaves view */
+      var wantBlk=(waveStarted && pbBurstT>0.4) || (goingUp && pbVis);
       if(wantBlk && !blockWas){ if(window.__blockReveal) window.__blockReveal(true); blockWas=true; }
-      else if((st.beforeBlock||!st.headLit) && (blockWas||waveStarted)){ if(blockWas&&window.__blockReveal) window.__blockReveal(false); blockWas=false; waveStarted=false; }
+      else if(!pbVis && blockWas){ if(window.__blockReveal) window.__blockReveal(false); blockWas=false; waveStarted=false; }
       if(dsc){ if(W>900){ var aT2=(asm?asm.offsetTop:0), aE2=(window.__asmEnd||9e9); if(sy<aE2){ var pg2=(sy-aT2)/Math.max(1,aE2-aT2); dsc.style.opacity=cl((pg2-0.05)/0.06,0,1); } else dsc.style.opacity=1; } else dsc.style.opacity=1; }
       var want=((!moving||sy<6)&&!st.portals&&!st.inGlobe)?1:0; orbA+=(want-orbA)*0.06;
       /* smooth follower: the dot keeps gliding to its target after the scroll stops (no hard stop) */
       var tgx=st.p[0], tgy=st.p[1]; if(followX===null){followX=tgx;followY=tgy;}
-      var fk=Math.min(1,dt*6); followX+=(tgx-followX)*fk; followY+=(tgy-followY)*fk;
+      if(st.scale===0){ followX=tgx; followY=tgy; }   /* invisible → keep follower ON target so it appears at the right spot, not flying in from afar */
+      else { var fk=Math.min(1,dt*6); followX+=(tgx-followX)*fk; followY+=(tgy-followY)*fk; }
       var amp=(sy<30?44:9)*orbA, hx=followX+Math.sin(tnow*1.15)*amp, hy=followY+Math.sin(tnow*2.3)*2.2*orbA;
       var prevLit=window.__globeLit; window.__globeLit=st.lit;
       if(!prevLit && st.lit){ burstT=0; burstP=[hx,hy]; }
