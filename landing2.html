@@ -196,8 +196,10 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 .pb-only{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--mint);border:1px solid var(--tline);border-radius:5px;padding:1px 6px;margin-left:8px;vertical-align:middle;text-transform:uppercase}
 
 /* CTA */
-.cta{background:linear-gradient(155deg,var(--mint),var(--mint-dd));border-radius:28px;padding:78px 40px;text-align:center;position:relative;overflow:hidden;width:100%;transition:box-shadow .55s ease}
-.cta.lit{box-shadow:0 0 0 2px rgba(230,255,244,.6),0 0 70px rgba(52,224,161,.45),0 0 130px rgba(52,224,161,.22)}
+.cta{background:var(--surf);border:1px solid var(--line);border-radius:28px;padding:78px 40px;text-align:center;position:relative;overflow:hidden;width:100%;transition:background .55s ease,border-color .55s ease,box-shadow .55s ease}
+.cta.lit{background:linear-gradient(155deg,var(--mint),var(--mint-dd));border-color:transparent;box-shadow:0 0 70px rgba(52,224,161,.30),0 0 130px rgba(52,224,161,.15)}
+.cta .grain,.cta .rd,.cta h2,.cta p,.cta .hero-cta{opacity:0;transition:opacity .55s ease}
+.cta.lit .grain,.cta.lit .rd,.cta.lit h2,.cta.lit p,.cta.lit .hero-cta{opacity:1}
 .cta .grain{position:absolute;inset:0;background-image:radial-gradient(circle at 25% 20%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
 .cta .rd{position:absolute;border:2px solid rgba(4,20,13,.1);border-radius:50%}
 .cta .rd.a{width:300px;height:300px;top:-130px;right:-60px}.cta .rd.b{width:220px;height:220px;bottom:-120px;left:-40px}
@@ -390,7 +392,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <!-- CTA -->
 <section class="scene" id="cta">
   <div class="wrap">
-    <div class="cta reveal">
+    <div class="cta">
       <div class="grain"></div><div class="rd a"></div><div class="rd b"></div>
       <h2>Open your account in 5 minutes</h2>
       <p>The US, Europe and a crypto wallet — all in one place. Get started now.</p>
@@ -619,31 +621,36 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var pb=pbEl.getBoundingClientRect();
         var lc=(track&&track.children.length)?track.children[track.children.length-1].getBoundingClientRect():{left:W*0.68,width:W*0.18,bottom:H*0.52};
         var ctaR=ctaEl?ctaEl.getBoundingClientRect():{top:H*2,left:0,width:W,height:0}, ctaMid=ctaR.top+ctaR.height/2;
-        if(ctaMid>H*0.62){
-          /* --- PB PHASE: dot descends LINEARLY with scroll as the block passes; crosses in/out of the block --- */
-          var pbCx=pb.left+pb.width*0.5;
-          var featEnd=window.__featEnd||0;
-          var blockProg=cl((sy-featEnd)/(H*1.5),0,1);   /* linear with scroll from the end of the feature pin — no dead zone */
-          var dotY=lp(H*0.72, H+140, blockProg);   /* starts at the bottom of the last feature card, glides straight down */
-          var lacc=track.children[N-1].getBoundingClientRect(), xt=cl(blockProg/0.4,0,1); xt=xt*xt*(3-2*xt);
-          var px=lp(lacc.left+lacc.width*0.5, pbCx, xt);   /* X starts under the last card, eases to block-center as it descends */
+        var pbCx=pb.left+pb.width*0.5;
+        var featEnd=window.__featEnd||0;
+        var blockProg=cl((sy-featEnd)/(H*1.5),0,1);   /* linear with scroll from the end of the feature pin — no dead zone */
+        var dotY=lp(H*0.72, H+140, blockProg);   /* starts at the bottom of the last feature card, glides straight down */
+        var lacc=track.children[N-1].getBoundingClientRect();
+        if(dotY <= pb.bottom+60){
+          /* --- PB PHASE: dot descends LINEARLY through #who --- */
+          var xt=cl(blockProg/0.4,0,1); xt=xt*xt*(3-2*xt);
+          var px=lp(lacc.left+lacc.width*0.5, pbCx, xt);   /* X starts under the last card, eases to block-center */
           st.p=[px, dotY];
           st.inBlock=(dotY>pb.top && dotY<pb.bottom);
-          /* invisible while still within the cards area; appears only once it clears the cards' bottom; hidden again inside the block */
-          st.scale=(st.inBlock || dotY<=lacc.bottom) ? 0 : 1;
+          st.scale=(st.inBlock || dotY<=lacc.bottom) ? 0 : 1;   /* invisible within cards area + inside the block */
           st.beforeBlock=(dotY<=pb.top);
-          /* headline reveals ~20% before the dot reaches the block top */
           st.headLit=(blockProg>=0.26);
           return st;
         }
-        /* CTA + FOOTER — kept working; to be reworked block-by-block next */
-        var ctaCenter=[ctaR.left+ctaR.width/2, ctaMid], footR=footEl?footEl.getBoundingClientRect():ctaR;
-        if(footR.top>H*0.66){ st.p=ctaCenter; st.ctaLit=true; return st; }
-        st.p=[W*0.5,cl(footR.top+footR.height*0.4,H*0.28,H*0.82)]; st.footOrbit=true; return st;
+        /* --- CTA PHASE: dot has cleared #who; travels the gap (invisible) then passes through CTA (black until touched) --- */
+        var ctaBox=document.querySelector('#cta .cta'), cbr=ctaBox?ctaBox.getBoundingClientRect():ctaR;
+        var ctaCx=cbr.left+cbr.width*0.5;
+        var ctaProg=cl((H-cbr.top)/Math.max(1,H+cbr.height),0,1);   /* 0 CTA enters bottom, 1 CTA exits top — linear with scroll */
+        var cdotY=lp(cbr.top-60, cbr.bottom+60, ctaProg);   /* descends relative to CTA: from just above, through it, to below */
+        st.p=[ctaCx, cdotY];
+        st.inCta=(cdotY>cbr.top && cdotY<cbr.bottom);
+        st.scale=st.inCta ? 0 : 1;   /* visible approaching + below, invisible inside CTA */
+        st.beforeCta=(cdotY<=cbr.top);
+        return st;
       }
       st.p=[W/2,H*0.5]; return st;
     }
-    var trail=[], trailA=[], trailB=[], lastSY=-1, orbA=0, pt0=null, STEP=5, MAXLEN=74, curScale=1, burstT=99, burstP=[0,0], phoneFT=99, phoneWas=false, phoneEntered=false, headWas=false, blockWas=false, waveStarted=false, pbBurstT=99, pbBurstP=[0,0], inBlockWas=false, followX=null, followY=null, pilotPrevSY=0;
+    var trail=[], trailA=[], trailB=[], lastSY=-1, orbA=0, pt0=null, STEP=5, MAXLEN=74, curScale=1, burstT=99, burstP=[0,0], phoneFT=99, phoneWas=false, phoneEntered=false, headWas=false, blockWas=false, waveStarted=false, pbBurstT=99, pbBurstP=[0,0], inBlockWas=false, followX=null, followY=null, pilotPrevSY=0, ctaBurstT=99, ctaBurstP=[0,0], ctaWaveStarted=false, ctaWas=false, inCtaWas=false;
     function pushArr(tr,p,maxL){
       if(!tr.length){ tr.push(p); return tr; }
       var l=tr[tr.length-1], dx=p[0]-l[0], dy=p[1]-l[1], d=Math.sqrt(dx*dx+dy*dy);
@@ -687,7 +694,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     function pframe(ts){ if(pt0===null)pt0=ts; var dt=(ts-pt0)/1000; tnow+=dt; pt0=ts;
       var sy=window.scrollY, moving=Math.abs(sy-lastSY)>0.6; lastSY=sy;
       var st=state(sy);
-      var ctaBox=document.querySelector('#cta .cta'); if(ctaBox) ctaBox.classList.toggle('lit',!!st.ctaLit);
       if(st.inPhone && !phoneWas) phoneFT=0; phoneWas=st.inPhone;
       if(st.inPhone) phoneEntered=true;
       if(phoneFT<1.3) phoneFT+=dt/0.7;
@@ -706,6 +712,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       var wantBlk=(waveStarted && pbBurstT>0.4) || (goingUp && pbVis);
       if(wantBlk && !blockWas){ if(window.__blockReveal) window.__blockReveal(true); blockWas=true; }
       else if(!pbVis && blockWas){ if(window.__blockReveal) window.__blockReveal(false); blockWas=false; waveStarted=false; }
+      /* CTA: wave on touch + light up (same logic as #who) */
+      if(st.inCta && !inCtaWas){ ctaBurstT=0; ctaBurstP=[st.p[0],st.p[1]]; ctaWaveStarted=true; }
+      inCtaWas=!!st.inCta;
+      if(ctaBurstT<1) ctaBurstT+=dt*1.05;
+      var ctaB=document.querySelector('#cta .cta'), ctaBr=ctaB?ctaB.getBoundingClientRect():null;
+      var ctaVis=ctaBr && ctaBr.top<H*0.85 && ctaBr.bottom>H*0.15;
+      var wantCta=(ctaWaveStarted && ctaBurstT>0.4) || (goingUp && ctaVis);
+      if(wantCta && !ctaWas){ if(ctaB) ctaB.classList.add('lit'); ctaWas=true; }
+      else if(!ctaVis && ctaWas){ if(ctaB) ctaB.classList.remove('lit'); ctaWas=false; ctaWaveStarted=false; }
       if(dsc){ if(W>900){ var aT2=(asm?asm.offsetTop:0), aE2=(window.__asmEnd||9e9); if(sy<aE2){ var pg2=(sy-aT2)/Math.max(1,aE2-aT2); dsc.style.opacity=cl((pg2-0.05)/0.06,0,1); } else dsc.style.opacity=1; } else dsc.style.opacity=1; }
       var want=((!moving||sy<6)&&!st.portals&&!st.inGlobe)?1:0; orbA+=(want-orbA)*0.06;
       /* smooth follower: the dot keeps gliding to its target after the scroll stops (no hard stop) */
@@ -746,6 +761,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           var wg=ctx.createRadialGradient(fcx,fcy,0,fcx,fcy,fR);
           wg.addColorStop(0,'rgba(52,224,161,'+wa.toFixed(3)+')'); wg.addColorStop(0.62,'rgba(52,224,161,'+(wa*0.35).toFixed(3)+')'); wg.addColorStop(1,'rgba(52,224,161,0)');
           ctx.fillStyle=wg; ctx.beginPath(); ctx.arc(fcx,fcy,fR,0,7); ctx.fill();
+          ctx.restore(); } }
+      if(ctaBurstT<1){ var ce=document.querySelector('#cta .cta');
+        if(ce){ var cr=ce.getBoundingClientRect(), cfx=ctaBurstP[0]*DPR, cfy=ctaBurstP[1]*DPR;
+          var cfR=Math.max(1,ctaBurstT*Math.max(cr.width,cr.height)*1.75*DPR), cwa=0.26*(1-Math.abs(ctaBurstT-0.5)*1.7); if(cwa<0)cwa=0;
+          ctx.save(); ctx.beginPath();
+          var crl=cr.left*DPR, crt=cr.top*DPR, crw=cr.width*DPR, crh=cr.height*DPR, crr=28*DPR;
+          if(ctx.roundRect) ctx.roundRect(crl,crt,crw,crh,crr); else ctx.rect(crl,crt,crw,crh);
+          ctx.clip();
+          var cwg=ctx.createRadialGradient(cfx,cfy,0,cfx,cfy,cfR);
+          cwg.addColorStop(0,'rgba(52,224,161,'+cwa.toFixed(3)+')'); cwg.addColorStop(0.62,'rgba(52,224,161,'+(cwa*0.35).toFixed(3)+')'); cwg.addColorStop(1,'rgba(52,224,161,0)');
+          ctx.fillStyle=cwg; ctx.beginPath(); ctx.arc(cfx,cfy,cfR,0,7); ctx.fill();
           ctx.restore(); } }
       if(st.card){ drawContour(st.card); }
       else drawComet(trail, hx, hy, cl(curScale,0,1));
