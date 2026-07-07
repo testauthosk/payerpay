@@ -629,8 +629,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         /* Headline stays revealed once past the trigger (holds through the CTA phase below);
            it only retracts on the way back up, when the dot flies out above blockProg 0.26. */
         st.headLit=(blockProg>=0.26);
-        if(dotY <= pb.bottom+60){
-          /* --- PB PHASE: dot descends LINEARLY through #who --- */
+        var ctaBox=document.querySelector('#cta .cta'), cbr=ctaBox?ctaBox.getBoundingClientRect():ctaR;
+        var ctaCx=cbr.left+cbr.width*0.5;
+        if(dotY <= pb.bottom){
+          /* --- PB PHASE: dot descends LINEARLY through #who, exits at its bottom edge --- */
           var xt=cl(blockProg/0.4,0,1); xt=xt*xt*(3-2*xt);
           var px=lp(lacc.left+lacc.width*0.5, pbCx, xt);   /* X starts under the last card, eases to block-center */
           st.p=[px, dotY];
@@ -639,9 +641,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           st.beforeBlock=(dotY<=pb.top);
           return st;
         }
-        /* --- CTA PHASE: dot has cleared #who; travels the gap (invisible) then passes through CTA (black until touched) --- */
-        var ctaBox=document.querySelector('#cta .cta'), cbr=ctaBox?ctaBox.getBoundingClientRect():ctaR;
-        var ctaCx=cbr.left+cbr.width*0.5;
+        /* --- GAP PHASE: the dot has left #who — glide it straight down the gap to the top of
+           the CTA, always visible. Interpolated in ABSOLUTE Y so it never teleports. --- */
+        var landAt=H*0.62;
+        var gp=cl((H - cbr.top)/Math.max(1,H - landAt), 0, 1);   /* 0 when CTA at viewport bottom, 1 when its top reaches landAt */
+        if(gp < 1){
+          st.p=[lp(pbCx, ctaCx, gp), lp(pb.bottom+sy, cbr.top+sy, gp) - sy];
+          st.scale=1;
+          st.beforeCta=true;
+          return st;
+        }
+        /* --- CTA PHASE: dot passes through CTA (black until touched) --- */
         var ctaProg=cl((H-cbr.top)/Math.max(1,H+cbr.height),0,1);   /* 0 CTA enters bottom, 1 CTA exits top — linear with scroll */
         var cdotY=lp(cbr.top-60, cbr.bottom+60, ctaProg);   /* descends relative to CTA: from just above, through it, to below */
         st.p=[ctaCx, cdotY];
