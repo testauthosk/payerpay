@@ -148,9 +148,9 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 .stepbars{display:none}
 .cryp-count{position:absolute;left:50%;transform:translateX(-50%);top:calc(78% + 62px);font-family:var(--mono);font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--mint);z-index:6;opacity:0;white-space:nowrap}
 #coinField{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
-.tap-hint{position:absolute;right:16px;top:60%;z-index:6;display:none;flex-direction:column;align-items:center;gap:2px;opacity:0;pointer-events:none}
-.tap-hint span{font-family:'Caveat',cursive;font-size:23px;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.02em;transform:rotate(-6deg)}
-.tap-hint svg{width:34px;height:38px;stroke:rgba(52,224,161,.9);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.tap-hint{position:absolute;right:17%;top:60%;z-index:6;display:none;flex-direction:column;align-items:center;gap:1px;opacity:0;pointer-events:none}
+.tap-hint span{font-family:'Caveat',cursive;font-size:24px;font-weight:600;color:rgba(255,255,255,.88);letter-spacing:.02em;transform:rotate(-6deg)}
+.tap-hint svg{width:42px;height:46px;stroke:rgba(52,224,161,.92);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;fill:none}
 @media (max-width:900px){ #coinField{display:block} .tap-hint{display:flex} }
 .coin{position:absolute;width:52px;height:52px;z-index:4;opacity:0}
 .coin circle{fill:#060807;stroke:var(--mint);stroke-width:2}
@@ -418,7 +418,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <img class="coin" id="cn2" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/btc.svg" alt="BTC" style="left:calc(50% + 40px);top:calc(50% - 240px)" />
     <img class="coin" id="cn3" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/eth.svg" alt="ETH" style="left:calc(50% - 90px);top:calc(50% - 250px)" />
     <div id="coinField"></div>
-    <div class="tap-hint" id="tapHint"><span>tap</span><svg viewBox="0 0 56 62"><path d="M46 8 C 40 26, 30 40, 14 52"/><path d="M22 46 L 13 53 L 24 55"/></svg></div>
+    <div class="tap-hint" id="tapHint"><span>tap</span><svg viewBox="0 0 56 62"><path d="M44 6 C 42 24, 34 40, 16 53"/><path d="M16 53 L 27 45"/><path d="M16 53 L 25 59"/></svg></div>
     <div class="cryp-count" id="crypCount">120+ cryptocurrencies supported</div>
     <div class="asm-word" id="asmWord"><span class="n">01</span><span id="asmWordTxt">Sign up</span></div>
     <div class="stepbars" id="stepBars"><span class="sb-th" id="sbTh"></span><i></i><i></i><i></i><i></i><i></i></div>
