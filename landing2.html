@@ -240,6 +240,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .device{width:250px;height:500px}
   .flycard{width:170px;height:108px}
   .fc-us{left:calc(50% - 190px)}.fc-eu{right:calc(50% - 190px)}
+  .scr{padding:28px 18px}
+  .donebal .bg{font-size:30px}
+  .scr-title{margin-bottom:14px}
 }
 @media (max-width:560px){
   .hero-sub{flex-direction:column;align-items:flex-start}
@@ -865,13 +868,26 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     });
 
     mm.add('(max-width:900px)',function(){
-      gsap.set(['#scrDone'],{opacity:1});
-      gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry'],{opacity:0});
+      /* Mobile scrollytelling: same pinned phone story as desktop (screens + clock + step),
+         but the flycards/coins stay off (they are desktop decoration that would overflow). */
+      gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry','#scrDone'],{opacity:0,y:18});
       gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
-      setClock(1); setStep('5m','Ready in 5 minutes');
-      ScrollTrigger.create({trigger:'#asm',start:'top 60%',onEnter:function(){
-        gsap.to('#device',{y:-8,duration:2.6,repeat:-1,yoyo:true,ease:'sine.inOut'});
-      }});
+      window.__asmEnd=(asm?asm.offsetTop:0)+2600;
+      var tl=gsap.timeline({scrollTrigger:{trigger:'#asm',start:'top top',end:'+=2600',scrub:1,pin:'.asm-stage',anticipatePin:1,
+        onRefresh:function(self){window.__asmEnd=self.end;},
+        onUpdate:function(s){var p=s.progress; setClock(p);
+          if(p<0.2)setStep('01','Sign up'); else if(p<0.4)setStep('02','Verify'); else if(p<0.6)setStep('03','US + EU accounts'); else if(p<0.8)setStep('04','Crypto wallet'); else setStep('5m','Done'); }}});
+      tl.to('#scrReg',{opacity:1,y:0,duration:1},0.1)
+        .to('#scrReg',{opacity:0,y:-18,duration:.7},1.9)
+        .fromTo('#scrId',{opacity:0,y:18},{opacity:1,y:0,duration:.8},2.0)
+        .fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.1,ease:'power1.inOut',yoyo:true,repeat:1},2.2)
+        .to('#scrId',{opacity:0,y:-18,duration:.7},3.8)
+        .fromTo('#scrAcc',{opacity:0,y:18},{opacity:1,y:0,duration:.8},3.9)
+        .to('#scrAcc',{opacity:0,y:-18,duration:.7},5.6)
+        .fromTo('#scrCry',{opacity:0,y:18},{opacity:1,y:0,duration:.8},5.7)
+        .to('#scrCry',{opacity:0,y:-18,duration:.7},7.4)
+        .fromTo('#scrDone',{opacity:0,scale:.92},{opacity:1,scale:1,duration:.9,ease:'back.out(1.3)'},7.5)
+        .fromTo('#scrDone .st',{opacity:0,y:14},{opacity:1,y:0,duration:.6},8.1);
     });
 
     gsap.utils.toArray('.reveal').forEach(function(el){
