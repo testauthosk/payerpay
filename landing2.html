@@ -906,15 +906,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
       gsap.set(scr,{opacity:0,y:16});
       gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
-      var idx=-1, tmr=null, live=false;
+      var idx=-1, tmr=null;
       function show(i){ if(i===idx)return;
         scr.forEach(function(s,k){ if(k!==i) gsap.to(s,{opacity:0,y:-14,duration:.4,overwrite:true}); });
         gsap.fromTo(scr[i],{opacity:0,y:16},{opacity:1,y:0,duration:.5,overwrite:true});
         if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1});
         setStep(stp[i][0],stp[i][1]); setClock(i/(scr.length-1)); idx=i; }
-      function start(){ if(live)return; live=true; if(idx<0)show(0); tmr=setInterval(function(){show((idx+1)%scr.length);},2200); }
-      function stop(){ live=false; if(tmr)clearInterval(tmr); }
-      ScrollTrigger.create({trigger:'#asm',start:'top 85%',end:'bottom 15%',onToggle:function(s){ s.isActive?start():stop(); }});
+      /* Start immediately and keep looping — robust (no dependence on a scroll trigger firing). */
+      show(0);
+      tmr=setInterval(function(){show((idx+1)%scr.length);},2200);
+      return function(){ if(tmr)clearInterval(tmr); };
     });
 
     gsap.utils.toArray('.reveal').forEach(function(el){
