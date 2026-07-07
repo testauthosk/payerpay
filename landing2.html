@@ -117,6 +117,8 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 .frow .fl{height:8px;border-radius:4px;background:var(--line2);flex:1;max-width:120px}
 .fbtn{height:46px;border-radius:12px;background:var(--mint);color:var(--on-mint);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-top:6px}
 .idcard{margin:8px 0;height:150px;border-radius:16px;background:linear-gradient(140deg,#101413,#0A0C0B);border:1px solid #23281F;position:relative;padding:16px}
+.kyc-ok{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;background:rgba(6,12,9,.88);border:1.5px solid var(--mint);box-shadow:0 0 26px rgba(52,224,161,.35);display:flex;align-items:center;justify-content:center;z-index:3;opacity:0}
+.kyc-ok svg{width:30px;height:30px;stroke:var(--mint);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .idcard .ph{width:52px;height:64px;border-radius:9px;background:var(--tint);border:1px solid var(--tline)}
 .idcard .l{height:7px;border-radius:4px;background:var(--line2);margin-top:8px}
 .scan{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--mint),transparent);box-shadow:0 0 14px var(--mint);top:10%}
@@ -276,7 +278,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .device{width:250px;height:500px}
   .flycard{width:170px;height:108px}
   .fc-us{left:calc(50% - 190px)}.fc-eu{right:calc(50% - 190px)}
-  .scr{padding:28px 18px;transition:opacity .45s ease,transform .45s ease}
+  .scr{padding:28px 18px;transition:opacity .6s ease,transform .6s ease}
+  /* clock and the giant step word were touching the phone; word is +40% (these are the steps —
+     they must read). Flycards sit LOWER so they don't cover the account rows on screen 3. */
+  .clock{top:76px;left:16px}
+  .asm-word{font-size:clamp(28px,8.9vw,36px);bottom:52px}
+  .fc-us{top:calc(50% + 92px)} /* +12px margin: the -7deg rotation lifts the bounding box ~10px */
+  .fc-eu{top:calc(50% + 100px)}
   .donebal .bg{font-size:30px}
   .scr-title{margin-bottom:14px}
 }
@@ -360,7 +368,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         </div>
         <div class="scr" id="scrId">
           <div class="scr-title">Verification · KYC</div>
-          <div class="idcard"><div class="ph"></div><div class="l" style="width:70%;margin-top:14px"></div><div class="l" style="width:50%"></div><div class="l" style="width:60%"></div><div class="scan" id="scanLine"></div></div>
+          <div class="idcard"><div class="ph"></div><div class="l" style="width:70%;margin-top:14px"></div><div class="l" style="width:50%"></div><div class="l" style="width:60%"></div><div class="scan" id="scanLine"></div><div class="kyc-ok" id="kycOk"><svg viewBox="0 0 24 24"><path d="M5 12l4.5 4.5L19 6.5"/></svg></div></div>
           <div style="display:flex;align-items:center;gap:8px;color:var(--mint);font-size:12px;font-weight:600;font-family:var(--mono)"><svg class="ic" style="width:15px;height:15px;stroke-width:2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg>Documents verified</div>
         </div>
         <div class="scr" id="scrAcc">
@@ -1034,19 +1042,28 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       var lastW=window.innerWidth;
       function onRs(){ if(window.innerWidth===lastW)return; lastW=window.innerWidth; measure(); }
       window.addEventListener('resize',onRs);
-      var idx=-1, lastP=-1, rafId=null;
+      var idx=-1, lastP=-1, rafId=null, coinFin=null, kycTw=null;
       function show(i){ if(i===idx)return;
         scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
         setStep(stp[i][0],stp[i][1]);
-        if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1});
-        /* side decor is back on mobile: US/EU cards fly in from the sides on the accounts step,
-           coins bounce in from above on the crypto step (they were desktop-only after the redesign) */
-        if(i===2){ gsap.fromTo('#fcUs',{autoAlpha:0,x:-110,y:-70,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:.85,ease:'back.out(1.3)',overwrite:'auto'});
-          gsap.fromTo('#fcEu',{autoAlpha:0,x:110,y:70,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:.85,delay:.12,ease:'back.out(1.3)',overwrite:'auto'}); }
+        /* the active screen's content CASCADES in (rows rise one by one) — richer than a flat fade */
+        gsap.fromTo(scrs[i].children,{opacity:0,y:14},{opacity:1,y:0,stagger:.1,duration:.55,delay:.12,ease:'power2.out',overwrite:'auto'});
+        /* verification: scan pass, then a big mint check in a circle pops (standard KYC affordance) */
+        if(kycTw){kycTw.kill();kycTw=null;}
+        if(i===1){ gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:.9,ease:'power1.inOut',yoyo:true,repeat:1});
+          kycTw=gsap.fromTo('#kycOk',{autoAlpha:0,scale:.3},{autoAlpha:1,scale:1,duration:.65,ease:'back.out(1.9)',delay:1.55}); }
+        else gsap.to('#kycOk',{autoAlpha:0,duration:.25,overwrite:'auto'});
+        /* accounts: US/EU cards fly in from the sides (kept LOW so the account rows stay readable) */
+        if(i===2){ gsap.fromTo('#fcUs',{autoAlpha:0,x:-110,y:60,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:.85,ease:'back.out(1.3)',overwrite:'auto'});
+          gsap.fromTo('#fcEu',{autoAlpha:0,x:110,y:110,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:.85,delay:.12,ease:'back.out(1.3)',overwrite:'auto'}); }
         else gsap.to(['#fcUs','#fcEu'],{autoAlpha:0,duration:.35,overwrite:'auto'});
-        if(i===3){ gsap.fromTo('#cn1',{autoAlpha:0,y:-140},{autoAlpha:1,y:0,duration:.7,ease:'bounce.out',overwrite:'auto'});
-          gsap.fromTo('#cn2',{autoAlpha:0,y:-170},{autoAlpha:1,y:0,duration:.8,delay:.1,ease:'bounce.out',overwrite:'auto'});
-          gsap.fromTo('#cn3',{autoAlpha:0,y:-190},{autoAlpha:1,y:0,duration:.9,delay:.18,ease:'bounce.out',overwrite:'auto'}); }
+        /* crypto: coins bounce in, pause, then SINK into the phone — the animation completes
+           instead of freezing above the device */
+        if(coinFin){coinFin.kill();coinFin=null;}
+        if(i===3){ gsap.fromTo('#cn1',{autoAlpha:0,y:-140,scale:1},{autoAlpha:1,y:0,scale:1,duration:.7,ease:'bounce.out',overwrite:'auto'});
+          gsap.fromTo('#cn2',{autoAlpha:0,y:-170,scale:1},{autoAlpha:1,y:0,scale:1,duration:.8,delay:.1,ease:'bounce.out',overwrite:'auto'});
+          gsap.fromTo('#cn3',{autoAlpha:0,y:-190,scale:1},{autoAlpha:1,y:0,scale:1,duration:.9,delay:.18,ease:'bounce.out',overwrite:'auto'});
+          coinFin=gsap.to(['#cn1','#cn2','#cn3'],{autoAlpha:0,y:'+=130',scale:.45,duration:.6,stagger:.08,delay:1.7,ease:'power2.in',onComplete:function(){coinFin=null;}}); }
         else gsap.to(['#cn1','#cn2','#cn3'],{autoAlpha:0,duration:.35,overwrite:'auto'});
         /* the mint drop FLOWS to the active bar: springy translate (overshoot bezier in CSS) plus a
            brief stretch mid-flight so it reads as liquid, not a jump */
@@ -1069,13 +1086,21 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var moving=lastSy>=0 && Math.abs(sy-lastSy)>0.8;
         if(moving && gStart===null){ gStart=lastSy; gStartIdx=Math.max(0,Math.min(SEG,Math.round(((lastSy-asmTop)/range)*SEG))); }
         still=moving?0:still+1; lastSy=sy;
-        if(!touching && gStart!==null && still>7 && rp>-0.02 && rp<1.02){
+        if(!touching && gStart!==null && still>7){
           var srp=(gStart-asmTop)/range, fromOutside=srp<-0.02||srp>1.02;
           var dir=sy>gStart?1:-1, moved=Math.abs(sy-gStart);
-          var tgt=fromOutside?Math.round(p*SEG):((moved>segPx*0.12)?Math.max(0,Math.min(SEG,gStartIdx+dir)):gStartIdx);
-          var ty=asmTop+tgt*segPx; gStart=null;
-          if(Math.abs(ty-sy)>2){ var o={v:sy};
-            tw=gsap.to(o,{v:ty,duration:.55,ease:'power3.out',onUpdate:function(){sr.scrollTop=o.v;},onComplete:function(){tw=null;},onInterrupt:function(){tw=null;}}); }
+          /* leaving the section is free ONLY from the boundary steps outward; any other gesture that
+             overshoots on momentum (owner: "по инерции пролистнуться может") is pulled back to
+             start±1, with a generous ±0.6-viewport catch zone past the section edges */
+          var exiting=!fromOutside && ((gStartIdx===SEG&&dir===1&&rp>1.0)||(gStartIdx===0&&dir===-1&&rp<0));
+          var inPull=fromOutside?(rp>-0.02&&rp<1.02):(rp>-0.6&&rp<1.6);
+          if(inPull && !exiting){
+            var tgt=fromOutside?Math.max(0,Math.min(SEG,Math.round(p*SEG))):((moved>segPx*0.12)?Math.max(0,Math.min(SEG,gStartIdx+dir)):gStartIdx);
+            var ty=asmTop+tgt*segPx;
+            if(Math.abs(ty-sy)>2){ var o={v:sy};
+              tw=gsap.to(o,{v:ty,duration:.55,ease:'power3.out',onUpdate:function(){sr.scrollTop=o.v;},onComplete:function(){tw=null;},onInterrupt:function(){tw=null;}}); }
+          }
+          gStart=null;
         }
         if(gStart!==null && still>40) gStart=null;
         rafId=requestAnimationFrame(loop); }
