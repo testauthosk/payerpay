@@ -95,7 +95,7 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 
 /* ===== ASSEMBLY (pinned scrub) ===== */
 #asm{position:relative;background:var(--bg)}
-.asm-stage{height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.asm-stage{height:100svh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .clock{position:absolute;top:clamp(92px,13vh,130px);left:clamp(20px,5vw,60px);display:flex;flex-direction:row;align-items:center;gap:14px;z-index:6}
 .clock .ring{position:relative;width:92px;height:92px;flex-shrink:0}
 .clock .ring svg{transform:rotate(-90deg)}
@@ -146,7 +146,7 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 img.coin{border-radius:50%;object-fit:cover}
 
 /* fullscreen scene */
-.scene{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden}
+.scene{min-height:100svh;display:flex;align-items:center;position:relative;overflow:hidden}
 .eyebrow{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--mint);margin-bottom:18px;display:inline-flex;align-items:center;gap:10px;text-transform:uppercase}
 .eyebrow::before{content:"";width:22px;height:1px;background:var(--tline)}
 h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-weight:800}
@@ -245,7 +245,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .pb-body{grid-template-columns:1fr}.pb{padding:32px 22px}
   .nav-links{display:none}.menu-tgl{display:flex}
   .nav-right .seg,.nav-right>.btn-primary{display:none}
-  #asm{height:200vh}
+  #asm{height:200svh}
   .asm-stage{position:sticky;top:0}
   #globeCv{width:min(260px,60%)}
   .globe-grid{gap:22px}
@@ -495,7 +495,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     var DPR=Math.min(window.devicePixelRatio||1,2);
     var S=460,R,cx,cy,tilt=-0.42;
     function sz(){ S=Math.max(240,Math.min(cv.clientWidth||460,460)); cv.width=Math.round(S*DPR); cv.height=Math.round(S*DPR); R=cv.width*0.34; cx=cv.width/2; cy=cv.height/2; }
-    sz(); window.addEventListener('resize',sz);
+    sz(); var lastGW=window.innerWidth;
+    window.addEventListener('resize',function(){ if(window.innerWidth===lastGW)return; lastGW=window.innerWidth; sz(); });
     var N=820,dots=[];
     for(var i=0;i<N;i++){ var y=1-(i/(N-1))*2, rr=Math.sqrt(1-y*y), th=i*2.399963; dots.push([Math.cos(th)*rr,y,Math.sin(th)*rr]); }
     /* real cities (all on land, spread across continents) so flights never go into the sea */
@@ -587,7 +588,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     var ctx=cv.getContext('2d');
     var DPR=Math.min(window.devicePixelRatio||1,2), W,H;
     function sz(){ W=window.innerWidth; H=window.innerHeight; cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); }
-    sz(); window.addEventListener('resize',sz);
+    sz(); var lastPW=window.innerWidth;
+    /* Only re-measure/realloc on a WIDTH change (orientation). iOS toolbar show/hide fires resize
+       with height-only change mid-scroll — reallocating the full-screen canvas then causes a flash
+       + forced reflow = the scroll-up jerk. Ignore height-only resizes. */
+    window.addEventListener('resize',function(){ if(window.innerWidth===lastPW)return; lastPW=window.innerWidth; sz(); });
     function cl(v,a,b){return v<a?a:(v>b?b:v);}
     function lp(a,b,t){return a+(b-a)*t;}
     function qb(p0,p1,p2,t){var u=1-t;return [u*u*p0[0]+2*u*t*p1[0]+t*t*p2[0], u*u*p0[1]+2*u*t*p1[1]+t*t*p2[1]];}
@@ -910,9 +915,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
       scrs.forEach(function(s){s.style.opacity='0';});
       gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
-      var aTop=0, range=1;
-      function measure(){ aTop=asm.offsetTop; range=Math.max(1,asm.offsetHeight-window.innerHeight); window.__asmEnd=aTop+asm.offsetHeight; }
-      measure(); window.addEventListener('resize',measure); ScrollTrigger.addEventListener('refresh',measure);
+      var aTop=0, range=1, stage=document.querySelector('.asm-stage');
+      /* range from the sticky STAGE height (stable), not window.innerHeight (which changes with the
+         iOS toolbar → would jump the progress on scroll-up). */
+      function measure(){ aTop=asm.offsetTop; range=Math.max(1,asm.offsetHeight-stage.offsetHeight); window.__asmEnd=aTop+asm.offsetHeight; }
+      measure(); var lastMW=window.innerWidth;
+      window.addEventListener('resize',function(){ if(window.innerWidth===lastMW)return; lastMW=window.innerWidth; measure(); });
+      ScrollTrigger.addEventListener('refresh',measure);
       var cur=-1, run=true, lastP=-1;
       function loop(){ if(!run)return;
         var p=Math.max(0,Math.min(1,(window.scrollY-aTop)/range));
