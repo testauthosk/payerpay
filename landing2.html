@@ -234,11 +234,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 /* responsive */
 @media (max-width:900px){
   .globe-grid{grid-template-columns:1fr;gap:40px}.globe-stage{order:-1}
-  .feat-track{padding-left:54px;padding-right:16px}
-  .fcard{flex-basis:260px;min-height:0;padding:24px}
+  .fcard{flex-basis:280px;min-height:0;padding:24px}
   .fcard h3{margin-top:16px}
   .fcard .no{margin-top:18px;padding-top:0}
-  .fcard.lit{border-color:rgba(52,224,161,.9);box-shadow:0 0 40px rgba(52,224,161,.28),inset 0 0 22px rgba(52,224,161,.06)}
+  .fcard .chip-ic,.fcard h3,.fcard p,.fcard .no{opacity:.1;transition:opacity .5s ease}
+  .fcard.lit .chip-ic,.fcard.lit h3,.fcard.lit p,.fcard.lit .no{opacity:1}
+  .fcard.lit{border-color:rgba(52,224,161,.85);box-shadow:0 0 34px rgba(52,224,161,.22),inset 0 0 20px rgba(52,224,161,.05)}
   .fcard.flash{animation:cardFlash .55s ease-out}
   .feat-prog{display:none}
   .pb-body{grid-template-columns:1fr}.pb{padding:32px 22px}
@@ -638,19 +639,22 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         if(window.matchMedia('(max-width:900px)').matches){
           var mFirst=track.children[0].getBoundingClientRect(), mLast=track.children[N-1].getBoundingClientRect();
           var pbEl0=document.querySelector('.pb'), pbr0=pbEl0?pbEl0.getBoundingClientRect():{top:H*2};
-          if(mFirst.top<H-40 && pbr0.top>H*0.055){
-            /* MOBILE: the dot rides down the left strip past the cards, lighting each; as #who nears
-               the top it glides to the #who entry (H*0.72) so it flows in without teleporting. */
-            var mfp=cl((H*0.46 - mFirst.top)/Math.max(1,mLast.bottom - mFirst.top),0,1);
-            var scanVp=lp(mFirst.top+sy, mLast.bottom+sy, mfp) - sy;
+          if(mFirst.top<H && pbr0.top>H*0.055){
+            /* MOBILE (desktop logic, vertical): dark cards; the dot rides a scan line down the CENTRE,
+               entering each card from the top (invisible inside, like the phone) and lighting it, then
+               reappearing in the gap. As #who nears it glides to the #who entry (no teleport). */
+            var scanY=H*0.42;
             var handoff=cl((H*0.78 - pbr0.top)/Math.max(1,H*0.78 - H*0.06),0,1);
-            var mdy=lp(scanVp, H*0.72, handoff);
-            st.p=[mFirst.left*0.5, mdy]; st.scale=1;   /* fly down the empty strip left of the cards */
+            var dvp=lp(scanY, H*0.72, handoff);
+            var inside=false, dotX=W*0.5;
             for(var cm=0;cm<N;cm++){ var card=track.children[cm], ccm=card.getBoundingClientRect();
-              var slit=(ccm.top + (ccm.bottom-ccm.top)*0.1) < mdy;   /* flash once the dot passes the block's top ~10% */
+              var slit=(ccm.top + (ccm.bottom-ccm.top)*0.1) < dvp;   /* light once its top ~10% passes the dot */
               if(slit && !card.classList.contains('lit')){ card.classList.add('flash'); (function(c){setTimeout(function(){c.classList.remove('flash');},560);})(card); }
               card.classList.toggle('lit',slit);
+              if(dvp>ccm.top && dvp<ccm.bottom){ inside=true; dotX=ccm.left+ccm.width*0.5; }
             }
+            st.p=[dotX, dvp];
+            st.scale=(inside && handoff<0.06) ? 0 : 1;   /* invisible while travelling inside a card */
             return st;
           }
           for(var cq=0;cq<N;cq++) track.children[cq].classList.remove('lit');
@@ -938,10 +942,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       /* No horizontal pin on mobile, so tell the dot where #feat ends (drives the #who phase). */
       var setFeatEnd=function(){var f=document.getElementById('feat');if(f)window.__featEnd=f.offsetTop+f.offsetHeight;};
       setFeatEnd(); ScrollTrigger.addEventListener('refresh',setFeatEnd);
-      /* Cards fade up as they scroll in — no longer just sitting there. */
-      gsap.utils.toArray('#featTrack .fcard').forEach(function(c){
-        gsap.fromTo(c,{opacity:0,y:30},{opacity:1,y:0,duration:.55,ease:'power2.out',scrollTrigger:{trigger:c,start:'top 90%'}});
-      });
     });
 
     /* #who text slides up (hero-style) when the pilot dot enters the block */
