@@ -709,6 +709,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
        position from the container; on desktop from the window as before. */
     var _dotSR=window.matchMedia('(max-width:900px)').matches?document.getElementById('scrollRoot'):null;
     var _stageEl=document.querySelector('.asm-stage');
+    /* zigzag card ignition: cards up to index k are LIT; a card lighting up for the first time
+       plays a black→colour content cascade (like the phone's first slide). Scrolling back up
+       un-lights and clears the inline styles so the CSS dark state returns. */
+    function mzLight(track,k){ for(var j=0;j<track.children.length;j++){ var c=track.children[j];
+      if(j<=k){ if(!c.classList.contains('lit')){ c.classList.add('lit'); c.classList.add('flash');
+          (function(cc){setTimeout(function(){cc.classList.remove('flash');},560);})(c);
+          if(window.gsap) gsap.fromTo(c.children,{opacity:0,y:12},{opacity:1,y:0,stagger:.08,duration:.45,ease:'power2.out',overwrite:'auto'}); } }
+      else if(c.classList.contains('lit')){ c.classList.remove('lit');
+        if(window.gsap){ gsap.killTweensOf(c.children); gsap.set(c.children,{clearProps:'opacity,transform'}); } } } }
     var DPR=Math.min(window.devicePixelRatio||1,2), W,H;
     function sz(){ W=window.innerWidth; H=window.innerHeight; cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); }
     sz(); var lastPW=window.innerWidth;
@@ -765,6 +774,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
              planet ~30% earlier along the path (owner request): short bridge + wide entry radius. */
           var gp=(sy-aEnd)/H;
           if(device){
+            /* anywhere in the globe zone the cards are guaranteed dark — this also un-lights them
+               when scrolling back up (all globe sub-phases return before the zigzag logic) */
+            var trz=document.getElementById('featTrack');
+            if(trz&&trz.children.length) mzLight(trz,-1);
             /* slow, visible journey (owner): emerges gently from the phone bottom, travels WITH the
                scrolling content (long bridge) and ignites the globe on arrival — the whole process
                spans ~1.45 viewports of scroll instead of rushing */
@@ -787,6 +800,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             var tr2=document.getElementById('featTrack');
             if(tr2 && tr2.children.length){ var mf2=tr2.children[0].getBoundingClientRect();
               if(mf2.top>H*0.42){ var g2=cl((H-mf2.top)/(H-H*0.42),0,1); g2=g2*g2*(3-2*g2);
+                /* still on approach → no card is lit yet (also un-lights them on scroll back up,
+                   since this branch returns before the zigzag logic runs) */
+                mzLight(tr2,-1);
                 /* a gentle arc into the TOP CENTRE of the first card (owner's sketch) */
                 st.p=[lp(G[0],mf2.left+mf2.width/2,g2)+Math.sin(g2*Math.PI)*24, lp(G[1]+gR*1.2, mf2.top+8, g2)];
                 st.scale=1; st.lit=true; return st; } }
@@ -820,32 +836,32 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           var mFirst=track.children[0].getBoundingClientRect(), mLast=track.children[N-1].getBoundingClientRect();
           var pbEl0=document.querySelector('.pb'), pbr0=pbEl0?pbEl0.getBoundingClientRect():{top:H*2};
           if(mFirst.top<H && pbr0.top>H*0.055){
-            /* MOBILE ZIGZAG (owner's sketch): cards alternate left/right; the firefly hides INSIDE
-               a card (like the phone), then HOPS to the next one along an outward arc — out of the
-               side facing the next card, into the next card's top centre. It enters card 1 through
-               its top centre and leaves the last card through its bottom centre. */
+            /* MOBILE ZIGZAG v2 (owner): the firefly IGNITES each card ON ENTRY — black→colour with
+               a content cascade, same affordance as the phone's first slide (not a scroll
+               threshold). Hops go EDGE to EDGE: out of the side facing the next card, along an
+               outward arc, into the next card's NEAR TOP CORNER (not its middle). Inside a card
+               the firefly is hidden. Longer transit window so the arc actually reads. */
             var handoff=cl((H*0.78 - pbr0.top)/Math.max(1,H*0.78 - H*0.06),0,1);
             var dvp=lp(H*0.42, H*0.72, handoff);
-            for(var cm=0;cm<N;cm++){ var card=track.children[cm], ccm=card.getBoundingClientRect();
-              var slit=(ccm.top+ccm.height*0.1)<dvp;
-              if(slit && !card.classList.contains('lit')){ card.classList.add('flash'); (function(c){setTimeout(function(){c.classList.remove('flash');},560);})(card); }
-              card.classList.toggle('lit',slit); }
+            if(dvp<mFirst.top-2) mzLight(track,-1);
             for(var ci2=0;ci2<N;ci2++){ var r2=track.children[ci2].getBoundingClientRect();
-              var exitY=r2.top+r2.height*0.62;
+              var exitY=r2.top+r2.height*0.5;
               var nx=(ci2<N-1)?track.children[ci2+1].getBoundingClientRect():null;
-              var endY=nx?(nx.top+nx.height*0.15):(r2.bottom+8);
-              if(dvp>=r2.top-2 && dvp<exitY){ st.p=[r2.left+r2.width/2, dvp]; st.scale=0; return st; }
-              if(dvp>=exitY && dvp<endY && nx){
+              var endY=nx?(nx.top+nx.height*0.3):(r2.bottom+8);
+              if(dvp>=r2.top-2 && dvp<exitY){ mzLight(track,ci2); st.p=[r2.left+r2.width/2, dvp]; st.scale=0; return st; }
+              if(dvp>=exitY && dvp<endY && nx){ mzLight(track,ci2);
                 var tt=(dvp-exitY)/Math.max(1,endY-exitY); tt=tt*tt*(3-2*tt);
                 var dirR=(nx.left+nx.width/2)>(r2.left+r2.width/2);
-                var ex=[dirR?r2.right-8:r2.left+8, r2.top+r2.height*0.74];
-                var en=[nx.left+nx.width/2, nx.top+6];
-                st.p=qb(ex,[ex[0]+(dirR?48:-48),(ex[1]+en[1])/2+16],en,tt);
+                var ex=[dirR?r2.right-6:r2.left+6, r2.top+r2.height*0.55];
+                var en=[dirR?nx.left+12:nx.right-12, nx.top+12];
+                var cx3=dirR?Math.max(ex[0],en[0])+44:Math.min(ex[0],en[0])-44;
+                st.p=qb(ex,[cx3,(ex[1]+en[1])/2],en,tt);
+                if(tt>0.93) mzLight(track,ci2+1);
                 st.scale=1; st.lit=true; return st; }
             }
             /* past the last card: out through its bottom centre, easing on to the #who entry */
             var lr2=track.children[N-1].getBoundingClientRect();
-            if(dvp>=lr2.top){ st.p=[lr2.left+lr2.width/2, Math.max(lr2.bottom-8,dvp)]; st.scale=1; st.lit=true; return st; }
+            if(dvp>=lr2.top){ mzLight(track,N-1); st.p=[lr2.left+lr2.width/2, Math.max(lr2.bottom-8,dvp)]; st.scale=1; st.lit=true; return st; }
           }
           for(var cq=0;cq<N;cq++) track.children[cq].classList.remove('lit');
         }
