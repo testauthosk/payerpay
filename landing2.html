@@ -171,6 +171,7 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 .fcard h3{font-size:20px;font-weight:700;margin-top:22px;letter-spacing:-.02em}
 .fcard p{color:var(--sub);font-size:14px;margin-top:10px;line-height:1.58}
 .fcard .no{margin-top:auto;font-family:var(--mono);font-size:12px;color:var(--mut);padding-top:20px}
+@keyframes cardFlash{0%{box-shadow:0 0 62px rgba(52,224,161,.6),inset 0 0 36px rgba(52,224,161,.16);border-color:rgba(52,224,161,1)}100%{box-shadow:0 0 40px rgba(52,224,161,.28),inset 0 0 22px rgba(52,224,161,.06);border-color:rgba(52,224,161,.9)}}
 .feat-prog{max-width:var(--max);margin:34px auto 0;padding:0 var(--gut);width:100%}
 .feat-prog .bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden}
 .feat-prog .bar i{display:block;height:100%;width:30%;background:var(--mint);border-radius:3px}
@@ -233,10 +234,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 /* responsive */
 @media (max-width:900px){
   .globe-grid{grid-template-columns:1fr;gap:40px}.globe-stage{order:-1}
-  .fcard{flex-basis:280px;min-height:0;padding:24px}
+  .feat-track{padding-left:54px;padding-right:16px}
+  .fcard{flex-basis:260px;min-height:0;padding:24px}
   .fcard h3{margin-top:16px}
   .fcard .no{margin-top:18px;padding-top:0}
-  .fcard.lit{border-color:rgba(52,224,161,.5);box-shadow:0 0 30px rgba(52,224,161,.12)}
+  .fcard.lit{border-color:rgba(52,224,161,.9);box-shadow:0 0 40px rgba(52,224,161,.28),inset 0 0 22px rgba(52,224,161,.06)}
+  .fcard.flash{animation:cardFlash .55s ease-out}
   .feat-prog{display:none}
   .pb-body{grid-template-columns:1fr}.pb{padding:32px 22px}
   .nav-links{display:none}.menu-tgl{display:flex}
@@ -634,12 +637,20 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         }
         if(window.matchMedia('(max-width:900px)').matches){
           var mFirst=track.children[0].getBoundingClientRect(), mLast=track.children[N-1].getBoundingClientRect();
-          if(mLast.bottom>50 && mFirst.top<H-40){
-            /* MOBILE: the dot rides down the left edge of the stacked cards, lighting each as it passes. */
+          var pbEl0=document.querySelector('.pb'), pbr0=pbEl0?pbEl0.getBoundingClientRect():{top:H*2};
+          if(mFirst.top<H-40 && pbr0.top>H*0.055){
+            /* MOBILE: the dot rides down the left strip past the cards, lighting each; as #who nears
+               the top it glides to the #who entry (H*0.72) so it flows in without teleporting. */
             var mfp=cl((H*0.46 - mFirst.top)/Math.max(1,mLast.bottom - mFirst.top),0,1);
-            var mdy=lp(mFirst.top+sy, mLast.bottom+sy, mfp) - sy;
-            st.p=[mFirst.left+16, mdy]; st.scale=1;
-            for(var cm=0;cm<N;cm++){ var ccm=track.children[cm].getBoundingClientRect(); track.children[cm].classList.toggle('lit',(ccm.top+ccm.bottom)/2 < mdy+8); }
+            var scanVp=lp(mFirst.top+sy, mLast.bottom+sy, mfp) - sy;
+            var handoff=cl((H*0.78 - pbr0.top)/Math.max(1,H*0.78 - H*0.06),0,1);
+            var mdy=lp(scanVp, H*0.72, handoff);
+            st.p=[mFirst.left*0.5, mdy]; st.scale=1;   /* fly down the empty strip left of the cards */
+            for(var cm=0;cm<N;cm++){ var card=track.children[cm], ccm=card.getBoundingClientRect();
+              var slit=(ccm.top + (ccm.bottom-ccm.top)*0.1) < mdy;   /* flash once the dot passes the block's top ~10% */
+              if(slit && !card.classList.contains('lit')){ card.classList.add('flash'); (function(c){setTimeout(function(){c.classList.remove('flash');},560);})(card); }
+              card.classList.toggle('lit',slit);
+            }
             return st;
           }
           for(var cq=0;cq<N;cq++) track.children[cq].classList.remove('lit');
