@@ -628,6 +628,18 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           st.p=[lac.left+lac.width*0.5, lp((lac.top+lac.bottom)/2, lac.bottom, et)]; st.scale=0;
           return st;
         }
+        if(window.matchMedia('(max-width:900px)').matches){
+          var mFirst=track.children[0].getBoundingClientRect(), mLast=track.children[N-1].getBoundingClientRect();
+          if(mLast.bottom>50 && mFirst.top<H-40){
+            /* MOBILE: the dot rides down the left edge of the stacked cards, lighting each as it passes. */
+            var mfp=cl((H*0.46 - mFirst.top)/Math.max(1,mLast.bottom - mFirst.top),0,1);
+            var mdy=lp(mFirst.top+sy, mLast.bottom+sy, mfp) - sy;
+            st.p=[mFirst.left-10, mdy]; st.scale=1;
+            for(var cm=0;cm<N;cm++){ var ccm=track.children[cm].getBoundingClientRect(); track.children[cm].classList.toggle('lit',(ccm.top+ccm.bottom)/2 < mdy+8); }
+            return st;
+          }
+          for(var cq=0;cq<N;cq++) track.children[cq].classList.remove('lit');
+        }
         var fsec=document.getElementById('feat'), fRect=fsec?fsec.getBoundingClientRect():null, ftop=fRect?fRect.top:H;
         if(ftop>-20){
           var fc0=track.children[0].getBoundingClientRect(), cardEntry=[fc0.left, fc0.top+fc0.height/2];
@@ -905,9 +917,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     });
     mm.add('(max-width:900px)',function(){
       var track=document.getElementById('featTrack');
-      track.style.flexWrap='wrap'; track.style.overflowX='auto'; track.style.paddingBottom='10px';
+      track.style.flexWrap='wrap'; track.style.overflowX='visible'; track.style.paddingBottom='10px';
       document.querySelector('.feat-pin').style.height='auto';
-      document.querySelector('.feat-pin').style.padding='90px 0';
+      document.querySelector('.feat-pin').style.padding='84px 0';
+      /* No horizontal pin on mobile, so tell the dot where #feat ends (drives the #who phase). */
+      var setFeatEnd=function(){var f=document.getElementById('feat');if(f)window.__featEnd=f.offsetTop+f.offsetHeight;};
+      setFeatEnd(); ScrollTrigger.addEventListener('refresh',setFeatEnd);
+      /* Cards fade up as they scroll in — no longer just sitting there. */
+      gsap.utils.toArray('#featTrack .fcard').forEach(function(c){
+        gsap.fromTo(c,{opacity:0,y:30},{opacity:1,y:0,duration:.55,ease:'power2.out',scrollTrigger:{trigger:c,start:'top 90%'}});
+      });
     });
 
     /* #who text slides up (hero-style) when the pilot dot enters the block */
