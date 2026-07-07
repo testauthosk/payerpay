@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#000000" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet" />
 <style>
 /* ===== BLACK + TURQUOISE, strict ===== */
 :root{
@@ -148,7 +148,10 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 .stepbars{display:none}
 .cryp-count{position:absolute;left:50%;transform:translateX(-50%);top:calc(78% + 62px);font-family:var(--mono);font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--mint);z-index:6;opacity:0;white-space:nowrap}
 #coinField{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
-@media (max-width:900px){ #coinField{display:block} }
+.tap-hint{position:absolute;right:16px;top:60%;z-index:6;display:none;flex-direction:column;align-items:center;gap:2px;opacity:0;pointer-events:none}
+.tap-hint span{font-family:'Caveat',cursive;font-size:23px;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.02em;transform:rotate(-6deg)}
+.tap-hint svg{width:34px;height:38px;stroke:rgba(52,224,161,.9);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+@media (max-width:900px){ #coinField{display:block} .tap-hint{display:flex} }
 .coin{position:absolute;width:52px;height:52px;z-index:4;opacity:0}
 .coin circle{fill:#060807;stroke:var(--mint);stroke-width:2}
 .coin text{fill:var(--mint);font-family:var(--mono);font-weight:700}
@@ -415,6 +418,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <img class="coin" id="cn2" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/btc.svg" alt="BTC" style="left:calc(50% + 40px);top:calc(50% - 240px)" />
     <img class="coin" id="cn3" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/eth.svg" alt="ETH" style="left:calc(50% - 90px);top:calc(50% - 250px)" />
     <div id="coinField"></div>
+    <div class="tap-hint" id="tapHint"><span>tap</span><svg viewBox="0 0 56 62"><path d="M46 8 C 40 26, 30 40, 14 52"/><path d="M22 46 L 13 53 L 24 55"/></svg></div>
     <div class="cryp-count" id="crypCount">120+ cryptocurrencies supported</div>
     <div class="asm-word" id="asmWord"><span class="n">01</span><span id="asmWordTxt">Sign up</span></div>
     <div class="stepbars" id="stepBars"><span class="sb-th" id="sbTh"></span><i></i><i></i><i></i><i></i><i></i></div>
@@ -1182,8 +1186,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
              where the coin pile can reach */
           cc.style.top=((((ethR.bottom-str.top)+(wr.top-str.top))/2)-8)+'px';
           loadMatter().then(function(){ if(idx===3)coinsUp(); }).catch(function(){});
-          coinFin=gsap.fromTo(cc,{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.25,onComplete:function(){coinFin=null;}}); }
+          coinFin=gsap.fromTo(cc,{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.25,onComplete:function(){coinFin=null;}});
+          /* handwritten "tap" + a thin arrow onto the pile, bobbing gently (appears after landing) */
+          var th2=document.getElementById('tapHint');
+          th2.style.top=(((wr.top-str.top)-12)-152)+'px';
+          gsap.fromTo(th2,{autoAlpha:0,y:10},{autoAlpha:1,y:0,duration:.5,delay:1.9,overwrite:'auto'});
+          gsap.to(th2,{y:7,duration:.85,ease:'sine.inOut',yoyo:true,repeat:-1,delay:2.5}); }
         else { coinsDown();
+          gsap.killTweensOf('#tapHint'); gsap.to('#tapHint',{autoAlpha:0,duration:.25});
           gsap.to('#crypCount',{autoAlpha:0,duration:.3,overwrite:'auto'}); }
         /* finale: "Ready to pay / accept / anywhere" tick in ONE BY ONE (honest, not a fake balance) */
         if(i===4) gsap.fromTo('#scrDone .rdy',{autoAlpha:0,x:-16},{autoAlpha:1,x:0,stagger:.45,duration:.5,ease:'power2.out',delay:.4,overwrite:'auto'});
