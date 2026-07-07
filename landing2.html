@@ -602,14 +602,24 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       ['Crypto acquiring','Accept crypto with no chargebacks, instant settle'],['KYB & AML','Company verification and transaction control']]}
   };
   var pbBody=document.getElementById('pbBody');
+  var curPB=null;
   function renderPB(m){var d=DATA[m];document.getElementById('pbTitle').textContent=d.title;document.getElementById('pbSub').textContent=d.sub;
     document.getElementById('pbOnboard').innerHTML='<div class="oi"><svg class="ic" viewBox="0 0 24 24">'+d.onIcon+'</svg></div><div><b>'+d.onTag+'</b><p>'+d.onDesc+'</p></div>';
     pbBody.innerHTML=d.items.map(function(it){return '<div class="pb-item fade-up"><div class="ck"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg></div><div><b>'+it[0]+(it[2]?'<span class="pb-only">included</span>':'')+'</b><p>'+it[1]+'</p></div></div>';}).join('');
-    if(G&&!reduce){ if(window.__whoShown||window.innerWidth<901) gsap.fromTo(pbBody.children,{opacity:0,y:12},{opacity:1,y:0,duration:.4,stagger:.05,ease:'power2.out',overwrite:true}); else gsap.set(pbBody.children,{opacity:0,y:26}); }}
+    if(G&&!reduce&&!curPB){ if(window.__whoShown||window.innerWidth<901) gsap.fromTo(pbBody.children,{opacity:0,y:12},{opacity:1,y:0,duration:.4,stagger:.05,ease:'power2.out',overwrite:true}); else gsap.set(pbBody.children,{opacity:0,y:26}); }}
   function setPB(m){['navSeg','pbSeg','mmSeg'].forEach(function(id){var e=document.getElementById(id);if(e)e.classList.toggle('biz',m==='business');});
-    document.querySelectorAll('#navSeg button,#pbSeg button,#mmSeg button').forEach(function(b){b.classList.toggle('on',b.dataset.pb===m);});renderPB(m);}
+    document.querySelectorAll('#navSeg button,#pbSeg button,#mmSeg button').forEach(function(b){b.classList.toggle('on',b.dataset.pb===m);});
+    /* BLOCK SWIPE (owner): panel content slides out toward the old side and the new content
+       slides in from the direction the pill switched to */
+    var parts=['#pbTitle','#pbSub','#pbOnboard','#pbBody'];
+    if(G&&!reduce&&curPB&&m!==curPB){ var dir=(m==='business')?1:-1;
+      gsap.to(parts,{x:-dir*52,opacity:0,duration:.22,ease:'power2.in',overwrite:'auto',onComplete:function(){
+        renderPB(m);
+        gsap.fromTo(parts,{x:dir*52,opacity:0},{x:0,opacity:1,duration:.36,ease:'power2.out',overwrite:'auto'}); }});
+    } else renderPB(m);
+    curPB=m;}
   document.querySelectorAll('#navSeg button,#pbSeg button,#mmSeg button').forEach(function(b){b.addEventListener('click',function(){setPB(b.dataset.pb);});});
-  renderPB('personal');
+  renderPB('personal'); curPB='personal';
   /* mobile menu */
   var mTgl=document.querySelector('.menu-tgl'), mMenu=document.getElementById('mobMenu');
   if(mTgl&&mMenu){ mTgl.addEventListener('click',function(){mMenu.classList.toggle('open');mTgl.classList.toggle('on');});
@@ -794,7 +804,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
               var bt2=cl(gp/0.75,0,1); bt2=bt2*bt2*(3-2*bt2);
               var d3=device.getBoundingClientRect(), src2=[d3.left+d3.width/2, d3.bottom+22], gE2=[G[0],G[1]-gR];
               st.p=cb(src2,[src2[0]+30,lp(src2[1],gE2[1],0.42)],[gE2[0]+gR*0.75,lp(src2[1],gE2[1],0.72)],gE2,bt2);
-              st.scale=cl(gp/0.2,0,1);
+              st.scale=cl(gp/0.5,0,1); /* slow growth: reaches full size only halfway down the bridge */
               st.inGlobe=false; st.lit=false; return st; }
             var pt3=cl((gp-0.75)/0.7,0,1), yOff3=lp(-gR,gR*1.2,pt3);
             if(pt3<1 && trzOk) mzLight(trz,-1);
@@ -888,7 +898,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             var lr2=track.children[N-1].getBoundingClientRect();
             if(dvp>=lr2.top){ mzLight(track,N-1);
               st.p=[lr2.left+lr2.width/2, Math.max(lr2.bottom-6,dvp)];
-              st.scale=cl((dvp-(lr2.bottom-26))/26,0,1); st.lit=true; return st; }
+              st.scale=cl((dvp-(lr2.bottom-16))/72,0,1); st.lit=true; return st; } /* gentle grow-out of the last card (owner: was abrupt) */
           }
           for(var cq=0;cq<N;cq++) track.children[cq].classList.remove('lit');
         }
@@ -995,7 +1005,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       if(st.inPhone && !phoneWas) phoneFT=0; phoneWas=st.inPhone;
       if(st.inPhone) phoneEntered=true;
       if(phoneFT<1.3) phoneFT+=dt/0.7;
-      /* headline reveals ~20% before the dot lands */
+      /* headline reveals ~20% before the dot lands; on mobile it slides out as soon as the #who
+         section itself approaches — well BEFORE the firefly reaches the panel, so the section
+         never reads as an empty black screen (owner) */
+      if(_dotSR && !st.headLit){ var whoE=document.getElementById('who');
+        if(whoE){ var wr4=whoE.getBoundingClientRect(); if(wr4.top<H*0.72 && wr4.bottom>H*0.1) st.headLit=true; } }
       if(st.headLit && !headWas){ if(window.__headReveal) window.__headReveal(true); headWas=true; }
       else if(!st.headLit && headWas){ if(window.__headReveal) window.__headReveal(false); headWas=false; }
       /* green wave fires the instant the dot touches the block; the panel itself IGNITES
