@@ -525,7 +525,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <footer>
   <div class="wrap">
     <div class="foot">
-      <div><a href="#" class="logo">PayerPay<span class="d"></span></a><p class="lead2">One account for the world: the US, Europe and crypto in one place. Fiat-crypto payment infrastructure.</p></div>
+      <div><p class="lead2" style="margin-top:2px">One account for the world: the US, Europe and crypto in one place. Fiat-crypto payment infrastructure.</p></div>
       <div class="foot-cols">
         <div class="foot-col"><h4>Product</h4><a href="#asm">How it works</a><a href="#feat">Features</a><a href="#who">Personal / Business</a><a href="#send">Transfers</a></div>
         <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Contact</a><a href="#">Security</a></div>
@@ -1032,7 +1032,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           if(ft>0.02){ var tx=fwR.left+fwR.width*0.0144, ty=fwR.top+fwR.height*0.76;
             st.p=[lp(st.p[0],tx,ft*ft*(3-2*ft)), lp(st.p[1],ty,ft*ft*(3-2*ft))];
             st.scale=Math.min(st.scale, cl((0.9-ft)/0.25,0,1));
-            if(window.__fwRainOn) window.__fwRainOn(ft>0.82);
+            /* rain activation moved to pframe visibility check */
           } }
         return st;
       }
@@ -1090,9 +1090,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
          never reads as an empty black screen (owner) */
       if(_dotSR && !st.headLit){ var whoE=document.getElementById('who');
         if(whoE){ var wr4=whoE.getBoundingClientRect(); if(wr4.top<H*0.72 && wr4.bottom>H*0.1) st.headLit=true; } }
-      /* rain/water sleeps whenever the wordmark is off-screen (reliable from ANY phase) */
-      if(window.__fwRainActive && window.__fwRainOn){ var fwB=document.getElementById('fwWord').getBoundingClientRect();
-        if(fwB.top>H||fwB.bottom<0) window.__fwRainOn(false); }
+      /* rain/water runs purely on VISIBILITY: as soon as the wordmark is on screen it rains and
+         fills; off-screen it drains and sleeps. No dependency on the dot phases (that coupling
+         left the owner staring at a static wordmark). */
+      if(window.__fwRainOn){ var fwB=document.getElementById('fwWord').getBoundingClientRect();
+        window.__fwRainOn(fwB.top<H*0.97 && fwB.bottom>-40); }
       if(st.headLit && !headWas){ if(window.__headReveal) window.__headReveal(true); headWas=true; }
       else if(!st.headLit && headWas){ if(window.__headReveal) window.__headReveal(false); headWas=false; }
       /* green wave fires the instant the dot touches the block; the panel itself IGNITES
