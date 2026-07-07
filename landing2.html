@@ -1193,7 +1193,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           coinFin=gsap.fromTo(cc,{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.25,onComplete:function(){coinFin=null;}});
           /* handwritten "tap" + a thin arrow onto the pile, bobbing gently (appears after landing) */
           var th2=document.getElementById('tapHint');
-          th2.style.top=(((wr.top-str.top)-12)-72)+'px';
+          th2.style.top=(((wr.top-str.top)-12)-134)+'px';
           gsap.fromTo(th2,{autoAlpha:0,y:10},{autoAlpha:1,y:0,duration:.5,delay:1.9,overwrite:'auto'});
           gsap.to(th2,{y:7,duration:.85,ease:'sine.inOut',yoyo:true,repeat:-1,delay:2.5}); }
         else { coinsDown();
