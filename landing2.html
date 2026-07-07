@@ -196,10 +196,12 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
   .fcard .chip-ic,.fcard h3,.fcard p,.fcard .no{opacity:.07;transition:opacity .5s ease}
   .fcard.lit .chip-ic,.fcard.lit h3,.fcard.lit p,.fcard.lit .no{opacity:1}
   .fcard.lit{border-color:rgba(52,224,161,.45);box-shadow:0 0 34px rgba(52,224,161,.10)}
-  /* #who text slides up (like the hero) when the pilot dot lands — no area glow */
-  #who .rmask{overflow:hidden;display:block}
-  #who .rline{display:block;will-change:transform}
 }
+/* #who text slides up (like the hero) when the pilot dot lands — no area glow.
+   OUTSIDE any media query: on mobile these were desktop-locked, so .rline stayed inline
+   (transforms ignored) and the heading never hid. */
+#who .rmask{overflow:hidden;display:block}
+#who .rline{display:block;will-change:transform}
 
 /* PB */
 .pb{background:var(--surf);border:1px solid var(--line);border-radius:26px;padding:48px;width:100%}
