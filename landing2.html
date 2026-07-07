@@ -45,7 +45,8 @@ a{color:inherit;text-decoration:none}svg{display:block}
 header{position:fixed;top:0;left:0;right:0;z-index:200;transition:background .35s,backdrop-filter .35s,border-color .35s;border-bottom:1px solid transparent}
 header.scrolled{background:rgba(0,0,0,.6);backdrop-filter:blur(18px) saturate(1.3);border-bottom-color:var(--line)}
 html.light header.scrolled{background:rgba(255,255,255,.8)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:18px}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:18px;transition:height .35s ease}
+header.scrolled .nav{height:54px}
 .logo{font-weight:800;font-size:22px;letter-spacing:-.04em;display:flex;align-items:flex-start}
 .logo .d{width:6px;height:6px;border-radius:50%;background:var(--mint);margin-left:2px;margin-top:4px}
 .nav-links{display:flex;gap:28px;align-items:center;margin-left:auto}
@@ -648,6 +649,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     /* On mobile the page scrolls inside #scrollRoot (body is locked), so the dot reads its scroll
        position from the container; on desktop from the window as before. */
     var _dotSR=window.matchMedia('(max-width:900px)').matches?document.getElementById('scrollRoot'):null;
+    var _stageEl=document.querySelector('.asm-stage');
     var DPR=Math.min(window.devicePixelRatio||1,2), W,H;
     function sz(){ W=window.innerWidth; H=window.innerHeight; cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); }
     sz(); var lastPW=window.innerWidth;
@@ -674,6 +676,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     function state(sy){
       var st={p:[W/2,H/2], scale:1, portals:null, inGlobe:false, lit:false, inPhone:false, split:null, card:null};
       var lr=logoEl?logoEl.getBoundingClientRect():null, logo=lr?[lr.left+lr.width/2, lr.bottom+20]:[cl(W*0.115,60,170),98], aTop=asm?asm.offsetTop:H, aEnd=window.__asmEnd||(aTop+Math.round(H*1.65));
+      /* MOBILE: the dot's phone phase must span only the STUCK range of the sticky stage (same range
+         the story uses) — mapping it over the full section meant the exit played while the phone was
+         already sliding off-screen, so the dot left from above the viewport instead of the phone. */
+      if(_dotSR && asm && _stageEl) aEnd=aTop+Math.max(1,asm.offsetHeight-_stageEl.offsetHeight);
       if(sy<aTop){ var t=cl(sy/aTop,0,1); st.p=qb(logo,[W*0.15,H*0.5],[W*0.22,H*0.40],t); st.scale=cl(0.35+sy/140,0.35,1); return st; }
       if(sy<aEnd && device){
         var dr=device.getBoundingClientRect(), dcx=dr.left+dr.width/2, dcy=dr.top+dr.height/2;
@@ -683,6 +689,31 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var e=cl((prog-0.82)/0.18,0,1); st.p=[dcx, lp(dcy, dr.bottom+20, e)]; st.scale=cl((e-0.55)/0.3,0,1); return st;
       }
       if(gcv){ var gr=gcv.getBoundingClientRect(), G=[gr.left+gr.width/2, gr.top+gr.height/2], gR=gr.width/2;
+        if(_dotSR){
+          /* MOBILE: scroll-distance-driven handoff. The desktop frac maths assumed a long pinned #asm
+             — with the short sticky section the globe is already in view when the phone phase ends,
+             which teleported the dot. Here bridge and descent are functions of how far we scrolled
+             past #asm → continuous with the phone-exit by construction. The dot dives INTO the
+             planet ~30% earlier along the path (owner request): short bridge + wide entry radius. */
+          var gp=(sy-aEnd)/H;
+          if(device){
+            if(gp<0.45){ var bt2=cl(gp/0.45,0,1); bt2=bt2*bt2*(3-2*bt2);
+              var d3=device.getBoundingClientRect(), src2=[d3.left+d3.width/2, d3.bottom+22], gE2=[G[0],G[1]-gR];
+              st.p=cb(src2,[src2[0]+30,lp(src2[1],gE2[1],0.42)],[gE2[0]+gR*0.75,lp(src2[1],gE2[1],0.72)],gE2,bt2);
+              st.inGlobe=false; st.lit=false; return st; }
+            var pt3=cl((gp-0.45)/0.6,0,1), yOff3=lp(-gR,gR*1.2,pt3);
+            st.p=[G[0]-Math.sin(pt3*Math.PI)*gR*0.12, G[1]+yOff3];
+            st.inGlobe=Math.abs(yOff3)<gR*0.95; st.lit=pt3>0.1; if(st.inGlobe)st.scale=0;
+            if(pt3<1) return st;
+            /* glide globe-bottom → feat scan line (absolute-Y continuous, no teleport): the dot
+               rides below the planet as it scrolls away, easing to the scan position by the time
+               the first card reaches it — the feat scan branch takes over seamlessly there. */
+            var tr2=document.getElementById('featTrack');
+            if(tr2 && tr2.children.length){ var mf2=tr2.children[0].getBoundingClientRect();
+              if(mf2.top>H*0.42){ var g2=cl((H-mf2.top)/(H-H*0.42),0,1); g2=g2*g2*(3-2*g2);
+                st.p=[lp(G[0],W*0.5,g2), lp(G[1]+gR*1.2, H*0.42, g2)]; st.scale=1; st.lit=true; return st; } }
+          }
+        } else {
         var frac=cl((H*1.15-G[1])/(H*1.25),0,1);
         if(frac<0.9){
         if(frac<0.35 && device){ var d2=device.getBoundingClientRect(), src=[d2.left+d2.width/2, d2.bottom+22], gE=[G[0],G[1]-gR];
@@ -692,7 +723,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         } else { var pt=cl((frac-0.35)/0.65,0,1), yOff=lp(-gR,gR*1.2,pt);
           st.p=[G[0]-Math.sin(pt*Math.PI)*gR*0.12, G[1]+yOff];
           st.inGlobe=Math.abs(yOff)<gR*0.72; st.lit=pt>0.15; if(st.inGlobe)st.scale=0; }
-        return st; } }
+        return st; } } }
       var track=document.getElementById('featTrack');
       if(track && track.children.length){ var N=track.children.length;
         if(window.__featActive){ var fp=cl(window.__featProg||0,0,1);
@@ -994,7 +1025,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       function show(i){ if(i===idx)return;
         scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
         setStep(stp[i][0],stp[i][1]);
-        if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1}); idx=i; }
+        if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1});
+        /* side decor is back on mobile: US/EU cards fly in from the sides on the accounts step,
+           coins bounce in from above on the crypto step (they were desktop-only after the redesign) */
+        if(i===2){ gsap.fromTo('#fcUs',{autoAlpha:0,x:-110,y:-70,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:.85,ease:'back.out(1.3)',overwrite:'auto'});
+          gsap.fromTo('#fcEu',{autoAlpha:0,x:110,y:70,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:.85,delay:.12,ease:'back.out(1.3)',overwrite:'auto'}); }
+        else gsap.to(['#fcUs','#fcEu'],{autoAlpha:0,duration:.35,overwrite:'auto'});
+        if(i===3){ gsap.fromTo('#cn1',{autoAlpha:0,y:-140},{autoAlpha:1,y:0,duration:.7,ease:'bounce.out',overwrite:'auto'});
+          gsap.fromTo('#cn2',{autoAlpha:0,y:-170},{autoAlpha:1,y:0,duration:.8,delay:.1,ease:'bounce.out',overwrite:'auto'});
+          gsap.fromTo('#cn3',{autoAlpha:0,y:-190},{autoAlpha:1,y:0,duration:.9,delay:.18,ease:'bounce.out',overwrite:'auto'}); }
+        else gsap.to(['#cn1','#cn2','#cn3'],{autoAlpha:0,duration:.35,overwrite:'auto'});
+        idx=i; }
       function loop(){ var p=(sr.scrollTop-asmTop)/range; p=Math.max(0,Math.min(1,p));
         if(p!==lastP){ setClock(p); lastP=p;
           show(Math.min(scrs.length-1,Math.floor(p*scrs.length))); }
