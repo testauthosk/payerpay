@@ -233,6 +233,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
 /* responsive */
 @media (max-width:900px){
+  /* SCROLL-LOCK: body is pinned and the page scrolls inside #scrollRoot. With the body fixed, iOS
+     Safari can no longer show/hide its address bar on scroll → the viewport never resizes → the
+     scroll-up jerk is gone. Header/menu/canvas sit outside #scrollRoot and stay put. */
+  html{height:100%}
+  body{position:fixed;inset:0;width:100%;overflow:hidden}
+  #scrollRoot{position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;scroll-padding-top:84px;z-index:1}
   .globe-grid{grid-template-columns:1fr;gap:30px}
   .fcard{flex-basis:280px;min-height:0;padding:24px}
   .fcard h3{margin-top:16px}
@@ -285,6 +291,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 </div>
 
 <canvas id="pilotCv"></canvas>
+
+<!-- SCROLL ROOT: on mobile the whole page scrolls inside this container (body is position:fixed) so
+     iOS never toggles its address bar → no viewport resize → no scroll-up jerk. Desktop: plain div. -->
+<div id="scrollRoot">
 
 <!-- HERO -->
 <section class="hero">
@@ -446,6 +456,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   </div>
 </footer>
 
+</div><!-- /#scrollRoot -->
+
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
@@ -458,7 +470,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
   /* theme toggle removed — dark only */
 
-  window.addEventListener('scroll',function(){document.getElementById('hdr').classList.toggle('scrolled',window.scrollY>20);},{passive:true});
+  var _hdrEl=document.getElementById('hdr'), _srEl=document.getElementById('scrollRoot');
+  function _hdrToggle(sy){_hdrEl.classList.toggle('scrolled',sy>20);}
+  window.addEventListener('scroll',function(){_hdrToggle(window.scrollY);},{passive:true});
+  if(_srEl) _srEl.addEventListener('scroll',function(){_hdrToggle(_srEl.scrollTop);},{passive:true});
 
   var DATA={
     personal:{title:'For personal use',sub:'A personal multi-currency account, crypto and a card — for life and work worldwide.',
@@ -929,9 +944,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       return function(){ if(tmr)clearInterval(tmr); };
     });
 
+    var _mob=window.matchMedia('(max-width:900px)').matches, _sr=document.getElementById('scrollRoot');
     gsap.utils.toArray('.reveal').forEach(function(el){
       if(el.closest('.hero')) return;
-      gsap.fromTo(el,{opacity:0,y:26},{opacity:1,y:0,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%'}});
+      gsap.fromTo(el,{opacity:0,y:26},{opacity:1,y:0,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%',scroller:_mob?_sr:undefined}});
     });
 
     mm.add('(min-width:901px)',function(){
