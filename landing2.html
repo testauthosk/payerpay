@@ -294,6 +294,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .fcard.lit{border-color:rgba(52,224,161,.85);box-shadow:0 0 34px rgba(52,224,161,.22),inset 0 0 20px rgba(52,224,161,.05)}
   .fcard.flash{animation:cardFlash .55s ease-out}
   .feat-prog{display:none}
+  /* CTA is dimmed until the firefly touches it, then ignites (like the phone/panel) */
+  #cta .cta{filter:saturate(.3) brightness(.42);transform:scale(.97);transition:filter .5s ease,transform .5s ease}
+  #cta .cta.lit{filter:none;transform:scale(1)}
   .pb-body{grid-template-columns:1fr}.pb{padding:32px 22px}
   .nav-links{display:none}.menu-tgl{display:flex}
   .nav-right .seg,.nav-right>.btn-primary{display:none}
@@ -479,7 +482,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <section class="scene" id="who">
   <div class="wrap" style="width:100%">
     <div style="text-align:center;max-width:600px;margin:0 auto 48px">
-      <span class="eyebrow fade-up" style="justify-content:center">Who it's for</span>
+      <span class="eyebrow who-eyebrow" style="justify-content:center">Who it's for</span>
       <h2><span class="rmask"><span class="rline">Personal or business</span></span></h2>
       <p class="s-lead" style="text-align:center"><span class="rmask" style="max-width:480px;margin:0 auto"><span class="rline">One product, two ways in. A personal account opens in minutes; business unlocks more tools.</span></span></p>
     </div>
@@ -933,7 +936,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           var px=lp(lacc.left+lacc.width*0.5, pbCx, xt);   /* X starts under the last card, eases to block-center */
           st.p=[px, dotY];
           st.inBlock=(dotY>pb.top && dotY<pb.bottom);
-          st.scale=(st.inBlock || dotY<=lacc.bottom) ? 0 : 1;   /* invisible within cards area + inside the block */
+          /* smooth: grows/shrinks near the panel edges instead of popping (owner: exit was rough) */
+          var dEdge=Math.min(Math.abs(dotY-pb.top),Math.abs(dotY-pb.bottom));
+          st.scale=(st.inBlock || dotY<=lacc.bottom) ? 0 : cl(dEdge/44,0,1);
           st.beforeBlock=(dotY<=pb.top);
           return st;
         }
@@ -942,8 +947,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var landAt=H*0.62;
         var gp=cl((H - cbr.top)/Math.max(1,H - landAt), 0, 1);   /* 0 when CTA at viewport bottom, 1 when its top reaches landAt */
         if(gp < 1){
-          st.p=[lp(pbCx, ctaCx, gp), lp(pb.bottom+sy, cbr.top+sy, gp) - sy];
-          st.scale=1;
+          var gy=lp(pb.bottom+sy, cbr.top+sy, gp) - sy;
+          st.p=[lp(pbCx, ctaCx, gp), gy];
+          /* grow leaving the panel, shrink approaching the CTA - no pops at either end */
+          st.scale=Math.min(cl((gy-pb.bottom)/44,0,1), cl((cbr.top-gy)/44,0,1));
           st.beforeCta=true;
           return st;
         }
@@ -952,7 +959,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var cdotY=lp(cbr.top-60, cbr.bottom+60, ctaProg);   /* descends relative to CTA: from just above, through it, to below */
         st.p=[ctaCx, cdotY];
         st.inCta=(cdotY>cbr.top && cdotY<cbr.bottom);
-        st.scale=st.inCta ? 0 : 1;   /* visible approaching + below, invisible inside CTA */
+        var dcE=Math.min(Math.abs(cdotY-cbr.top),Math.abs(cdotY-cbr.bottom));
+        st.scale=st.inCta ? 0 : cl(dcE/44,0,1);   /* eases in/out at the CTA edges */
         st.beforeCta=(cdotY<=cbr.top);
         return st;
       }
@@ -1028,7 +1036,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       else if(!pbVis && blockWas){ if(window.__blockReveal) window.__blockReveal(false); blockWas=false; waveStarted=false;
         if(pbb2)pbb2.classList.remove('lit'); }
       /* CTA: wave on touch + light up (same logic as #who) */
-      if(st.inCta && !inCtaWas){ ctaBurstT=0; ctaBurstP=[st.p[0],st.p[1]]; ctaWaveStarted=true; }
+      if(st.inCta && !inCtaWas){ ctaBurstT=0; ctaBurstP=[st.p[0],st.p[1]]; ctaWaveStarted=true;
+        var ctaLit=document.querySelector('#cta .cta'); if(ctaLit)ctaLit.classList.add('lit'); }
+      if(st.beforeCta){ var ctaLit2=document.querySelector('#cta .cta'); if(ctaLit2)ctaLit2.classList.remove('lit'); }
       inCtaWas=!!st.inCta;
       if(ctaBurstT<1) ctaBurstT+=dt*1.05;
       var ctaB=document.querySelector('#cta .cta'), ctaBr=ctaB?ctaB.getBoundingClientRect():null;
@@ -1358,7 +1368,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       gsap.set('#who .rline',{yPercent:120});
       gsap.set('#who .fade-up',{opacity:0,y:26});
       var headTl=gsap.timeline({paused:true});
-      headTl.fromTo('#who .rline',{yPercent:120},{yPercent:0,duration:.9,stagger:.12,ease:'power4.out'});
+      gsap.set('#who .who-eyebrow',{opacity:0});
+      headTl.fromTo('#who .who-eyebrow',{opacity:0,y:12},{opacity:1,y:0,duration:.5,ease:'power2.out'},0);
+      headTl.fromTo('#who .rline',{yPercent:120},{yPercent:0,duration:.9,stagger:.12,ease:'power4.out'},0);
       var blockTl=gsap.timeline({paused:true});
       blockTl.fromTo('#who .fade-up',{opacity:0,y:26},{opacity:1,y:0,duration:.55,stagger:.06,ease:'power2.out'});
       window.__headReveal=function(show){ if(show)headTl.play(); else headTl.reverse(); };
