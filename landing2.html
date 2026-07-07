@@ -233,6 +233,21 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
 /* responsive */
 @media (max-width:900px){
+  /* SCROLL-LOCK (plan A, owner-approved): body is pinned and the page scrolls inside #scrollRoot.
+     With the body fixed iOS never shows/hides its address bar → the viewport never resizes → zero
+     scroll-up jerk. This was the only variant confirmed perfectly smooth on a real iPhone, and it is
+     GSAP's own recommended pattern for this exact problem. Header/menu/canvas sit outside the root. */
+  html{height:100%}
+  body{position:fixed;inset:0;width:100%;overflow:hidden}
+  #scrollRoot{position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;scroll-padding-top:84px;z-index:1}
+  /* Phone fixation is back: CSS sticky inside the scroll container (native-smooth), the story is
+     driven by a rAF loop on scrollRoot.scrollTop. svh is correct here — the bar is frozen visible,
+     so the small viewport IS the stable viewport (lvh would overhang by the bar height). */
+  #asm{height:200svh}
+  .asm-stage{position:sticky;top:0;height:100svh}
+  footer{padding:26px 0 22px}
+  .foot{gap:24px}
+  .foot-btm{margin-top:22px;padding-top:16px}
   .globe-grid{grid-template-columns:1fr;gap:30px}
   .fcard{flex-basis:280px;min-height:0;padding:24px}
   .fcard h3{margin-top:16px}
@@ -470,7 +485,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
   /* theme toggle removed — dark only */
 
-  window.addEventListener('scroll',function(){document.getElementById('hdr').classList.toggle('scrolled',window.scrollY>20);},{passive:true});
+  var _hdrEl=document.getElementById('hdr'), _srEl=document.getElementById('scrollRoot');
+  function _hdrToggle(sy){_hdrEl.classList.toggle('scrolled',sy>20);}
+  window.addEventListener('scroll',function(){_hdrToggle(window.scrollY);},{passive:true});
+  if(_srEl) _srEl.addEventListener('scroll',function(){_hdrToggle(_srEl.scrollTop);},{passive:true});
 
   /* iOS ADDRESS-BAR JERK COMPENSATION (owner's spec): the toolbar animating in/out changes the
      visual-viewport height mid-gesture and the browser lurches the content by that much. We watch
@@ -627,6 +645,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   (function(){
     var cv=document.getElementById('pilotCv'); if(!cv) return;
     var ctx=cv.getContext('2d');
+    /* On mobile the page scrolls inside #scrollRoot (body is locked), so the dot reads its scroll
+       position from the container; on desktop from the window as before. */
+    var _dotSR=window.matchMedia('(max-width:900px)').matches?document.getElementById('scrollRoot'):null;
     var DPR=Math.min(window.devicePixelRatio||1,2), W,H;
     function sz(){ W=window.innerWidth; H=window.innerHeight; cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); }
     sz(); var lastPW=window.innerWidth;
@@ -807,7 +828,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,y,rx*1.8,ry*1.1,0,0,7); ctx.fill();
       ctx.strokeStyle='rgba(210,255,238,'+(0.9*po).toFixed(3)+')'; ctx.lineWidth=2.4*DPR; ctx.beginPath(); ctx.ellipse(x,y,rx,ry,0,0,7); ctx.stroke(); }
     function pframe(ts){ if(pt0===null)pt0=ts; var dt=(ts-pt0)/1000; tnow+=dt; pt0=ts;
-      var sy=window.scrollY, moving=Math.abs(sy-lastSY)>0.6; lastSY=sy;
+      var sy=_dotSR?_dotSR.scrollTop:window.scrollY, moving=Math.abs(sy-lastSY)>0.6; lastSY=sy;
       var st=state(sy);
       if(st.inPhone && !phoneWas) phoneFT=0; phoneWas=st.inPhone;
       if(st.inPhone) phoneEntered=true;
@@ -892,11 +913,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       else drawComet(trail, hx, hy, cl(curScale,0,1));
       requestAnimationFrame(pframe);
     }
-    /* DIAGNOSTIC: the flying-dot canvas runs a getBoundingClientRect + full redraw EVERY frame. On
-       mobile that competes with the iOS address-bar animation on the main thread and stutters the
-       scroll. Disable it on mobile (keep it on desktop) to confirm it's the amplifier of the jerk. */
-    if(window.matchMedia('(max-width:900px)').matches){ cv.style.display='none'; }
-    else { requestAnimationFrame(pframe); }
+    /* Dot is back on mobile (plan A): with the body locked the address bar never animates, so the
+       per-frame redraw no longer competes with a viewport resize. On mobile the scroll position is
+       read from #scrollRoot (the real scroller); rects are viewport-based and need no translation. */
+    requestAnimationFrame(pframe);
   })();
 
   function boot(){
@@ -953,28 +973,40 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     });
 
     mm.add('(max-width:900px)',function(){
-      /* Mobile — FIXATION REMOVED (diagnostic per owner): no position:sticky, no tall section. The
-         phone is a normal one-viewport block and its story AUTO-PLAYS on a timer (not scroll-linked)
-         → native scroll is untouched = guaranteed smooth. If the jerk disappears here, the fixation
-         was the cause; if it persists, the cause is elsewhere (pilot canvas). */
+      /* Mobile — FIXATION IS BACK (plan A): the stage is CSS-sticky inside #scrollRoot (the body is
+         locked, so the container scroll is native-smooth and the address bar never moves). The story
+         is driven by a light rAF loop reading scrollRoot.scrollTop — offsets are cached and only
+         re-measured on a width change, so the loop never forces a reflow. No GSAP scroll-linking. */
+      var sr=document.getElementById('scrollRoot');
       var scrs=['scrReg','scrId','scrAcc','scrCry','scrDone'].map(function(id){return document.getElementById(id);}),
           stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
       scrs.forEach(function(s){s.style.opacity='0';});
       gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
-      window.__asmEnd=(asm?asm.offsetTop:0)+(asm?asm.offsetHeight:H);
-      var idx=-1, tmr=null;
+      var asmTop=0, range=1;
+      function measure(){ var stage=document.querySelector('.asm-stage'), sh=stage?stage.offsetHeight:H;
+        asmTop=asm?asm.offsetTop:0; range=Math.max(1,(asm?asm.offsetHeight:sh)-sh);
+        window.__asmEnd=asmTop+(asm?asm.offsetHeight:H); }
+      measure();
+      var lastW=window.innerWidth;
+      function onRs(){ if(window.innerWidth===lastW)return; lastW=window.innerWidth; measure(); }
+      window.addEventListener('resize',onRs);
+      var idx=-1, lastP=-1, rafId=null;
       function show(i){ if(i===idx)return;
         scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
-        setStep(stp[i][0],stp[i][1]); setClock(i/(scrs.length-1));
+        setStep(stp[i][0],stp[i][1]);
         if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1}); idx=i; }
-      show(0);
-      tmr=setInterval(function(){show((idx+1)%scrs.length);},2200);
-      return function(){ if(tmr)clearInterval(tmr); };
+      function loop(){ var p=(sr.scrollTop-asmTop)/range; p=Math.max(0,Math.min(1,p));
+        if(p!==lastP){ setClock(p); lastP=p;
+          show(Math.min(scrs.length-1,Math.floor(p*scrs.length))); }
+        rafId=requestAnimationFrame(loop); }
+      show(0); setClock(0); rafId=requestAnimationFrame(loop);
+      return function(){ if(rafId)cancelAnimationFrame(rafId); window.removeEventListener('resize',onRs); };
     });
 
+    var _mob=window.matchMedia('(max-width:900px)').matches, _sr=document.getElementById('scrollRoot');
     gsap.utils.toArray('.reveal').forEach(function(el){
       if(el.closest('.hero')) return;
-      gsap.fromTo(el,{opacity:0,y:26},{opacity:1,y:0,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%'}});
+      gsap.fromTo(el,{opacity:0,y:26},{opacity:1,y:0,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%',scroller:_mob?_sr:undefined}});
     });
 
     mm.add('(min-width:901px)',function(){
