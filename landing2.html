@@ -275,7 +275,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .foot{gap:24px}
   .foot-btm{margin-top:22px;padding-top:16px}
   .globe-grid{grid-template-columns:1fr;gap:30px}
-  .fcard{flex-basis:280px;min-height:0;padding:24px}
+  /* zigzag layout (owner's sketch): cards alternate left/right, the firefly hops between them */
+  .fcard{flex-basis:auto;width:71%;min-height:0;padding:22px}
+  .fcard:nth-child(odd){align-self:flex-start}
+  .fcard:nth-child(even){align-self:flex-end}
   .fcard h3{margin-top:16px}
   .fcard .no{margin-top:18px;padding-top:0}
   .fcard .chip-ic,.fcard h3,.fcard p,.fcard .no{opacity:.1;transition:opacity .5s ease}
@@ -772,7 +775,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
               st.inGlobe=false; st.lit=false; return st; }
             var pt3=cl((gp-0.75)/0.7,0,1), yOff3=lp(-gR,gR*1.2,pt3);
             st.p=[G[0]-Math.sin(pt3*Math.PI)*gR*0.12, G[1]+yOff3];
-            st.inGlobe=Math.abs(yOff3)<gR*0.95; st.lit=pt3>0.1; if(st.inGlobe)st.scale=0;
+            st.inGlobe=Math.abs(yOff3)<gR*0.95; st.lit=pt3>0.1;
+            /* it GROWS back gradually while emerging from under the planet (owner: it popped out
+               full-size at once) — scale follows how far it has cleared the surface */
+            if(st.inGlobe)st.scale=0;
+            else if(yOff3>0)st.scale=cl((yOff3-gR*0.95)/(gR*0.45),0,1);
             if(pt3<1) return st;
             /* glide globe-bottom → feat scan line (absolute-Y continuous, no teleport): the dot
                rides below the planet as it scrolls away, easing to the scan position by the time
@@ -780,7 +787,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             var tr2=document.getElementById('featTrack');
             if(tr2 && tr2.children.length){ var mf2=tr2.children[0].getBoundingClientRect();
               if(mf2.top>H*0.42){ var g2=cl((H-mf2.top)/(H-H*0.42),0,1); g2=g2*g2*(3-2*g2);
-                st.p=[lp(G[0],W*0.5,g2), lp(G[1]+gR*1.2, H*0.42, g2)]; st.scale=1; st.lit=true; return st; } }
+                /* a gentle arc into the TOP CENTRE of the first card (owner's sketch) */
+                st.p=[lp(G[0],mf2.left+mf2.width/2,g2)+Math.sin(g2*Math.PI)*24, lp(G[1]+gR*1.2, mf2.top+8, g2)];
+                st.scale=1; st.lit=true; return st; } }
           }
         } else {
         var frac=cl((H*1.15-G[1])/(H*1.25),0,1);
@@ -811,22 +820,32 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           var mFirst=track.children[0].getBoundingClientRect(), mLast=track.children[N-1].getBoundingClientRect();
           var pbEl0=document.querySelector('.pb'), pbr0=pbEl0?pbEl0.getBoundingClientRect():{top:H*2};
           if(mFirst.top<H && pbr0.top>H*0.055){
-            /* MOBILE (desktop logic, vertical): dark cards; the dot rides a scan line down the CENTRE,
-               entering each card from the top (invisible inside, like the phone) and lighting it, then
-               reappearing in the gap. As #who nears it glides to the #who entry (no teleport). */
-            var scanY=H*0.42;
+            /* MOBILE ZIGZAG (owner's sketch): cards alternate left/right; the firefly hides INSIDE
+               a card (like the phone), then HOPS to the next one along an outward arc — out of the
+               side facing the next card, into the next card's top centre. It enters card 1 through
+               its top centre and leaves the last card through its bottom centre. */
             var handoff=cl((H*0.78 - pbr0.top)/Math.max(1,H*0.78 - H*0.06),0,1);
-            var dvp=lp(scanY, H*0.72, handoff);
-            var inside=false, dotX=W*0.5;
+            var dvp=lp(H*0.42, H*0.72, handoff);
             for(var cm=0;cm<N;cm++){ var card=track.children[cm], ccm=card.getBoundingClientRect();
-              var slit=(ccm.top + (ccm.bottom-ccm.top)*0.1) < dvp;   /* light once its top ~10% passes the dot */
+              var slit=(ccm.top+ccm.height*0.1)<dvp;
               if(slit && !card.classList.contains('lit')){ card.classList.add('flash'); (function(c){setTimeout(function(){c.classList.remove('flash');},560);})(card); }
-              card.classList.toggle('lit',slit);
-              if(dvp>ccm.top && dvp<ccm.bottom){ inside=true; dotX=ccm.left+ccm.width*0.5; }
+              card.classList.toggle('lit',slit); }
+            for(var ci2=0;ci2<N;ci2++){ var r2=track.children[ci2].getBoundingClientRect();
+              var exitY=r2.top+r2.height*0.62;
+              var nx=(ci2<N-1)?track.children[ci2+1].getBoundingClientRect():null;
+              var endY=nx?(nx.top+nx.height*0.15):(r2.bottom+8);
+              if(dvp>=r2.top-2 && dvp<exitY){ st.p=[r2.left+r2.width/2, dvp]; st.scale=0; return st; }
+              if(dvp>=exitY && dvp<endY && nx){
+                var tt=(dvp-exitY)/Math.max(1,endY-exitY); tt=tt*tt*(3-2*tt);
+                var dirR=(nx.left+nx.width/2)>(r2.left+r2.width/2);
+                var ex=[dirR?r2.right-8:r2.left+8, r2.top+r2.height*0.74];
+                var en=[nx.left+nx.width/2, nx.top+6];
+                st.p=qb(ex,[ex[0]+(dirR?48:-48),(ex[1]+en[1])/2+16],en,tt);
+                st.scale=1; st.lit=true; return st; }
             }
-            st.p=[dotX, dvp];
-            st.scale=(inside && handoff<0.06) ? 0 : 1;   /* invisible while travelling inside a card */
-            return st;
+            /* past the last card: out through its bottom centre, easing on to the #who entry */
+            var lr2=track.children[N-1].getBoundingClientRect();
+            if(dvp>=lr2.top){ st.p=[lr2.left+lr2.width/2, Math.max(lr2.bottom-8,dvp)]; st.scale=1; st.lit=true; return st; }
           }
           for(var cq=0;cq<N;cq++) track.children[cq].classList.remove('lit');
         }
@@ -1262,7 +1281,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     });
     mm.add('(max-width:900px)',function(){
       var track=document.getElementById('featTrack');
-      track.style.flexWrap='wrap'; track.style.overflowX='visible'; track.style.paddingBottom='10px';
+      track.style.flexDirection='column'; track.style.flexWrap='nowrap'; track.style.gap='16px';
+      track.style.overflowX='visible'; track.style.paddingBottom='10px';
       document.querySelector('.feat-pin').style.height='auto';
       document.querySelector('.feat-pin').style.padding='84px 0';
       /* No horizontal pin on mobile, so tell the dot where #feat ends (drives the #who phase). */
