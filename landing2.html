@@ -626,6 +626,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var blockProg=cl((sy-featEnd)/(H*1.5),0,1);   /* linear with scroll from the end of the feature pin — no dead zone */
         var dotY=lp(H*0.72, H+140, blockProg);   /* starts at the bottom of the last feature card, glides straight down */
         var lacc=track.children[N-1].getBoundingClientRect();
+        /* Headline stays revealed once past the trigger (holds through the CTA phase below);
+           it only retracts on the way back up, when the dot flies out above blockProg 0.26. */
+        st.headLit=(blockProg>=0.26);
         if(dotY <= pb.bottom+60){
           /* --- PB PHASE: dot descends LINEARLY through #who --- */
           var xt=cl(blockProg/0.4,0,1); xt=xt*xt*(3-2*xt);
@@ -634,7 +637,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           st.inBlock=(dotY>pb.top && dotY<pb.bottom);
           st.scale=(st.inBlock || dotY<=lacc.bottom) ? 0 : 1;   /* invisible within cards area + inside the block */
           st.beforeBlock=(dotY<=pb.top);
-          st.headLit=(blockProg>=0.26);
           return st;
         }
         /* --- CTA PHASE: dot has cleared #who; travels the gap (invisible) then passes through CTA (black until touched) --- */
