@@ -126,9 +126,9 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 .acc-r:first-child{border-top:0}
 .acc-r .ai{width:36px;height:36px;border-radius:10px;background:var(--tint);border:1px solid var(--tline);display:flex;align-items:center;justify-content:center}
 .acc-r .ai svg{width:18px;height:18px}
-.acc-r .an{font-size:13px;font-weight:600}
-.acc-r .as{font-family:var(--mono);font-size:10px;color:var(--mut);margin-top:1px}
-.acc-r .av{margin-left:auto;font-family:var(--mono);font-size:13px;font-weight:600}
+.acc-r .an{font-size:13px;font-weight:600;white-space:nowrap}
+.acc-r .as{font-family:var(--mono);font-size:10px;color:var(--mut);margin-top:1px;white-space:nowrap}
+.acc-r .av{margin-left:auto;font-family:var(--mono);font-size:13px;font-weight:600;flex-shrink:0}
 .donebal{text-align:center;margin:auto 0}
 .donebal .lb{font-family:var(--mono);font-size:12px;color:var(--mut)}
 .donebal .bg{font-family:var(--mono);font-size:38px;font-weight:700;letter-spacing:-.02em;margin-top:6px}
@@ -279,6 +279,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .flycard{width:170px;height:108px}
   .fc-us{left:calc(50% - 190px)}.fc-eu{right:calc(50% - 190px)}
   .scr{padding:28px 18px;transition:opacity .6s ease,transform .6s ease}
+  /* one-line account rows on the narrow phone screen: tighter icon/gaps/type so name+sub+amount
+     all fit without wrapping or overflowing (budgeted: 30+9+text+9+amount = 184px) */
+  .acc-r{gap:8px;padding:11px 0}
+  .acc-r .ai{width:30px;height:30px;border-radius:8px}
+  .acc-r .an{font-size:12px}
+  .acc-r .as{font-size:8.5px}
+  .acc-r .av{font-size:12px}
+  .asx{display:none} /* the rail tail (" / Wire") only fits on the desktop phone mock */
   /* clock and the giant step word were touching the phone; word is +40% (these are the steps —
      they must read). Flycards sit LOWER so they don't cover the account rows on screen 3. */
   .clock{top:76px;left:16px}
@@ -373,8 +381,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         </div>
         <div class="scr" id="scrAcc">
           <div class="scr-title">Accounts ready</div>
-          <div class="acc-r"><div class="ai rl"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags@gh-pages/flags/us.svg" alt="US" /></div><div><div class="an">US account</div><div class="as">USD · ACH / Wire</div></div><div class="av">$96,400</div></div>
-          <div class="acc-r"><div class="ai rl"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags@gh-pages/flags/european_union.svg" alt="EU" /></div><div><div class="an">EU account</div><div class="as">EUR · IBAN / SEPA</div></div><div class="av">€39,900</div></div>
+          <div class="acc-r"><div class="ai rl"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags@gh-pages/flags/us.svg" alt="US" /></div><div><div class="an">US account</div><div class="as">USD · ACH<span class="asx"> / Wire</span></div></div><div class="av">$96,400</div></div>
+          <div class="acc-r"><div class="ai rl"><img src="https://cdn.jsdelivr.net/gh/HatScripts/circle-flags@gh-pages/flags/european_union.svg" alt="EU" /></div><div><div class="an">EU account</div><div class="as">EUR · IBAN<span class="asx"> / SEPA</span></div></div><div class="av">€39,900</div></div>
         </div>
         <div class="scr" id="scrCry">
           <div class="scr-title">Crypto wallet</div>
@@ -699,8 +707,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
          the story uses) — mapping it over the full section meant the exit played while the phone was
          already sliding off-screen, so the dot left from above the viewport instead of the phone. */
       if(_dotSR && asm && _stageEl) aEnd=aTop+Math.max(1,asm.offsetHeight-_stageEl.offsetHeight);
-      if(sy<aTop){ var t=cl(sy/aTop,0,1); st.p=qb(logo,[W*0.15,H*0.5],[W*0.22,H*0.40],t); st.scale=cl(0.35+sy/140,0.35,1); return st; }
+      if(sy<aTop){ var t=cl(sy/aTop,0,1); st.p=qb(logo,[W*0.15,H*0.5],[W*0.22,H*0.40],t); st.scale=cl(0.35+sy/140,0.35,1);
+        /* MOBILE: the dive INTO the phone happens on approach — with the hard stepper the locked
+           position sits exactly on the section start, so the old in-section dive range never plays */
+        if(_dotSR && device && t>0.86){ var t2=(t-0.86)/0.14; t2=t2*t2*(3-2*t2); var dvr=device.getBoundingClientRect();
+          st.p=[lp(st.p[0],dvr.left+dvr.width/2,t2), lp(st.p[1],dvr.top+dvr.height/2,t2)]; st.scale=1-t2; st.inPhone=t2>0.55; }
+        return st; }
       if(sy<aEnd && device){
+        /* MOBILE: the whole locked story = firefly INSIDE the phone. It must not pre-exit on the
+           last slide (owner screen: it stood outside under the phone) — it leaves only when the
+           exit motion starts, via the bridge below. */
+        if(_dotSR){ var drm=device.getBoundingClientRect(); st.p=[drm.left+drm.width/2, drm.top+drm.height/2]; st.scale=0; st.inPhone=true; return st; }
         var dr=device.getBoundingClientRect(), dcx=dr.left+dr.width/2, dcy=dr.top+dr.height/2;
         var prog=cl((sy-aTop)/Math.max(1,aEnd-aTop),0,1);
         if(prog<0.07){ var t=prog/0.07; st.p=[lp(W*0.22,dcx,t), lp(H*0.40,dcy,t)]; st.scale=cl(1-t,0,1); st.inPhone=(t>0.55); return st; }
@@ -719,6 +736,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             if(gp<0.45){ var bt2=cl(gp/0.45,0,1); bt2=bt2*bt2*(3-2*bt2);
               var d3=device.getBoundingClientRect(), src2=[d3.left+d3.width/2, d3.bottom+22], gE2=[G[0],G[1]-gR];
               st.p=cb(src2,[src2[0]+30,lp(src2[1],gE2[1],0.42)],[gE2[0]+gR*0.75,lp(src2[1],gE2[1],0.72)],gE2,bt2);
+              /* it emerges from the phone bottom growing small→full (like the logo intro) */
+              st.scale=cl(gp/0.12,0,1);
               st.inGlobe=false; st.lit=false; return st; }
             var pt3=cl((gp-0.45)/0.6,0,1), yOff3=lp(-gR,gR*1.2,pt3);
             st.p=[G[0]-Math.sin(pt3*Math.PI)*gR*0.12, G[1]+yOff3];
@@ -1093,7 +1112,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         if(Math.abs(dy)>28) step(dy>0?1:-1); },{passive:true});
       sr.addEventListener('wheel',function(e){ if(!locked||tw)return; if(Math.abs(e.deltaY)>24) step(e.deltaY>0?1:-1); },{passive:true});
       function loop(){ var sy=sr.scrollTop, rp=(sy-asmTop)/range, p=Math.max(0,Math.min(1,rp));
-        if(p!==lastP){ setClock(p); lastP=p; show(Math.min(SEG,Math.round(p*SEG))); }
+        /* the phone screen stays dark until the firefly actually arrives — the first show() plays
+           its cascade at entry, not at page load (owner: "не происходит анимации... создать аккаунт") */
+        if(rp>=-0.02 && p!==lastP){ setClock(p); lastP=p; show(Math.min(SEG,Math.round(p*SEG))); }
         if(barsEl) barsEl.classList.toggle('show', rp>-0.08 && rp<1.06);
         /* entering the story zone from either side → freeze the scroll and align to the nearest step */
         if(!locked && !tw && rp>=0 && rp<=1){ lock();
@@ -1102,7 +1123,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         /* safety: anything that lands us outside while locked (resize, deep link) → release */
         if(locked && !tw && (rp<-0.001||rp>1.001)) unlock();
         rafId=requestAnimationFrame(loop); }
-      show(0); setClock(0); rafId=requestAnimationFrame(loop);
+      setClock(0); rafId=requestAnimationFrame(loop);
       return function(){ if(rafId)cancelAnimationFrame(rafId); killTw(); unlock(); window.removeEventListener('resize',onRs); };
     });
 
