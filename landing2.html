@@ -233,12 +233,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
 /* responsive */
 @media (max-width:900px){
-  /* SCROLL-LOCK: body is pinned and the page scrolls inside #scrollRoot. With the body fixed, iOS
-     Safari can no longer show/hide its address bar on scroll → the viewport never resizes → the
-     scroll-up jerk is gone. Header/menu/canvas sit outside #scrollRoot and stay put. */
-  html{height:100%}
-  body{position:fixed;inset:0;width:100%;overflow:hidden}
-  #scrollRoot{position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;scroll-padding-top:84px;z-index:1}
   .globe-grid{grid-template-columns:1fr;gap:30px}
   .fcard{flex-basis:280px;min-height:0;padding:24px}
   .fcard h3{margin-top:16px}
@@ -470,10 +464,34 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
   /* theme toggle removed — dark only */
 
-  var _hdrEl=document.getElementById('hdr'), _srEl=document.getElementById('scrollRoot');
-  function _hdrToggle(sy){_hdrEl.classList.toggle('scrolled',sy>20);}
-  window.addEventListener('scroll',function(){_hdrToggle(window.scrollY);},{passive:true});
-  if(_srEl) _srEl.addEventListener('scroll',function(){_hdrToggle(_srEl.scrollTop);},{passive:true});
+  window.addEventListener('scroll',function(){document.getElementById('hdr').classList.toggle('scrolled',window.scrollY>20);},{passive:true});
+
+  /* iOS ADDRESS-BAR JERK COMPENSATION (owner's spec): the toolbar animating in/out changes the
+     visual-viewport height mid-gesture and the browser lurches the content by that much. We watch
+     visualViewport in real time; the instant its height changes we ABSORB the delta into a transform
+     on the page content and then ease it back to 0 — so the sudden lurch is damped into a smooth
+     settle instead of a snap. The bar still shows/hides normally; only the jump is cancelled.
+     COMP_SIGN flips the direction if it ever compensates the wrong way. Mobile only. */
+  (function(){
+    var vv=window.visualViewport, wrap=document.getElementById('scrollRoot');
+    if(!vv||!wrap) return;
+    var COMP_SIGN=1, lastH=vv.height, offset=0, raf=null;
+    function tick(){
+      offset*=0.82;                                     /* decay the compensation back to rest */
+      if(Math.abs(offset)<0.5){ offset=0; wrap.style.transform=''; raf=null; return; }
+      wrap.style.transform='translate3d(0,'+(COMP_SIGN*offset)+'px,0)';
+      raf=requestAnimationFrame(tick);
+    }
+    function onChange(){
+      if(!window.matchMedia('(max-width:900px)').matches) return;
+      var d=vv.height-lastH; lastH=vv.height;
+      if(Math.abs(d)<1) return;
+      offset+=d;                                        /* absorb the sudden viewport delta */
+      if(!raf) raf=requestAnimationFrame(tick);
+    }
+    vv.addEventListener('resize',onChange);
+    vv.addEventListener('scroll',onChange);
+  })();
 
   var DATA={
     personal:{title:'For personal use',sub:'A personal multi-currency account, crypto and a card — for life and work worldwide.',
@@ -944,10 +962,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       return function(){ if(tmr)clearInterval(tmr); };
     });
 
-    var _mob=window.matchMedia('(max-width:900px)').matches, _sr=document.getElementById('scrollRoot');
     gsap.utils.toArray('.reveal').forEach(function(el){
       if(el.closest('.hero')) return;
-      gsap.fromTo(el,{opacity:0,y:26},{opacity:1,y:0,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%',scroller:_mob?_sr:undefined}});
+      gsap.fromTo(el,{opacity:0,y:26},{opacity:1,y:0,duration:.7,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%'}});
     });
 
     mm.add('(min-width:901px)',function(){
