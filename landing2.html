@@ -250,7 +250,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .device{width:250px;height:500px}
   .flycard{width:170px;height:108px}
   .fc-us{left:calc(50% - 190px)}.fc-eu{right:calc(50% - 190px)}
-  .scr{padding:28px 18px}
+  .scr{padding:28px 18px;transition:opacity .45s ease,transform .45s ease}
   .donebal .bg{font-size:30px}
   .scr-title{margin-bottom:14px}
 }
@@ -901,27 +901,27 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     });
 
     mm.add('(max-width:900px)',function(){
-      /* Mobile: CSS `position:sticky` holds the phone (see .asm-stage in the media query) and a
-         SCRUBBED timeline with NO GSAP pin drives the screens. Scrub only READS scroll, it never
-         moves it — so the phone stays fixed while you scroll its story, without the iOS jank a
-         GSAP pin causes. */
-      gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry','#scrDone'],{opacity:0,y:16});
+      /* Mobile: CSS position:sticky holds the phone (native, smooth). Screens are driven by a light
+         rAF that ONLY reads window.scrollY (offsets cached) — NO GSAP scrub/pin, which jank on iOS
+         because of the address-bar viewport resize + JS-thread scroll handling (well-documented). */
+      var scrs=['scrReg','scrId','scrAcc','scrCry','scrDone'].map(function(id){return document.getElementById(id);}),
+          stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
+      scrs.forEach(function(s){s.style.opacity='0';});
       gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
-      window.__asmEnd=(asm?asm.offsetTop:0)+(asm?asm.offsetHeight:H);
-      var tl=gsap.timeline({scrollTrigger:{trigger:'#asm',start:'top top',end:'bottom bottom',scrub:0.5,
-        onUpdate:function(s){var p=s.progress; setClock(p);
-          if(p<0.2)setStep('01','Sign up'); else if(p<0.4)setStep('02','Verify'); else if(p<0.6)setStep('03','US + EU accounts'); else if(p<0.8)setStep('04','Crypto wallet'); else setStep('5m','Done'); }}});
-      tl.to('#scrReg',{opacity:1,y:0,duration:1},0.1)
-        .to('#scrReg',{opacity:0,y:-18,duration:.7},1.9)
-        .fromTo('#scrId',{opacity:0,y:18},{opacity:1,y:0,duration:.8},2.0)
-        .fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.1,ease:'power1.inOut',yoyo:true,repeat:1},2.2)
-        .to('#scrId',{opacity:0,y:-18,duration:.7},3.8)
-        .fromTo('#scrAcc',{opacity:0,y:18},{opacity:1,y:0,duration:.8},3.9)
-        .to('#scrAcc',{opacity:0,y:-18,duration:.7},5.6)
-        .fromTo('#scrCry',{opacity:0,y:18},{opacity:1,y:0,duration:.8},5.7)
-        .to('#scrCry',{opacity:0,y:-18,duration:.7},7.4)
-        .fromTo('#scrDone',{opacity:0,scale:.92},{opacity:1,scale:1,duration:.9,ease:'back.out(1.3)'},7.5)
-        .fromTo('#scrDone .st',{opacity:0,y:14},{opacity:1,y:0,duration:.6},8.1);
+      var aTop=0, range=1;
+      function measure(){ aTop=asm.offsetTop; range=Math.max(1,asm.offsetHeight-window.innerHeight); window.__asmEnd=aTop+asm.offsetHeight; }
+      measure(); window.addEventListener('resize',measure); ScrollTrigger.addEventListener('refresh',measure);
+      var cur=-1, run=true, lastP=-1;
+      function loop(){ if(!run)return;
+        var p=Math.max(0,Math.min(1,(window.scrollY-aTop)/range));
+        var i=Math.min(scrs.length-1,Math.max(0,Math.floor(p*scrs.length)));
+        if(i!==cur){ scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
+          setStep(stp[i][0],stp[i][1]); if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1}); cur=i; }
+        if(Math.abs(p-lastP)>0.003){ setClock(p); lastP=p; }
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+      return function(){run=false;};
     });
 
     gsap.utils.toArray('.reveal').forEach(function(el){
