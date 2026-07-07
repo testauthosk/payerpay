@@ -145,6 +145,8 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 .fc-eu .fc-chip{background:rgba(4,20,13,.15);border-color:rgba(4,20,13,.2)}
 .stepbars{display:none}
 .cryp-count{position:absolute;left:50%;transform:translateX(-50%);top:calc(78% + 62px);font-family:var(--mono);font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--mint);z-index:6;opacity:0;white-space:nowrap}
+#coinField{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
+@media (max-width:900px){ #coinField{display:block} }
 .coin{position:absolute;width:52px;height:52px;z-index:4;opacity:0}
 .coin circle{fill:#060807;stroke:var(--mint);stroke-width:2}
 .coin text{fill:var(--mint);font-family:var(--mono);font-weight:700}
@@ -409,6 +411,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <img class="coin" id="cn1" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/usdt.svg" alt="USDT" style="left:calc(50% - 30px);top:calc(50% - 220px)" />
     <img class="coin" id="cn2" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/btc.svg" alt="BTC" style="left:calc(50% + 40px);top:calc(50% - 240px)" />
     <img class="coin" id="cn3" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/eth.svg" alt="ETH" style="left:calc(50% - 90px);top:calc(50% - 250px)" />
+    <div id="coinField"></div>
     <div class="cryp-count" id="crypCount">120+ cryptocurrencies supported</div>
     <div class="asm-word" id="asmWord"><span class="n">01</span><span id="asmWordTxt">Sign up</span></div>
     <div class="stepbars" id="stepBars"><span class="sb-th" id="sbTh"></span><i></i><i></i><i></i><i></i><i></i></div>
@@ -1080,6 +1083,61 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       function onRs(){ if(window.innerWidth===lastW)return; lastW=window.innerWidth; measure(); }
       window.addEventListener('resize',onRs);
       var idx=-1, lastP=-1, rafId=null, coinFin=null, kycTw=null;
+      /* --- COIN PHYSICS (owner's spec): six OTHER coins (not the on-screen USDT/BTC/ETH), smaller,
+         rain from above and land with real 2D physics (Matter.js, lazy-loaded on first entry);
+         device tilt rolls them via the accelerometer (iOS asks permission once, on the next tap). */
+      var phys=null, matterP=null;
+      var COINS=[['sol',38],['xrp',34],['doge',32],['ada',30],['ltc',34],['link',28]];
+      function loadMatter(){ if(window.Matter)return Promise.resolve(); if(matterP)return matterP;
+        matterP=new Promise(function(res,rej){ var s=document.createElement('script');
+          s.src='https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js'; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+        return matterP; }
+      function coinsDown(){ if(!phys)return; cancelAnimationFrame(phys.raf);
+        if(phys.orient) window.removeEventListener('deviceorientation',phys.orient);
+        var f=phys.field; phys=null;
+        gsap.to(f,{autoAlpha:0,duration:.3,onComplete:function(){ f.innerHTML=''; }}); }
+      function coinsUp(){ coinsDown();
+        var M=window.Matter; if(!M)return;
+        var field=document.getElementById('coinField'), stg=document.querySelector('.asm-stage');
+        var fw=stg.clientWidth, fh=stg.clientHeight;
+        var wordR=document.getElementById('asmWord').getBoundingClientRect(), stR=stg.getBoundingClientRect();
+        var floorY=(wordR.top-stR.top)-12;
+        var eng=M.Engine.create(), world=eng.world;
+        M.Composite.add(world,[
+          M.Bodies.rectangle(fw/2,floorY+30,fw*2,60,{isStatic:true}),
+          M.Bodies.rectangle(-14,fh/2,28,fh*4,{isStatic:true}),
+          M.Bodies.rectangle(fw+14,fh/2,28,fh*4,{isStatic:true})]);
+        field.innerHTML=''; gsap.set(field,{autoAlpha:1});
+        var bodies=[];
+        COINS.forEach(function(cn,k){ var r=cn[1]/2;
+          var img=document.createElement('img');
+          img.src='https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+cn[0]+'.svg';
+          img.style.cssText='position:absolute;left:0;top:0;width:'+cn[1]+'px;height:'+cn[1]+'px;border-radius:50%;will-change:transform';
+          field.appendChild(img);
+          var x=fw/2+(k-2.5)*32+((k%2)?14:-14);
+          var b=M.Bodies.circle(x,-60-k*80,r,{restitution:.55,friction:.35,frictionAir:.012});
+          M.Body.setAngularVelocity(b,(Math.random()-.5)*.3);
+          M.Composite.add(world,b); bodies.push([b,img,r]); });
+        var last=performance.now();
+        function pl(ts){ if(!phys)return; var dt=Math.min(32,ts-last); last=ts; M.Engine.update(eng,dt);
+          for(var q=0;q<bodies.length;q++){ var bb=bodies[q];
+            bb[1].style.transform='translate3d('+(bb[0].position.x-bb[2]).toFixed(1)+'px,'+(bb[0].position.y-bb[2]).toFixed(1)+'px,0) rotate('+bb[0].angle.toFixed(3)+'rad)'; }
+          phys.raf=requestAnimationFrame(pl); }
+        phys={eng:eng,field:field,raf:0,orient:null};
+        phys.raf=requestAnimationFrame(pl);
+        /* canonical Matter.js gyro mapping (official demo): portrait → gravity.x=gamma/90,
+           gravity.y=beta/90; slightly amplified x for responsiveness, floored y so the coins
+           don't float when the phone lies flat */
+        var wire=function(){ if(!phys)return; phys.orient=function(e){ if(!phys)return;
+            var gx=Math.max(-90,Math.min(90,e.gamma||0))/90, gy=Math.max(-90,Math.min(90,e.beta||45))/90;
+            eng.gravity.x=gx*1.4; eng.gravity.y=Math.max(0.25,gy); };
+          window.addEventListener('deviceorientation',phys.orient); };
+        if(typeof DeviceOrientationEvent!=='undefined'&&DeviceOrientationEvent.requestPermission){
+          var ask=function(){ sr.removeEventListener('touchend',ask);
+            DeviceOrientationEvent.requestPermission().then(function(r){ if(r==='granted')wire(); }).catch(function(){}); };
+          sr.addEventListener('touchend',ask,{passive:true});
+        } else wire();
+      }
       function show(i){ if(i===idx)return;
         scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
         setStep(stp[i][0],stp[i][1]);
@@ -1094,15 +1152,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         if(i===2){ gsap.fromTo('#fcUs',{autoAlpha:0,x:-110,y:60,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:.85,ease:'back.out(1.3)',overwrite:'auto'});
           gsap.fromTo('#fcEu',{autoAlpha:0,x:110,y:110,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:.85,delay:.12,ease:'back.out(1.3)',overwrite:'auto'}); }
         else gsap.to(['#fcUs','#fcEu'],{autoAlpha:0,duration:.35,overwrite:'auto'});
-        /* crypto (owner's spec): the three coins RAIN from above the stage almost to the bottom,
-           bounce-land in a row under the phone, and on touchdown the "120+ cryptocurrencies
-           supported" line pops in — instant "we're serious about crypto" */
+        /* crypto: coin rain with real physics; the "120+" line sits ABOVE the landing floor,
+           positioned from live rects (a fixed % height overlapped the giant step word on the
+           owner's screen), and pops on touchdown */
         if(coinFin){coinFin.kill();coinFin=null;}
-        if(i===3){ var stg=document.querySelector('.asm-stage'), sh2=stg?stg.offsetHeight:window.innerHeight, land=sh2*0.78;
-          ['cn1','cn2','cn3'].forEach(function(id,k){ var c=document.getElementById(id);
-            gsap.fromTo(c,{autoAlpha:1,y:-(c.offsetTop+70),scale:1},{y:land-c.offsetTop,scale:1,duration:1.0,delay:k*0.12,ease:'bounce.out',overwrite:'auto'}); });
-          coinFin=gsap.fromTo('#crypCount',{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.15,onComplete:function(){coinFin=null;}}); }
-        else { gsap.to(['#cn1','#cn2','#cn3'],{autoAlpha:0,duration:.35,overwrite:'auto'});
+        if(i===3){ var cc=document.getElementById('crypCount'),
+            wr=document.getElementById('asmWord').getBoundingClientRect(),
+            str=document.querySelector('.asm-stage').getBoundingClientRect();
+          cc.style.top=((wr.top-str.top)-12-64)+'px';
+          loadMatter().then(function(){ if(idx===3)coinsUp(); }).catch(function(){});
+          coinFin=gsap.fromTo(cc,{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.25,onComplete:function(){coinFin=null;}}); }
+        else { coinsDown();
           gsap.to('#crypCount',{autoAlpha:0,duration:.3,overwrite:'auto'}); }
         /* finale: "Ready to pay / accept / anywhere" tick in ONE BY ONE (honest, not a fake balance) */
         if(i===4) gsap.fromTo('#scrDone .rdy',{autoAlpha:0,x:-16},{autoAlpha:1,x:0,stagger:.45,duration:.5,ease:'power2.out',delay:.4,overwrite:'auto'});
@@ -1146,7 +1206,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         if(locked && !tw && (rp<-0.001||rp>1.001)) unlock();
         rafId=requestAnimationFrame(loop); }
       setClock(0); rafId=requestAnimationFrame(loop);
-      return function(){ if(rafId)cancelAnimationFrame(rafId); killTw(); unlock(); window.removeEventListener('resize',onRs); };
+      return function(){ if(rafId)cancelAnimationFrame(rafId); killTw(); unlock(); coinsDown(); window.removeEventListener('resize',onRs); };
     });
 
     var _mob=window.matchMedia('(max-width:900px)').matches, _sr=document.getElementById('scrollRoot');
