@@ -1095,6 +1095,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         return matterP; }
       function coinsDown(){ if(!phys)return; cancelAnimationFrame(phys.raf);
         if(phys.orient) window.removeEventListener('deviceorientation',phys.orient);
+        if(phys.tap){ sr.removeEventListener('touchstart',phys.tap); sr.removeEventListener('mousedown',phys.tap); }
         var f=phys.field; phys=null;
         gsap.to(f,{autoAlpha:0,duration:.3,onComplete:function(){ f.innerHTML=''; }}); }
       function coinsUp(){ coinsDown();
@@ -1137,6 +1138,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             eng.gravity.x=gx*1.4; eng.gravity.y=Math.max(0.25,gy); };
           window.addEventListener('deviceorientation',phys.orient);
         }
+        /* tap interactivity (owner): coins near the finger HOP — velocity kick + spin */
+        phys.tap=function(e){ if(!phys)return; var t=e.touches?e.touches[0]:e;
+          var sR2=stg.getBoundingClientRect(), px=t.clientX-sR2.left, py=t.clientY-sR2.top;
+          for(var q=0;q<bodies.length;q++){ var bb2=bodies[q], dx=bb2[0].position.x-px, dy=bb2[0].position.y-py, rr=bb2[2]+42;
+            if(dx*dx+dy*dy<rr*rr){
+              M.Body.setVelocity(bb2[0],{x:(Math.random()-.5)*5,y:-8-Math.random()*4});
+              M.Body.setAngularVelocity(bb2[0],(Math.random()-.5)*.5); } } };
+        sr.addEventListener('touchstart',phys.tap,{passive:true});
+        sr.addEventListener('mousedown',phys.tap);
       }
       function show(i){ if(i===idx)return;
         scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
@@ -1145,7 +1155,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         gsap.fromTo(scrs[i].children,{opacity:0,y:14},{opacity:1,y:0,stagger:.1,duration:.55,delay:.12,ease:'power2.out',overwrite:'auto'});
         /* verification: scan pass, then a big mint check in a circle pops (standard KYC affordance) */
         if(kycTw){kycTw.kill();kycTw=null;}
-        if(i===1){ gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:.9,ease:'power1.inOut',yoyo:true,repeat:1});
+        if(i===1){ gsap.set('#scanLine',{autoAlpha:1});
+          gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:.9,ease:'power1.inOut',yoyo:true,repeat:1});
+          /* the scan bar FADES once the pass is done (it used to keep sitting at the top) */
+          gsap.to('#scanLine',{autoAlpha:0,duration:.35,delay:1.85,overwrite:false});
           kycTw=gsap.fromTo('#kycOk',{autoAlpha:0,scale:.3},{autoAlpha:1,scale:1,duration:.65,ease:'back.out(1.9)',delay:1.55}); }
         else gsap.to('#kycOk',{autoAlpha:0,duration:.25,overwrite:'auto'});
         /* accounts: US/EU cards fly in from the sides (kept LOW so the account rows stay readable) */
@@ -1159,9 +1172,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         if(i===3){ var cc=document.getElementById('crypCount'),
             wr=document.getElementById('asmWord').getBoundingClientRect(),
             str=document.querySelector('.asm-stage').getBoundingClientRect(),
-            dvb=document.querySelector('.device').getBoundingClientRect().bottom-str.top,
-            flr=(wr.top-str.top)-12;
-          cc.style.top=Math.max(dvb+8,flr-116)+'px';
+            ethR=document.querySelector('#scrCry .acc-r:last-child').getBoundingClientRect();
+          /* owner's exact spec: halfway between the Ethereum row and the "04" word — well above
+             where the coin pile can reach */
+          cc.style.top=((((ethR.bottom-str.top)+(wr.top-str.top))/2)-8)+'px';
           loadMatter().then(function(){ if(idx===3)coinsUp(); }).catch(function(){});
           coinFin=gsap.fromTo(cc,{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.25,onComplete:function(){coinFin=null;}}); }
         else { coinsDown();
