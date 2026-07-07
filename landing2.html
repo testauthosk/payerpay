@@ -132,6 +132,8 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 .donebal{text-align:center;margin:auto 0}
 .donebal .lb{font-family:var(--mono);font-size:12px;color:var(--mut)}
 .donebal .bg{font-family:var(--mono);font-size:38px;font-weight:700;letter-spacing:-.02em;margin-top:6px}
+.donebal .rdy{display:flex;align-items:center;justify-content:flex-start;gap:9px;font-size:14.5px;font-weight:700;letter-spacing:-.01em;margin:13px auto 0;width:148px;text-align:left;white-space:nowrap;opacity:0}
+.donebal .rdy svg{width:17px;height:17px;stroke:var(--mint);stroke-width:2.8;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .donebal .st{display:inline-flex;align-items:center;gap:8px;margin-top:18px;background:var(--tint);border:1px solid var(--tline);color:var(--mint);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700}
 .flycard{position:absolute;width:210px;height:132px;border-radius:16px;z-index:4;padding:16px;display:flex;flex-direction:column;justify-content:space-between;opacity:0}
 .flycard .fc-t{display:flex;justify-content:space-between;align-items:center}
@@ -142,6 +144,7 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 .fc-chip{width:34px;height:24px;border-radius:6px;background:rgba(52,224,161,.2);border:1px solid var(--tline)}
 .fc-eu .fc-chip{background:rgba(4,20,13,.15);border-color:rgba(4,20,13,.2)}
 .stepbars{display:none}
+.cryp-count{position:absolute;left:50%;transform:translateX(-50%);top:calc(78% + 62px);font-family:var(--mono);font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--mint);z-index:6;opacity:0;white-space:nowrap}
 .coin{position:absolute;width:52px;height:52px;z-index:4;opacity:0}
 .coin circle{fill:#060807;stroke:var(--mint);stroke-width:2}
 .coin text{fill:var(--mint);font-family:var(--mono);font-weight:700}
@@ -392,9 +395,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         </div>
         <div class="scr" id="scrDone">
           <div class="donebal">
-            <div class="lb">Total balance</div>
-            <div class="bg">$148,200</div>
-            <div class="st"><svg class="ic" style="width:15px;height:15px;stroke-width:2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg>Ready in 4:52</div>
+            <div class="lb">You're all set</div>
+            <div class="rdy"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg>Ready to pay</div>
+            <div class="rdy"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg>Ready to accept</div>
+            <div class="rdy"><svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg>Ready anywhere</div>
+            <div class="st"><svg class="ic" style="width:15px;height:15px;stroke-width:2.6" viewBox="0 0 24 24"><path d="M5 12l4 4 10-11"/></svg>Set up in 4:52</div>
           </div>
         </div>
       </div>
@@ -404,6 +409,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <img class="coin" id="cn1" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/usdt.svg" alt="USDT" style="left:calc(50% - 30px);top:calc(50% - 220px)" />
     <img class="coin" id="cn2" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/btc.svg" alt="BTC" style="left:calc(50% + 40px);top:calc(50% - 240px)" />
     <img class="coin" id="cn3" src="https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/eth.svg" alt="ETH" style="left:calc(50% - 90px);top:calc(50% - 250px)" />
+    <div class="cryp-count" id="crypCount">120+ cryptocurrencies supported</div>
     <div class="asm-word" id="asmWord"><span class="n">01</span><span id="asmWordTxt">Sign up</span></div>
     <div class="stepbars" id="stepBars"><span class="sb-th" id="sbTh"></span><i></i><i></i><i></i><i></i><i></i></div>
   </div>
@@ -1002,6 +1008,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     setTimeout(function(){document.getElementById('pre').classList.add('hide');},900);
     if(!G||reduce){document.querySelectorAll('.reveal').forEach(function(el){el.style.opacity=1;});
       ['scrReg','scrId','scrAcc','scrCry','scrDone'].forEach(function(id){document.getElementById(id).style.opacity=1;});
+      document.querySelectorAll('#scrDone .rdy').forEach(function(el){el.style.opacity=1;});
       return;}
 
     var htl=gsap.timeline({delay:.95});
@@ -1047,7 +1054,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         .fromTo('#scrCry .acc-r',{opacity:0,x:16},{opacity:1,x:0,stagger:.2,duration:.5},7.6)
         .to('#scrCry',{opacity:0,y:-24,duration:.7},8.8)
         .fromTo('#scrDone',{opacity:0,scale:.9},{opacity:1,scale:1,duration:.9,ease:'back.out(1.4)'},8.9)
-        .fromTo('#scrDone .st',{opacity:0,y:14},{opacity:1,y:0,duration:.6},9.4)
+        .fromTo('#scrDone .rdy',{opacity:0,x:-16},{opacity:1,x:0,stagger:.3,duration:.5},9.1)
+        .fromTo('#scrDone .st',{opacity:0,y:14},{opacity:1,y:0,duration:.6},10.1)
         .to('#device',{scale:1.04,duration:.8,yoyo:true,repeat:1},9.4);
     });
 
@@ -1086,14 +1094,18 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         if(i===2){ gsap.fromTo('#fcUs',{autoAlpha:0,x:-110,y:60,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:.85,ease:'back.out(1.3)',overwrite:'auto'});
           gsap.fromTo('#fcEu',{autoAlpha:0,x:110,y:110,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:.85,delay:.12,ease:'back.out(1.3)',overwrite:'auto'}); }
         else gsap.to(['#fcUs','#fcEu'],{autoAlpha:0,duration:.35,overwrite:'auto'});
-        /* crypto: coins bounce in, pause, then SINK into the phone — the animation completes
-           instead of freezing above the device */
+        /* crypto (owner's spec): the three coins RAIN from above the stage almost to the bottom,
+           bounce-land in a row under the phone, and on touchdown the "120+ cryptocurrencies
+           supported" line pops in — instant "we're serious about crypto" */
         if(coinFin){coinFin.kill();coinFin=null;}
-        if(i===3){ gsap.fromTo('#cn1',{autoAlpha:0,y:-140,scale:1},{autoAlpha:1,y:0,scale:1,duration:.7,ease:'bounce.out',overwrite:'auto'});
-          gsap.fromTo('#cn2',{autoAlpha:0,y:-170,scale:1},{autoAlpha:1,y:0,scale:1,duration:.8,delay:.1,ease:'bounce.out',overwrite:'auto'});
-          gsap.fromTo('#cn3',{autoAlpha:0,y:-190,scale:1},{autoAlpha:1,y:0,scale:1,duration:.9,delay:.18,ease:'bounce.out',overwrite:'auto'});
-          coinFin=gsap.to(['#cn1','#cn2','#cn3'],{autoAlpha:0,y:'+=130',scale:.45,duration:.6,stagger:.08,delay:1.7,ease:'power2.in',onComplete:function(){coinFin=null;}}); }
-        else gsap.to(['#cn1','#cn2','#cn3'],{autoAlpha:0,duration:.35,overwrite:'auto'});
+        if(i===3){ var stg=document.querySelector('.asm-stage'), sh2=stg?stg.offsetHeight:window.innerHeight, land=sh2*0.78;
+          ['cn1','cn2','cn3'].forEach(function(id,k){ var c=document.getElementById(id);
+            gsap.fromTo(c,{autoAlpha:1,y:-(c.offsetTop+70),scale:1},{y:land-c.offsetTop,scale:1,duration:1.0,delay:k*0.12,ease:'bounce.out',overwrite:'auto'}); });
+          coinFin=gsap.fromTo('#crypCount',{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.15,onComplete:function(){coinFin=null;}}); }
+        else { gsap.to(['#cn1','#cn2','#cn3'],{autoAlpha:0,duration:.35,overwrite:'auto'});
+          gsap.to('#crypCount',{autoAlpha:0,duration:.3,overwrite:'auto'}); }
+        /* finale: "Ready to pay / accept / anywhere" tick in ONE BY ONE (honest, not a fake balance) */
+        if(i===4) gsap.fromTo('#scrDone .rdy',{autoAlpha:0,x:-16},{autoAlpha:1,x:0,stagger:.45,duration:.5,ease:'power2.out',delay:.4,overwrite:'auto'});
         /* the mint drop FLOWS to the active bar: springy translate (overshoot bezier in CSS) plus a
            brief stretch mid-flight so it reads as liquid, not a jump */
         if(thEl){ thEl.style.transform='translateY('+(i*BARSTEP)+'px)'; thEl.style.height='34px';
