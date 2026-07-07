@@ -245,8 +245,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .pb-body{grid-template-columns:1fr}.pb{padding:32px 22px}
   .nav-links{display:none}.menu-tgl{display:flex}
   .nav-right .seg,.nav-right>.btn-primary{display:none}
-  #asm{height:200lvh}
-  .asm-stage{position:sticky;top:0}
   #globeCv{width:min(260px,60%)}
   .globe-grid{gap:22px}
   .device{width:250px;height:500px}
@@ -908,31 +906,23 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     });
 
     mm.add('(max-width:900px)',function(){
-      /* Mobile: CSS position:sticky holds the phone (native, smooth). Screens are driven by a light
-         rAF that ONLY reads window.scrollY (offsets cached) — NO GSAP scrub/pin, which jank on iOS
-         because of the address-bar viewport resize + JS-thread scroll handling (well-documented). */
+      /* Mobile — FIXATION REMOVED (diagnostic per owner): no position:sticky, no tall section. The
+         phone is a normal one-viewport block and its story AUTO-PLAYS on a timer (not scroll-linked)
+         → native scroll is untouched = guaranteed smooth. If the jerk disappears here, the fixation
+         was the cause; if it persists, the cause is elsewhere (pilot canvas). */
       var scrs=['scrReg','scrId','scrAcc','scrCry','scrDone'].map(function(id){return document.getElementById(id);}),
           stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
       scrs.forEach(function(s){s.style.opacity='0';});
       gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
-      var aTop=0, range=1, stage=document.querySelector('.asm-stage');
-      /* range from the sticky STAGE height (stable), not window.innerHeight (which changes with the
-         iOS toolbar → would jump the progress on scroll-up). */
-      function measure(){ aTop=asm.offsetTop; range=Math.max(1,asm.offsetHeight-stage.offsetHeight); window.__asmEnd=aTop+asm.offsetHeight; }
-      measure(); var lastMW=window.innerWidth;
-      window.addEventListener('resize',function(){ if(window.innerWidth===lastMW)return; lastMW=window.innerWidth; measure(); });
-      ScrollTrigger.addEventListener('refresh',measure);
-      var cur=-1, run=true, lastP=-1;
-      function loop(){ if(!run)return;
-        var p=Math.max(0,Math.min(1,(window.scrollY-aTop)/range));
-        var i=Math.min(scrs.length-1,Math.max(0,Math.floor(p*scrs.length)));
-        if(i!==cur){ scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
-          setStep(stp[i][0],stp[i][1]); if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1}); cur=i; }
-        if(Math.abs(p-lastP)>0.003){ setClock(p); lastP=p; }
-        requestAnimationFrame(loop);
-      }
-      requestAnimationFrame(loop);
-      return function(){run=false;};
+      window.__asmEnd=(asm?asm.offsetTop:0)+(asm?asm.offsetHeight:H);
+      var idx=-1, tmr=null;
+      function show(i){ if(i===idx)return;
+        scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
+        setStep(stp[i][0],stp[i][1]); setClock(i/(scrs.length-1));
+        if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1}); idx=i; }
+      show(0);
+      tmr=setInterval(function(){show((idx+1)%scrs.length);},2200);
+      return function(){ if(tmr)clearInterval(tmr); };
     });
 
     gsap.utils.toArray('.reveal').forEach(function(el){
