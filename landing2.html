@@ -715,7 +715,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     function mzLight(track,k){ for(var j=0;j<track.children.length;j++){ var c=track.children[j];
       if(j<=k){ if(!c.classList.contains('lit')){ c.classList.add('lit'); c.classList.add('flash');
           (function(cc){setTimeout(function(){cc.classList.remove('flash');},560);})(c);
-          if(window.gsap) gsap.fromTo(c.children,{opacity:0,y:12},{opacity:1,y:0,stagger:.08,duration:.45,ease:'power2.out',overwrite:'auto'}); } }
+          /* fast cascade so the content lands together with the border glow (owner: no lag) */
+          if(window.gsap) gsap.fromTo(c.children,{opacity:0,y:8},{opacity:1,y:0,stagger:.04,duration:.3,ease:'power2.out',overwrite:'auto'}); } }
       else if(c.classList.contains('lit')){ c.classList.remove('lit');
         if(window.gsap){ gsap.killTweensOf(c.children); gsap.set(c.children,{clearProps:'opacity,transform'}); } } } }
     var DPR=Math.min(window.devicePixelRatio||1,2), W,H;
@@ -855,14 +856,22 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
               if(dvp>=exitY && dvp<endY && nx){ mzLight(track,ci2);
                 var tt=(dvp-exitY)/Math.max(1,endY-exitY); tt=tt*tt*(3-2*tt);
                 var dirR=(nx.left+nx.width/2)>(r2.left+r2.width/2);
-                /* owner's drawing: OUT of the card's BOTTOM edge on its outer side, arc outward,
-                   IN through the next card's TOP edge just inside its outer corner */
-                var ex=[dirR?r2.right-r2.width*0.15:r2.left+r2.width*0.15, r2.bottom-4];
-                var en=[dirR?nx.right-nx.width*0.22:nx.left+nx.width*0.22, nx.top+4];
-                var cx3=dirR?Math.max(ex[0],en[0])+40:Math.min(ex[0],en[0])-40;
-                st.p=qb(ex,[cx3,(ex[1]+en[1])/2],en,tt);
+                /* owner's drawing: OUT of the card's SIDE (lower third of the outer edge), arc
+                   outward, IN through the next card's TOP edge near its outer corner. The control
+                   point sits on the PERPENDICULAR of the chord midpoint (canonical natural arc —
+                   a quadratic Bezier is a parabola segment; ad-hoc offsets read as straight). */
+                var ex=[dirR?r2.right-2:r2.left+2, r2.top+r2.height*0.72];
+                var en=[dirR?nx.right-nx.width*0.2:nx.left+nx.width*0.2, nx.top+2];
+                var dx2=en[0]-ex[0], dy2=en[1]-ex[1], ln2=Math.max(1,Math.sqrt(dx2*dx2+dy2*dy2));
+                var nxv=-dy2/ln2, nyv=dx2/ln2;                       /* unit normal of the chord */
+                /* bulge to the OUTER side; on a near-horizontal chord the x-component is noise,
+                   so fall back to a downward sag (both of the owner's sketches sag downward) */
+                if(Math.abs(nxv)<0.2){ if(nyv<0){nxv=-nxv;nyv=-nyv;} }
+                else if(dirR? nxv<0 : nxv>0){ nxv=-nxv; nyv=-nyv; }
+                var bg=ln2*0.34;
+                st.p=qb(ex,[(ex[0]+en[0])/2+nxv*bg,(ex[1]+en[1])/2+nyv*bg+ln2*0.08],en,tt);
                 st.scale=cl(tt<0.5?tt/0.14:(1-tt)/0.14,0,1); /* grows out of the edge, shrinks into the next */
-                if(tt>0.9) mzLight(track,ci2+1);
+                if(tt>0.85) mzLight(track,ci2+1);
                 st.lit=true; return st; }
             }
             /* past the last card: grows out of its bottom CENTRE, easing on to the #who entry */
