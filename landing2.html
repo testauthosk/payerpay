@@ -460,6 +460,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   var G=typeof gsap!=='undefined';
   if(G) gsap.registerPlugin(ScrollTrigger);
+  /* THE missed root cause: by default ScrollTrigger does a FULL refresh() on every window resize —
+     and on iOS the address bar showing/hiding IS a resize. So on every scroll-up the whole page
+     re-measured and re-laid-out mid-gesture = the jerk. It was present in EVERY version we shipped
+     (pin, sticky, auto-play, lvh — all of them kept at least the .reveal triggers alive), which is
+     why removing pin/sticky/canvas never helped. This official flag ignores toolbar-only resizes. */
+  if(G) ScrollTrigger.config({ignoreMobileResize:true});
   var root=document.documentElement;
 
   /* theme toggle removed — dark only */
@@ -473,6 +479,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
      settle instead of a snap. The bar still shows/hides normally; only the jump is cancelled.
      COMP_SIGN flips the direction if it ever compensates the wrong way. Mobile only. */
   (function(){
+    /* OFF by default (?comp=1 re-enables for A/B). iOS natively anchors static content while the
+       bar animates — shifting #scrollRoot by the viewport delta on top of that ADDS a visible slide
+       instead of cancelling one. The real culprit was ScrollTrigger's resize refresh (see above). */
+    if(!/[?&]comp=1/.test(location.search)) return;
     var vv=window.visualViewport, wrap=document.getElementById('scrollRoot');
     if(!vv||!wrap) return;
     var COMP_SIGN=1, lastH=vv.height, offset=0, raf=null;
