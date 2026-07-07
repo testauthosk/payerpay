@@ -899,26 +899,22 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     });
 
     mm.add('(max-width:900px)',function(){
-      /* Mobile scrollytelling: same pinned phone story as desktop (screens + clock + step),
-         but the flycards/coins stay off (they are desktop decoration that would overflow). */
-      gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry','#scrDone'],{opacity:0,y:18});
+      /* Mobile: NO pin — pinned ScrollTriggers jank iOS scrolling (scroll jumps up/down). The phone
+         story AUTO-PLAYS on a loop while #asm is on screen, so scrolling stays completely smooth. */
+      window.__asmEnd=(asm?asm.offsetTop:0)+(asm?asm.offsetHeight:H);
+      var scr=['#scrReg','#scrId','#scrAcc','#scrCry','#scrDone'],
+          stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
+      gsap.set(scr,{opacity:0,y:16});
       gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
-      window.__asmEnd=(asm?asm.offsetTop:0)+2600;
-      var tl=gsap.timeline({scrollTrigger:{trigger:'#asm',start:'top top',end:'+=2600',scrub:1,pin:'.asm-stage',anticipatePin:1,
-        onRefresh:function(self){window.__asmEnd=self.end;},
-        onUpdate:function(s){var p=s.progress; setClock(p);
-          if(p<0.2)setStep('01','Sign up'); else if(p<0.4)setStep('02','Verify'); else if(p<0.6)setStep('03','US + EU accounts'); else if(p<0.8)setStep('04','Crypto wallet'); else setStep('5m','Done'); }}});
-      tl.to('#scrReg',{opacity:1,y:0,duration:1},0.1)
-        .to('#scrReg',{opacity:0,y:-18,duration:.7},1.9)
-        .fromTo('#scrId',{opacity:0,y:18},{opacity:1,y:0,duration:.8},2.0)
-        .fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.1,ease:'power1.inOut',yoyo:true,repeat:1},2.2)
-        .to('#scrId',{opacity:0,y:-18,duration:.7},3.8)
-        .fromTo('#scrAcc',{opacity:0,y:18},{opacity:1,y:0,duration:.8},3.9)
-        .to('#scrAcc',{opacity:0,y:-18,duration:.7},5.6)
-        .fromTo('#scrCry',{opacity:0,y:18},{opacity:1,y:0,duration:.8},5.7)
-        .to('#scrCry',{opacity:0,y:-18,duration:.7},7.4)
-        .fromTo('#scrDone',{opacity:0,scale:.92},{opacity:1,scale:1,duration:.9,ease:'back.out(1.3)'},7.5)
-        .fromTo('#scrDone .st',{opacity:0,y:14},{opacity:1,y:0,duration:.6},8.1);
+      var idx=-1, tmr=null, live=false;
+      function show(i){ if(i===idx)return;
+        scr.forEach(function(s,k){ if(k!==i) gsap.to(s,{opacity:0,y:-14,duration:.4,overwrite:true}); });
+        gsap.fromTo(scr[i],{opacity:0,y:16},{opacity:1,y:0,duration:.5,overwrite:true});
+        if(i===1) gsap.fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.2,ease:'power1.inOut',yoyo:true,repeat:1});
+        setStep(stp[i][0],stp[i][1]); setClock(i/(scr.length-1)); idx=i; }
+      function start(){ if(live)return; live=true; if(idx<0)show(0); tmr=setInterval(function(){show((idx+1)%scr.length);},2200); }
+      function stop(){ live=false; if(tmr)clearInterval(tmr); }
+      ScrollTrigger.create({trigger:'#asm',start:'top 85%',end:'bottom 15%',onToggle:function(s){ s.isActive?start():stop(); }});
     });
 
     gsap.utils.toArray('.reveal').forEach(function(el){
