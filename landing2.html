@@ -233,7 +233,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 /* responsive */
 @media (max-width:900px){
   .globe-grid{grid-template-columns:1fr;gap:40px}.globe-stage{order:-1}
-  .fcard{flex-basis:280px}
+  .fcard{flex-basis:280px;min-height:0;padding:24px}
+  .fcard h3{margin-top:16px}
+  .fcard .no{margin-top:18px;padding-top:0}
+  .fcard.lit{border-color:rgba(52,224,161,.5);box-shadow:0 0 30px rgba(52,224,161,.12)}
+  .feat-prog{display:none}
   .pb-body{grid-template-columns:1fr}.pb{padding:32px 22px}
   .nav-links{display:none}.menu-tgl{display:flex}
   .nav-right .seg,.nav-right>.btn-primary{display:none}
@@ -634,7 +638,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             /* MOBILE: the dot rides down the left edge of the stacked cards, lighting each as it passes. */
             var mfp=cl((H*0.46 - mFirst.top)/Math.max(1,mLast.bottom - mFirst.top),0,1);
             var mdy=lp(mFirst.top+sy, mLast.bottom+sy, mfp) - sy;
-            st.p=[mFirst.left-10, mdy]; st.scale=1;
+            st.p=[mFirst.left+16, mdy]; st.scale=1;
             for(var cm=0;cm<N;cm++){ var ccm=track.children[cm].getBoundingClientRect(); track.children[cm].classList.toggle('lit',(ccm.top+ccm.bottom)/2 < mdy+8); }
             return st;
           }
