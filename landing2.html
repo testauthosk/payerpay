@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
 <title>PayerPay — US & EU accounts and a crypto wallet in 5 minutes</title>
 <meta name="description" content="Open a US account, an EU account and a crypto wallet in 5 minutes. Real bank details, worldwide transfers, crypto and a card — all in one place." />
 <meta name="theme-color" content="#000000" />
@@ -849,7 +849,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       else drawComet(trail, hx, hy, cl(curScale,0,1));
       requestAnimationFrame(pframe);
     }
-    requestAnimationFrame(pframe);
+    /* DIAGNOSTIC: the flying-dot canvas runs a getBoundingClientRect + full redraw EVERY frame. On
+       mobile that competes with the iOS address-bar animation on the main thread and stutters the
+       scroll. Disable it on mobile (keep it on desktop) to confirm it's the amplifier of the jerk. */
+    if(window.matchMedia('(max-width:900px)').matches){ cv.style.display='none'; }
+    else { requestAnimationFrame(pframe); }
   })();
 
   function boot(){
