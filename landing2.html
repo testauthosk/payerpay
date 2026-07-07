@@ -774,19 +774,22 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
              planet ~30% earlier along the path (owner request): short bridge + wide entry radius. */
           var gp=(sy-aEnd)/H;
           if(device){
-            /* anywhere in the globe zone the cards are guaranteed dark — this also un-lights them
-               when scrolling back up (all globe sub-phases return before the zigzag logic) */
-            var trz=document.getElementById('featTrack');
-            if(trz&&trz.children.length) mzLight(trz,-1);
+            /* NB: cards are un-lit ONLY inside the sub-phases that return early (bridge/descent/
+               glide) — doing it unconditionally here ran every frame even while the dot was in the
+               card zone, killing and restarting the ignition cascade endlessly (owner: "панели
+               перестали подсвечиваться"). */
+            var trz=document.getElementById('featTrack'), trzOk=trz&&trz.children.length;
             /* slow, visible journey (owner): emerges gently from the phone bottom, travels WITH the
                scrolling content (long bridge) and ignites the globe on arrival — the whole process
                spans ~1.45 viewports of scroll instead of rushing */
-            if(gp<0.75){ var bt2=cl(gp/0.75,0,1); bt2=bt2*bt2*(3-2*bt2);
+            if(gp<0.75){ if(trzOk)mzLight(trz,-1);
+              var bt2=cl(gp/0.75,0,1); bt2=bt2*bt2*(3-2*bt2);
               var d3=device.getBoundingClientRect(), src2=[d3.left+d3.width/2, d3.bottom+22], gE2=[G[0],G[1]-gR];
               st.p=cb(src2,[src2[0]+30,lp(src2[1],gE2[1],0.42)],[gE2[0]+gR*0.75,lp(src2[1],gE2[1],0.72)],gE2,bt2);
               st.scale=cl(gp/0.2,0,1);
               st.inGlobe=false; st.lit=false; return st; }
             var pt3=cl((gp-0.75)/0.7,0,1), yOff3=lp(-gR,gR*1.2,pt3);
+            if(pt3<1 && trzOk) mzLight(trz,-1);
             st.p=[G[0]-Math.sin(pt3*Math.PI)*gR*0.12, G[1]+yOff3];
             st.inGlobe=Math.abs(yOff3)<gR*0.95; st.lit=pt3>0.1;
             /* it GROWS back gradually while emerging from under the planet (owner: it popped out
@@ -845,23 +848,28 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             var dvp=lp(H*0.42, H*0.72, handoff);
             if(dvp<mFirst.top-2) mzLight(track,-1);
             for(var ci2=0;ci2<N;ci2++){ var r2=track.children[ci2].getBoundingClientRect();
-              var exitY=r2.top+r2.height*0.5;
+              var exitY=r2.bottom-6; /* hidden inside for the card's WHOLE height */
               var nx=(ci2<N-1)?track.children[ci2+1].getBoundingClientRect():null;
-              var endY=nx?(nx.top+nx.height*0.3):(r2.bottom+8);
+              var endY=nx?(nx.top+nx.height*0.4):(r2.bottom+8);
               if(dvp>=r2.top-2 && dvp<exitY){ mzLight(track,ci2); st.p=[r2.left+r2.width/2, dvp]; st.scale=0; return st; }
               if(dvp>=exitY && dvp<endY && nx){ mzLight(track,ci2);
                 var tt=(dvp-exitY)/Math.max(1,endY-exitY); tt=tt*tt*(3-2*tt);
                 var dirR=(nx.left+nx.width/2)>(r2.left+r2.width/2);
-                var ex=[dirR?r2.right-6:r2.left+6, r2.top+r2.height*0.55];
-                var en=[dirR?nx.left+12:nx.right-12, nx.top+12];
-                var cx3=dirR?Math.max(ex[0],en[0])+44:Math.min(ex[0],en[0])-44;
+                /* owner's drawing: OUT of the card's BOTTOM edge on its outer side, arc outward,
+                   IN through the next card's TOP edge just inside its outer corner */
+                var ex=[dirR?r2.right-r2.width*0.15:r2.left+r2.width*0.15, r2.bottom-4];
+                var en=[dirR?nx.right-nx.width*0.22:nx.left+nx.width*0.22, nx.top+4];
+                var cx3=dirR?Math.max(ex[0],en[0])+40:Math.min(ex[0],en[0])-40;
                 st.p=qb(ex,[cx3,(ex[1]+en[1])/2],en,tt);
-                if(tt>0.93) mzLight(track,ci2+1);
-                st.scale=1; st.lit=true; return st; }
+                st.scale=cl(tt<0.5?tt/0.14:(1-tt)/0.14,0,1); /* grows out of the edge, shrinks into the next */
+                if(tt>0.9) mzLight(track,ci2+1);
+                st.lit=true; return st; }
             }
-            /* past the last card: out through its bottom centre, easing on to the #who entry */
+            /* past the last card: grows out of its bottom CENTRE, easing on to the #who entry */
             var lr2=track.children[N-1].getBoundingClientRect();
-            if(dvp>=lr2.top){ mzLight(track,N-1); st.p=[lr2.left+lr2.width/2, Math.max(lr2.bottom-8,dvp)]; st.scale=1; st.lit=true; return st; }
+            if(dvp>=lr2.top){ mzLight(track,N-1);
+              st.p=[lr2.left+lr2.width/2, Math.max(lr2.bottom-6,dvp)];
+              st.scale=cl((dvp-(lr2.bottom-26))/26,0,1); st.lit=true; return st; }
           }
           for(var cq=0;cq<N;cq++) track.children[cq].classList.remove('lit');
         }
