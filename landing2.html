@@ -241,8 +241,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
      With the body fixed iOS never shows/hides its address bar → the viewport never resizes → zero
      scroll-up jerk. This was the only variant confirmed perfectly smooth on a real iPhone, and it is
      GSAP's own recommended pattern for this exact problem. Header/menu/canvas sit outside the root. */
-  html{height:100%}
-  body{position:fixed;inset:0;width:100%;overflow:hidden}
+  html{height:100%;overscroll-behavior-y:none}
+  body{position:fixed;inset:0;width:100%;overflow:hidden;overscroll-behavior-y:none}
   #scrollRoot{position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;scroll-padding-top:84px;z-index:1}
   /* Phone fixation is back: CSS sticky inside the scroll container (native-smooth), the story is
      driven by a rAF loop on scrollRoot.scrollTop. svh is correct here — the bar is frozen visible,
@@ -517,6 +517,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   function _hdrToggle(sy){_hdrEl.classList.toggle('scrolled',sy>20);}
   window.addEventListener('scroll',function(){_hdrToggle(window.scrollY);},{passive:true});
   if(_srEl) _srEl.addEventListener('scroll',function(){_hdrToggle(_srEl.scrollTop);},{passive:true});
+  /* iOS pull-to-refresh / page rubber-band fix (owner: "сайт оттягивается от самого верха"): when
+     the container sits exactly on its scroll edge, iOS hands the gesture to the PAGE and stretches
+     the whole site. Keeping scrollTop pinched 1px off both edges means the container can always
+     consume the gesture itself — the page never gets it. Visually invisible. */
+  if(_srEl && window.matchMedia('(max-width:900px)').matches){
+    var _edge=function(){ var st=_srEl.scrollTop, mx=_srEl.scrollHeight-_srEl.clientHeight;
+      if(st<=0)_srEl.scrollTop=1; else if(mx>2&&st>=mx)_srEl.scrollTop=mx-1; };
+    _srEl.addEventListener('scroll',_edge,{passive:true});
+    window.addEventListener('load',_edge); _edge();
+  }
 
   /* iOS ADDRESS-BAR JERK COMPENSATION (owner's spec): the toolbar animating in/out changes the
      visual-viewport height mid-gesture and the browser lurches the content by that much. We watch
