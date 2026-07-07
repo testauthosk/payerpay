@@ -281,7 +281,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .fcard:nth-child(even){align-self:flex-end}
   .fcard h3{margin-top:16px}
   .fcard .no{margin-top:18px;padding-top:0}
-  .fcard .chip-ic,.fcard h3,.fcard p,.fcard .no{opacity:.1;transition:opacity .5s ease}
+  .fcard .chip-ic,.fcard h3,.fcard p,.fcard .no{opacity:.1;transition:opacity .18s ease}
   .fcard.lit .chip-ic,.fcard.lit h3,.fcard.lit p,.fcard.lit .no{opacity:1}
   .fcard.lit{border-color:rgba(52,224,161,.85);box-shadow:0 0 34px rgba(52,224,161,.22),inset 0 0 20px rgba(52,224,161,.05)}
   .fcard.flash{animation:cardFlash .55s ease-out}
@@ -714,11 +714,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
        un-lights and clears the inline styles so the CSS dark state returns. */
     function mzLight(track,k){ for(var j=0;j<track.children.length;j++){ var c=track.children[j];
       if(j<=k){ if(!c.classList.contains('lit')){ c.classList.add('lit'); c.classList.add('flash');
-          (function(cc){setTimeout(function(){cc.classList.remove('flash');},560);})(c);
-          /* fast cascade so the content lands together with the border glow (owner: no lag) */
-          if(window.gsap) gsap.fromTo(c.children,{opacity:0,y:8},{opacity:1,y:0,stagger:.04,duration:.3,ease:'power2.out',overwrite:'auto'}); } }
-      else if(c.classList.contains('lit')){ c.classList.remove('lit');
-        if(window.gsap){ gsap.killTweensOf(c.children); gsap.set(c.children,{clearProps:'opacity,transform'}); } } } }
+          (function(cc){setTimeout(function(){cc.classList.remove('flash');},560);})(c); } }
+      else c.classList.remove('lit'); } }
+      /* NB: no JS content animation — border and content light together via the same .lit CSS
+         (.18s), so there is never a gap between the glow and the text (owner). */
     var DPR=Math.min(window.devicePixelRatio||1,2), W,H;
     function sz(){ W=window.innerWidth; H=window.innerHeight; cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); }
     sz(); var lastPW=window.innerWidth;
@@ -870,8 +869,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
                 else if(dirR? nxv<0 : nxv>0){ nxv=-nxv; nyv=-nyv; }
                 var bg=ln2*0.34;
                 st.p=qb(ex,[(ex[0]+en[0])/2+nxv*bg,(ex[1]+en[1])/2+nyv*bg+ln2*0.08],en,tt);
-                st.scale=cl(tt<0.5?tt/0.14:(1-tt)/0.14,0,1); /* grows out of the edge, shrinks into the next */
-                if(tt>0.85) mzLight(track,ci2+1);
+                st.scale=cl(tt<0.5?tt/0.1:(1-tt)/0.06,0,1); /* grows out of the edge, DIVES into the next */
+                if(tt>0.97) mzLight(track,ci2+1); /* ignite at TOUCH, not on approach */
                 st.lit=true; return st; }
             }
             /* past the last card: grows out of its bottom CENTRE, easing on to the #who entry */
