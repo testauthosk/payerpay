@@ -69,7 +69,7 @@ html.light header.scrolled{background:rgba(255,255,255,.8)}
 .menu-tgl{display:none}
 
 /* ===== HERO (kinetic) ===== */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:120px 0 60px}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:30px 0 60px}
 .hero .glowbg{position:absolute;width:800px;height:800px;top:-30%;left:50%;transform:translateX(-50%);background:radial-gradient(circle,var(--tint) 0%,transparent 60%);pointer-events:none}
 .hero .wrap{position:relative;z-index:2}
 .hpill{display:inline-flex;align-items:center;gap:9px;background:var(--surf);border:1px solid var(--line2);border-radius:999px;padding:7px 15px 7px 11px;font-size:13px;font-weight:600;margin-bottom:34px}
@@ -97,7 +97,7 @@ html.light header.scrolled{background:rgba(255,255,255,.8)}
 .clock .cl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);max-width:74px;line-height:1.4}
 .clock .cl b{display:block;color:var(--mint);font-size:12px;letter-spacing:.08em}
 .asm-step{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;pointer-events:none;z-index:1}
-.asm-step .sidx{font-family:var(--mono);font-size:clamp(120px,26vw,340px);font-weight:700;color:var(--tint);line-height:1;letter-spacing:-.04em}
+.asm-step .sidx{font-family:var(--mono);font-size:clamp(90px,18vw,220px);font-weight:700;color:var(--tint);line-height:1;letter-spacing:-.04em}
 .asm-word{position:absolute;left:50%;bottom:clamp(90px,16vh,150px);transform:translateX(-50%);font-weight:800;font-size:clamp(26px,4.4vw,52px);letter-spacing:-.03em;text-transform:uppercase;z-index:5;white-space:nowrap;text-align:center}
 .asm-word .n{font-family:var(--mono);color:var(--mint);margin-right:14px}
 .device{position:relative;width:300px;height:600px;z-index:3;filter:drop-shadow(0 40px 80px rgba(0,0,0,.6))}
@@ -799,8 +799,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
     mm.add('(min-width:901px)',function(){
       gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry','#scrDone'],{opacity:0,y:24});
-      gsap.set(['#fcUs','#fcEu'],{opacity:0});
-      gsap.set(['#cn1','#cn2','#cn3'],{opacity:0});
+      // autoAlpha (opacity + visibility:hidden at 0) so nothing paints beside the phone until
+      // its own reveal — a plain opacity:0 still gets faintly rendered during the scrub lag.
+      gsap.set(['#fcUs','#fcEu'],{autoAlpha:0});
+      gsap.set(['#cn1','#cn2','#cn3'],{autoAlpha:0});
 
       window.__asmEnd=(asm?asm.offsetTop:0)+5200;
       var tl=gsap.timeline({scrollTrigger:{trigger:'#asm',start:'top top',end:'+=5200',scrub:1,pin:'.asm-stage',anticipatePin:1,
@@ -814,15 +816,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         .fromTo('#scrId',{opacity:0,y:24},{opacity:1,y:0,duration:.8},2.0)
         .fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.1,ease:'power1.inOut',yoyo:true,repeat:1},2.2)
         .to('#scrId',{opacity:0,y:-24,duration:.8},4.0)
-        .fromTo('#fcUs',{opacity:0,x:-160,y:-120,rotate:-18},{opacity:1,x:0,y:0,rotate:-7,duration:1.1,ease:'back.out(1.3)'},4.1)
-        .fromTo('#fcEu',{opacity:0,x:160,y:120,rotate:18},{opacity:1,x:0,y:0,rotate:7,duration:1.1,ease:'back.out(1.3)'},4.3)
+        .fromTo('#fcUs',{autoAlpha:0,x:-160,y:-120,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:1.1,ease:'back.out(1.3)'},4.1)
+        .fromTo('#fcEu',{autoAlpha:0,x:160,y:120,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:1.1,ease:'back.out(1.3)'},4.3)
         .fromTo('#scrAcc',{opacity:0,y:24},{opacity:1,y:0,duration:.7},4.8)
-        .to(['#fcUs','#fcEu'],{opacity:0,scale:.85,duration:.7},6.2)
+        .to(['#fcUs','#fcEu'],{autoAlpha:0,scale:.85,duration:.7},6.2)
         .to('#scrAcc',{opacity:0,y:-24,duration:.7},6.2)
-        .fromTo('#cn1',{opacity:0,y:-160},{opacity:1,y:0,duration:.8,ease:'bounce.out'},6.4)
-        .fromTo('#cn2',{opacity:0,y:-190},{opacity:1,y:0,duration:.9,ease:'bounce.out'},6.55)
-        .fromTo('#cn3',{opacity:0,y:-210},{opacity:1,y:0,duration:1,ease:'bounce.out'},6.7)
-        .to(['#cn1','#cn2','#cn3'],{opacity:0,scale:.5,y:120,duration:.7,stagger:.06},7.7)
+        .fromTo('#cn1',{autoAlpha:0,y:-160},{autoAlpha:1,y:0,duration:.8,ease:'bounce.out'},6.4)
+        .fromTo('#cn2',{autoAlpha:0,y:-190},{autoAlpha:1,y:0,duration:.9,ease:'bounce.out'},6.55)
+        .fromTo('#cn3',{autoAlpha:0,y:-210},{autoAlpha:1,y:0,duration:1,ease:'bounce.out'},6.7)
+        .to(['#cn1','#cn2','#cn3'],{autoAlpha:0,scale:.5,y:120,duration:.7,stagger:.06},7.7)
         .fromTo('#scrCry',{opacity:0,y:24},{opacity:1,y:0,duration:.7},7.4)
         .fromTo('#scrCry .acc-r',{opacity:0,x:16},{opacity:1,x:0,stagger:.2,duration:.5},7.6)
         .to('#scrCry',{opacity:0,y:-24,duration:.7},8.8)
@@ -834,7 +836,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     mm.add('(max-width:900px)',function(){
       gsap.set(['#scrDone'],{opacity:1});
       gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry'],{opacity:0});
-      gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{opacity:0});
+      gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
       setClock(1); setStep('5m','Ready in 5 minutes');
       ScrollTrigger.create({trigger:'#asm',start:'top 60%',onEnter:function(){
         gsap.to('#device',{y:-8,duration:2.6,repeat:-1,yoyo:true,ease:'sine.inOut'});
