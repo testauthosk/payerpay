@@ -67,13 +67,19 @@ header.scrolled .nav{height:54px}
 .icon-btn{width:42px;height:42px;border-radius:11px;background:var(--surf);border:1px solid var(--line);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s,color .2s}
 .icon-btn:hover{border-color:var(--mint);color:var(--mint)}
 .icon-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.menu-tgl{display:none}
-.mob-menu{position:fixed;top:72px;left:0;right:0;z-index:190;background:rgba(0,0,0,.94);backdrop-filter:blur(18px) saturate(1.3);border-bottom:1px solid transparent;
+.menu-tgl{display:none;position:relative;flex-direction:column;align-items:center;justify-content:center;gap:4.5px;transition:transform .45s cubic-bezier(.34,1.3,.64,1)}
+.menu-tgl .bg-l{display:block;width:18px;height:2px;border-radius:2px;background:var(--ink);transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .25s ease,width .3s ease}
+.menu-tgl.open{transform:rotate(90deg)}
+.menu-tgl.open .l1{transform:translateY(6.5px) rotate(45deg)}
+.menu-tgl.open .l2{opacity:0;width:4px}
+.menu-tgl.open .l3{transform:translateY(-6.5px) rotate(-45deg)}
+.mob-menu{position:fixed;top:72px;left:0;right:0;z-index:190;transition:top .35s ease;background:rgba(0,0,0,.94);backdrop-filter:blur(18px) saturate(1.3);border-bottom:1px solid transparent;
   display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.4,0,.2,1),border-color .3s,visibility 0s linear .45s;visibility:hidden}
 .mob-menu .mm-in{overflow:hidden;min-height:0;display:flex;flex-direction:column;gap:2px;padding:0 20px}
-.mob-menu.open{grid-template-rows:1fr;visibility:visible;border-bottom-color:var(--line);transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1),border-color .3s,visibility 0s}
+.mob-menu.open{grid-template-rows:1fr;visibility:visible;border-bottom-color:var(--line);transition:top .35s ease,grid-template-rows .5s cubic-bezier(.4,0,.2,1),border-color .3s,visibility 0s}
 .mob-menu.open .mm-in{padding:18px 20px 24px}
 .mob-menu .mm-in{transition:padding .45s cubic-bezier(.4,0,.2,1)}
+header.scrolled ~ .mob-menu{top:54px} /* follow the shrunken header - no gap */
 html.light .mob-menu{background:rgba(255,255,255,.94)}
 .mob-menu a[data-mm]{color:var(--ink);font-size:17px;font-weight:600;padding:14px 4px;border-bottom:1px solid var(--line)}
 .mob-menu .seg{margin-top:16px;align-self:flex-start}
@@ -277,10 +283,11 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
    the bottom-left cross; the page behind blurs to black. */
 #chatBd{position:fixed;inset:0;z-index:208;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .5s ease}
 #chatBd.open{opacity:1;pointer-events:auto}
-#chatPanel{position:fixed;left:0;bottom:0;z-index:212;width:60px;height:60px;background:rgba(9,14,11,.94);border:1px solid rgba(52,224,161,.4);border-left:0;border-bottom:0;border-radius:0 20px 0 0;overflow:hidden;opacity:0;pointer-events:none;
-  transition:width .45s cubic-bezier(.4,0,.2,1) .5s,height .5s cubic-bezier(.4,0,.2,1) 0s,opacity .25s ease .95s}
-#chatPanel.open{opacity:1;pointer-events:auto;width:calc(100% - 72px);height:calc(100% - 88px);
-  transition:width .45s cubic-bezier(.4,0,.2,1) 0s,height .5s cubic-bezier(.4,0,.2,1) .45s,opacity .2s ease}
+#chatPanel{position:fixed;left:0;bottom:0;z-index:212;width:60px;height:60px;background:rgba(9,14,11,.94);border:1px solid rgba(52,224,161,.4);border-left:0;border-bottom:0;border-radius:0 100% 0 0;overflow:hidden;opacity:0;pointer-events:none;
+  transition:width .45s cubic-bezier(.4,0,.2,1) .5s,height .5s cubic-bezier(.4,0,.2,1) 0s,border-radius .45s ease .5s,opacity .22s ease .95s}
+#chatPanel.open{opacity:1;pointer-events:auto;width:95%;height:95%;border-radius:0 20px 0 0;
+  transition:width .45s cubic-bezier(.4,0,.2,1) 0s,height .5s cubic-bezier(.4,0,.2,1) .45s,border-radius .3s ease,opacity .2s ease}
+@media (min-width:901px){ #chatPanel.open{width:390px;height:620px} }
 #chatPanel .cp-in{opacity:0;transition:opacity .3s ease;display:flex;flex-direction:column;height:100%}
 #chatPanel.open .cp-in{opacity:1;transition-delay:1s}
 .cp-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
@@ -428,7 +435,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <div class="nav-right">
       
       <a href="#cta" class="btn btn-primary">Open account</a>
-      <button class="icon-btn menu-tgl" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button class="icon-btn menu-tgl" aria-label="Menu"><span class="bg-l l1"></span><span class="bg-l l2"></span><span class="bg-l l3"></span></button>
     </div>
   </div>
 </header>
@@ -667,7 +674,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     if(!a) return; var id=a.getAttribute('href').slice(1); if(!id) return;
     var el=document.getElementById(id); if(!el) return;
     e.preventDefault();
-    var mm2=document.getElementById('mobMenu'); if(mm2&&mm2.classList.contains('open')) mm2.classList.remove('open');
+    var mm2=document.getElementById('mobMenu'); if(mm2&&mm2.classList.contains('open')){ mm2.classList.remove('open'); var mt2=document.querySelector('.menu-tgl'); if(mt2)mt2.classList.remove('open'); }
     _flyTo(Math.max(_mobQ?1:0, el.offsetTop-84)); });
   /* iOS pull-to-refresh / page rubber-band fix (owner: "сайт оттягивается от самого верха"): when
      the container sits exactly on its scroll edge, iOS hands the gesture to the PAGE and stretches
@@ -744,8 +751,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   renderPB('personal'); curPB='personal';
   /* mobile menu */
   var mTgl=document.querySelector('.menu-tgl'), mMenu=document.getElementById('mobMenu');
-  if(mTgl&&mMenu){ mTgl.addEventListener('click',function(){mMenu.classList.toggle('open');mTgl.classList.toggle('on');});
-    mMenu.querySelectorAll('[data-mm]').forEach(function(a){a.addEventListener('click',function(){mMenu.classList.remove('open');mTgl.classList.remove('on');});}); }
+  function _mtSync(){ if(mTgl&&mMenu) mTgl.classList.toggle('open', mMenu.classList.contains('open')); }
+  if(mTgl&&mMenu){ mTgl.addEventListener('click',function(){mMenu.classList.toggle('open');mTgl.classList.toggle('on');_mtSync();});
+    mMenu.querySelectorAll('[data-mm]').forEach(function(a){a.addEventListener('click',function(){mMenu.classList.remove('open');mTgl.classList.remove('on');_mtSync();});}); }
 
   /* ===== PREMIUM CANVAS DOT-GLOBE ===== */
   (function(){
