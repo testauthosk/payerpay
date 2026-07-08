@@ -330,6 +330,10 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 #chatBub svg{position:absolute;left:13px;bottom:12px;width:19px;height:19px;stroke:var(--mint);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
 #toTop.on,#chatBub.on{pointer-events:auto;transform:scale(1);opacity:1}
 @media (min-width:901px){
+  /* owner: the quarter meets the closing panel AT ITS SIZE (60px), then grows to its own 84px */
+  #chatBub.rein{transform:scale(.714)}
+}
+@media (min-width:901px){
   .asm-word{bottom:8px}
   /* flycards LOW like on mobile - they were covering the account rows */
   .fc-us{top:calc(50% + 118px)}
@@ -702,8 +706,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         onComplete:function(){ window.__noLock=false; },onInterrupt:function(){ window.__noLock=false; }});
     } else { if(_mobQ)_srEl.scrollTop=y; else window.scrollTo(0,y); window.__noLock=false; } }
   if(_tt) _tt.addEventListener('click',function(){ _flyTo(_mobQ?1:0); });
-  var _cp=document.getElementById('chatPanel'), _cbd=document.getElementById('chatBd');
-  function _chatOpen(v){ if(_cp)_cp.classList.toggle('open',v); if(_cbd)_cbd.classList.toggle('open',v); }
+  var _cp=document.getElementById('chatPanel'), _cbd=document.getElementById('chatBd'), _reinT=null;
+  function _chatOpen(v){ if(_cp)_cp.classList.toggle('open',v); if(_cbd)_cbd.classList.toggle('open',v);
+    if(_cb){ if(_reinT){clearTimeout(_reinT);_reinT=null;}
+      if(v){ _cb.classList.remove('rein'); }
+      else { _cb.classList.add('rein'); /* quarter waits at the panel's folded size... */
+        _reinT=setTimeout(function(){ _cb.classList.remove('rein'); _reinT=null; },1300); /* ...then springs up */ } } }
   if(_cb) _cb.addEventListener('click',function(){ _chatOpen(true); });
   var _cx=document.getElementById('chatClose');
   if(_cx) _cx.addEventListener('click',function(){ _chatOpen(false); });
