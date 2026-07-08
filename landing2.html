@@ -195,7 +195,7 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 #feat{position:relative;background:var(--bg)}
 .feat-pin{height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 .feat-head{max-width:var(--max);margin:0 auto 40px;padding:0 var(--gut);width:100%}
-@media(min-width:901px){ .feat-head{margin-bottom:104px} }
+@media(min-width:901px){ .feat-head{margin-bottom:104px} .feat-prog{display:none} }
 .feat-track{display:flex;gap:24px;padding:0 max(var(--gut),calc((100vw - var(--max))/2 + var(--gut)));will-change:transform}
 .fcard{flex:0 0 340px;background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:32px;min-height:300px;display:flex;flex-direction:column;transition:border-color .25s}
 .fcard:hover{border-color:var(--line2)}
@@ -1128,14 +1128,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             for(var ci=0;ci<N;ci++) track.children[ci].classList.toggle('lit', ci<=ai);
             var cur=track.children[ai].getBoundingClientRect();
             var nxt=(ai<N-1)?track.children[ai+1].getBoundingClientRect():null;
-            var HOLD=0.5;                       /* first half of the step: sit hidden on the card */
+            var HOLD=0.38;                      /* sit hidden on the card, then a longer corner-to-corner arc reads clearly */
             if(loc<HOLD || !nxt){ st.p=[(cur.left+cur.right)/2,(cur.top+cur.bottom)/2]; st.scale=0; return st; }
             var tt=(loc-HOLD)/(1-HOLD); tt=tt*tt*(3-2*tt);
-            var down=nxt.top>cur.top;           /* next card sits lower → arc dives down */
-            /* OUT of the current card's RIGHT edge (next is to the right), IN through the next
-               card's LEFT edge near its outer corner */
-            var ex=[cur.right-2, down?cur.bottom-cur.height*0.26:cur.top+cur.height*0.26];
-            var en=[nxt.left+2,  down?nxt.top+nxt.height*0.22:nxt.bottom-nxt.height*0.22];
+            var down=nxt.top>cur.top;           /* next card sits lower → dive from bottom corner */
+            /* CORNER to CORNER (owner, like mobile): leave the current card by the trailing corner
+               that faces the next card, land on the next card by its facing near corner */
+            var ex=[cur.right-4, down?cur.bottom-4:cur.top+4];
+            var en=[nxt.left+4,  down?nxt.top+4:nxt.bottom-4];
             var dx2=en[0]-ex[0], dy2=en[1]-ex[1], ln2=Math.max(1,Math.sqrt(dx2*dx2+dy2*dy2));
             var nxv=-dy2/ln2, nyv=dx2/ln2;      /* unit normal of the chord */
             /* bulge to the OUTER side of the zigzag (away from the mid-line): going down → sag
