@@ -318,6 +318,9 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 #toTop.on,#chatBub.on{pointer-events:auto;transform:scale(1);opacity:1}
 @media (min-width:901px){
   .asm-word{bottom:8px}
+  /* flycards LOW like on mobile - they were covering the account rows */
+  .fc-us{top:calc(50% + 118px)}
+  .fc-eu{top:calc(50% + 148px)}
   /* the phone SCALES (transform only - resizing width/height broke the inner screen layout)
      so the step word fits below it on short windows */
   .device{transform-origin:50% 38%}
@@ -1432,7 +1435,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
            more coins instead. Canonical Matter.js gyro mapping (official demo). */
         /* Tap hint: positioned beside the phone, shown while the coins are up */
         var th3=document.getElementById('tapHint');
-        if(th3){ th3.style.right='auto'; th3.style.left=(dr.right-stR.left+14)+'px'; th3.style.top=(PB-190)+'px';
+        if(th3){ th3.style.right='auto'; th3.style.left=(dr.right-stR.left+14)+'px'; th3.style.top=(PB-148)+'px'; /* a bit lower, at the coins */
           gsap.fromTo(th3,{autoAlpha:0,y:10},{autoAlpha:1,y:0,duration:.5,delay:1.6,overwrite:'auto'});
           gsap.to(th3,{y:7,duration:.85,ease:'sine.inOut',yoyo:true,repeat:-1,delay:2.2}); }
         if(typeof DeviceOrientationEvent==='undefined'||!DeviceOrientationEvent.requestPermission){
