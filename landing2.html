@@ -1465,9 +1465,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
            more coins instead. Canonical Matter.js gyro mapping (official demo). */
         /* Tap hint: positioned beside the phone, shown while the coins are up */
         var th3=document.getElementById('tapHint');
-        if(th3){ th3.style.right='auto'; th3.style.left=(dr.right-stR.left+14)+'px'; th3.style.top=(PB-148)+'px'; /* a bit lower, at the coins */
-          gsap.fromTo(th3,{autoAlpha:0,y:10},{autoAlpha:1,y:0,duration:.5,delay:1.6,overwrite:'auto'});
-          gsap.to(th3,{y:7,duration:.85,ease:'sine.inOut',yoyo:true,repeat:-1,delay:2.2}); }
+        if(th3){ th3.style.right='auto'; th3.style.left=(dr.right-stR.left+14)+'px'; th3.style.top=(PB-92)+'px'; /* down at the pile, clear of the step bars */
+          gsap.fromTo(th3,{autoAlpha:0,x:10},{autoAlpha:1,x:0,duration:.5,delay:1.6,overwrite:'auto'});
+          gsap.to(th3,{x:-7,duration:.85,ease:'sine.inOut',yoyo:true,repeat:-1,delay:2.2}); /* horizontal bob - pointing AT the coins */ }
         if(typeof DeviceOrientationEvent==='undefined'||!DeviceOrientationEvent.requestPermission){
           phys.orient=function(e){ if(!phys)return;
             var gx=Math.max(-90,Math.min(90,e.gamma||0))/90, gy=Math.max(-90,Math.min(90,e.beta||45))/90;
