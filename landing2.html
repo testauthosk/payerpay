@@ -157,14 +157,13 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 .fc-eu .fc-chip{background:rgba(4,20,13,.15);border-color:rgba(4,20,13,.2)}
 .stepbars{display:none}
 .cryp-count{position:absolute;left:50%;transform:translateX(-50%);top:calc(78% + 62px);font-family:var(--mono);font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--mint);z-index:6;opacity:0;white-space:nowrap}
-#coinField{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
+#coinField{position:absolute;inset:0;z-index:4;pointer-events:none}
 /* the arrow is a real hand-drawn asset (handy-arrows gallery, filled path), rotated to point
    down-left into the coin pile; the hint sits at pile level, clear of the phone */
-.tap-hint{position:absolute;right:6%;top:60%;z-index:6;display:none;flex-direction:column;align-items:center;gap:0;opacity:0;pointer-events:none}
+.tap-hint{position:absolute;right:6%;top:60%;z-index:6;display:flex;flex-direction:column;align-items:center;gap:0;opacity:0;pointer-events:none}
 .tap-hint span{font-family:'Caveat',cursive;font-size:23px;font-weight:600;color:rgba(255,255,255,.88);letter-spacing:.02em;transform:rotate(-6deg)}
-.tap-hint svg{width:36px;height:38px;transform:rotate(180deg)}
+.tap-hint svg{width:36px;height:38px;transform:rotate(215deg)} /* horizontal, at the phone */
 .tap-hint svg path{fill:rgba(52,224,161,.92)}
-@media (max-width:900px){ #coinField{display:block} .tap-hint{display:flex} }
 .coin{position:absolute;width:52px;height:52px;z-index:4;opacity:0}
 .coin circle{fill:#060807;stroke:var(--mint);stroke-width:2}
 .coin text{fill:var(--mint);font-family:var(--mono);font-weight:700}
@@ -1378,66 +1377,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     var word=document.getElementById('asmWord'),widx=word.querySelector('.n'),wtxt=document.getElementById('asmWordTxt'),sidx=document.getElementById('sidx');
     function setStep(n,label){widx.textContent=n;wtxt.textContent=label;sidx.textContent=n;}
 
-    var mm=gsap.matchMedia();
-
-    mm.add('(min-width:901px)',function(){
-      gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry','#scrDone'],{opacity:0,y:24});
-      // autoAlpha (opacity + visibility:hidden at 0) so nothing paints beside the phone until
-      // its own reveal — a plain opacity:0 still gets faintly rendered during the scrub lag.
-      gsap.set(['#fcUs','#fcEu'],{autoAlpha:0});
-      gsap.set(['#cn1','#cn2','#cn3'],{autoAlpha:0});
-
-      window.__asmEnd=(asm?asm.offsetTop:0)+5200;
-      var tl=gsap.timeline({scrollTrigger:{trigger:'#asm',start:'top top',end:'+=5200',scrub:1,pin:'.asm-stage',anticipatePin:1,
-        onRefresh:function(self){window.__asmEnd=self.end;},
-        onUpdate:function(s){var p=s.progress; setClock(p);
-          if(p<0.18)setStep('01','Sign up'); else if(p<0.36)setStep('02','Verify'); else if(p<0.58)setStep('03','US + EU accounts'); else if(p<0.81)setStep('04','Crypto wallet'); else setStep('5m','Done'); }}});
-      tl.to('#scrReg',{opacity:1,y:0,duration:1},0.05)
-        .fromTo('#scrReg .frow',{opacity:.2},{opacity:1,stagger:.4,duration:.6},0.1)
-        .to('#scrReg .fbtn',{scale:1.06,duration:.5,yoyo:true,repeat:1},1.0)
-        .to('#scrReg',{opacity:0,y:-24,duration:.8},1.9)
-        .fromTo('#scrId',{opacity:0,y:24},{opacity:1,y:0,duration:.8},2.0)
-        .fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.1,ease:'power1.inOut',yoyo:true,repeat:1},2.2)
-        .to('#scrId',{opacity:0,y:-24,duration:.8},4.0)
-        .fromTo('#fcUs',{autoAlpha:0,x:-160,y:-120,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:1.1,ease:'back.out(1.3)'},4.1)
-        .fromTo('#fcEu',{autoAlpha:0,x:160,y:120,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:1.1,ease:'back.out(1.3)'},4.3)
-        .fromTo('#scrAcc',{opacity:0,y:24},{opacity:1,y:0,duration:.7},4.8)
-        .to(['#fcUs','#fcEu'],{autoAlpha:0,scale:.85,duration:.7},6.2)
-        .to('#scrAcc',{opacity:0,y:-24,duration:.7},6.2)
-        .fromTo('#cn1',{autoAlpha:0,y:-160},{autoAlpha:1,y:0,duration:.8,ease:'bounce.out'},6.4)
-        .fromTo('#cn2',{autoAlpha:0,y:-190},{autoAlpha:1,y:0,duration:.9,ease:'bounce.out'},6.55)
-        .fromTo('#cn3',{autoAlpha:0,y:-210},{autoAlpha:1,y:0,duration:1,ease:'bounce.out'},6.7)
-        .to(['#cn1','#cn2','#cn3'],{autoAlpha:0,scale:.5,y:120,duration:.7,stagger:.06},7.7)
-        .fromTo('#scrCry',{opacity:0,y:24},{opacity:1,y:0,duration:.7},7.4)
-        .fromTo('#scrCry .acc-r',{opacity:0,x:16},{opacity:1,x:0,stagger:.2,duration:.5},7.6)
-        .to('#scrCry',{opacity:0,y:-24,duration:.7},8.8)
-        .fromTo('#scrDone',{opacity:0,scale:.9},{opacity:1,scale:1,duration:.9,ease:'back.out(1.4)'},8.9)
-        .fromTo('#scrDone .rdy',{opacity:0,x:-16},{opacity:1,x:0,stagger:.3,duration:.5},9.1)
-        .fromTo('#scrDone .st',{opacity:0,y:14},{opacity:1,y:0,duration:.6},10.1)
-        .to('#device',{scale:1.04,duration:.8,yoyo:true,repeat:1},9.4);
-    });
-
-    mm.add('(max-width:900px)',function(){
-      /* Mobile — FIXATION IS BACK (plan A): the stage is CSS-sticky inside #scrollRoot (the body is
-         locked, so the container scroll is native-smooth and the address bar never moves). The story
-         is driven by a light rAF loop reading scrollRoot.scrollTop — offsets are cached and only
-         re-measured on a width change, so the loop never forces a reflow. No GSAP scroll-linking. */
-      var sr=document.getElementById('scrollRoot');
-      var scrs=['scrReg','scrId','scrAcc','scrCry','scrDone'].map(function(id){return document.getElementById(id);}),
-          stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
-      scrs.forEach(function(s){s.style.opacity='0';});
-      gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
-      var barsEl=document.getElementById('stepBars'), thEl=document.getElementById('sbTh');
-      var SEG=scrs.length-1, BARSTEP=32; /* 4 segments between 5 screens; bar 20px + 12px gap */
-      var asmTop=0, range=1, segPx=1;
-      function measure(){ var stage=document.querySelector('.asm-stage'), sh=stage?stage.offsetHeight:H;
-        asmTop=asm?asm.offsetTop:0; range=Math.max(1,(asm?asm.offsetHeight:sh)-sh); segPx=range/SEG;
-        window.__asmEnd=asmTop+(asm?asm.offsetHeight:H); }
-      measure();
-      var lastW=window.innerWidth;
-      function onRs(){ if(window.innerWidth===lastW)return; lastW=window.innerWidth; measure(); }
-      window.addEventListener('resize',onRs);
-      var idx=-1, lastP=-1, rafId=null, coinFin=null, kycTw=null;
       /* --- COIN PHYSICS (owner's spec): six OTHER coins (not the on-screen USDT/BTC/ETH), smaller,
          rain from above and land with real 2D physics (Matter.js, lazy-loaded on first entry);
          device tilt rolls them via the accelerometer (iOS asks permission once, on the next tap). */
@@ -1450,8 +1389,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         return matterP; }
       function coinsDown(){ if(!phys)return; cancelAnimationFrame(phys.raf);
         if(phys.orient) window.removeEventListener('deviceorientation',phys.orient);
-        if(phys.tap){ sr.removeEventListener('touchstart',phys.tap); sr.removeEventListener('mousedown',phys.tap); }
+        if(phys.tap){ var srT2=document.getElementById('scrollRoot'); srT2.removeEventListener('touchstart',phys.tap); srT2.removeEventListener('mousedown',phys.tap); }
         var f=phys.field; phys=null;
+        var th4=document.getElementById('tapHint');
+        if(th4){ gsap.killTweensOf(th4); gsap.to(th4,{autoAlpha:0,duration:.25,overwrite:'auto'}); }
         gsap.to(f,{autoAlpha:0,duration:.3,onComplete:function(){ f.innerHTML=''; }}); }
       function coinsUp(){ coinsDown();
         var M=window.Matter; if(!M)return;
@@ -1491,6 +1432,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         /* tilt is FREE only where no permission dialog exists (Android etc). On iOS the system
            prompt is mandatory by Apple policy and the owner rejected it — so no tilt there,
            more coins instead. Canonical Matter.js gyro mapping (official demo). */
+        /* Tap hint: positioned beside the phone, shown while the coins are up */
+        var th3=document.getElementById('tapHint');
+        if(th3){ th3.style.right='auto'; th3.style.left=(dr.right-stR.left+14)+'px'; th3.style.top=(PB-190)+'px';
+          gsap.fromTo(th3,{autoAlpha:0,y:10},{autoAlpha:1,y:0,duration:.5,delay:1.6,overwrite:'auto'});
+          gsap.to(th3,{y:7,duration:.85,ease:'sine.inOut',yoyo:true,repeat:-1,delay:2.2}); }
         if(typeof DeviceOrientationEvent==='undefined'||!DeviceOrientationEvent.requestPermission){
           phys.orient=function(e){ if(!phys)return;
             var gx=Math.max(-90,Math.min(90,e.gamma||0))/90, gy=Math.max(-90,Math.min(90,e.beta||45))/90;
@@ -1504,9 +1450,70 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             if(dx*dx+dy*dy<rr*rr){
               M.Body.setVelocity(bb2[0],{x:(Math.random()-.5)*5,y:-8-Math.random()*4});
               M.Body.setAngularVelocity(bb2[0],(Math.random()-.5)*.5); } } };
-        sr.addEventListener('touchstart',phys.tap,{passive:true});
-        sr.addEventListener('mousedown',phys.tap);
+        var srT=document.getElementById('scrollRoot'); srT.addEventListener('touchstart',phys.tap,{passive:true});
+        srT.addEventListener('mousedown',phys.tap);
       }
+
+    var mm=gsap.matchMedia();
+
+    mm.add('(min-width:901px)',function(){
+      gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry','#scrDone'],{opacity:0,y:24});
+      // autoAlpha (opacity + visibility:hidden at 0) so nothing paints beside the phone until
+      // its own reveal — a plain opacity:0 still gets faintly rendered during the scrub lag.
+      gsap.set(['#fcUs','#fcEu'],{autoAlpha:0});
+      gsap.set(['#cn1','#cn2','#cn3'],{autoAlpha:0});
+
+      window.__asmEnd=(asm?asm.offsetTop:0)+5200;
+      var tl=gsap.timeline({scrollTrigger:{trigger:'#asm',start:'top top',end:'+=5200',scrub:1,pin:'.asm-stage',anticipatePin:1,
+        onRefresh:function(self){window.__asmEnd=self.end;},
+        onUpdate:function(s){var p=s.progress; setClock(p);
+          if(p<0.18)setStep('01','Sign up'); else if(p<0.36)setStep('02','Verify'); else if(p<0.58)setStep('03','US + EU accounts'); else if(p<0.81)setStep('04','Crypto wallet'); else setStep('5m','Done');
+          /* physics coins inside the phone on desktop too (ported from mobile) */
+          var wantPhys=(p>=0.60&&p<0.82);
+          if(wantPhys&&!window.__coinsOn){ window.__coinsOn=true; loadMatter().then(function(){ if(window.__coinsOn)coinsUp(); }).catch(function(){}); }
+          else if(!wantPhys&&window.__coinsOn){ window.__coinsOn=false; coinsDown(); } }}});
+      tl.to('#scrReg',{opacity:1,y:0,duration:1},0.05)
+        .fromTo('#scrReg .frow',{opacity:.2},{opacity:1,stagger:.4,duration:.6},0.1)
+        .to('#scrReg .fbtn',{scale:1.06,duration:.5,yoyo:true,repeat:1},1.0)
+        .to('#scrReg',{opacity:0,y:-24,duration:.8},1.9)
+        .fromTo('#scrId',{opacity:0,y:24},{opacity:1,y:0,duration:.8},2.0)
+        .fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.1,ease:'power1.inOut',yoyo:true,repeat:1},2.2)
+        .to('#scrId',{opacity:0,y:-24,duration:.8},4.0)
+        .fromTo('#fcUs',{autoAlpha:0,x:-160,y:-120,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:1.1,ease:'back.out(1.3)'},4.1)
+        .fromTo('#fcEu',{autoAlpha:0,x:160,y:120,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:1.1,ease:'back.out(1.3)'},4.3)
+        .fromTo('#scrAcc',{opacity:0,y:24},{opacity:1,y:0,duration:.7},4.8)
+        .to(['#fcUs','#fcEu'],{autoAlpha:0,scale:.85,duration:.7},6.2)
+        .to('#scrAcc',{opacity:0,y:-24,duration:.7},6.2)
+        .fromTo('#scrCry',{opacity:0,y:24},{opacity:1,y:0,duration:.7},7.4)
+        .fromTo('#scrCry .acc-r',{opacity:0,x:16},{opacity:1,x:0,stagger:.2,duration:.5},7.6)
+        .to('#scrCry',{opacity:0,y:-24,duration:.7},8.8)
+        .fromTo('#scrDone',{opacity:0,scale:.9},{opacity:1,scale:1,duration:.9,ease:'back.out(1.4)'},8.9)
+        .fromTo('#scrDone .rdy',{opacity:0,x:-16},{opacity:1,x:0,stagger:.3,duration:.5},9.1)
+        .fromTo('#scrDone .st',{opacity:0,y:14},{opacity:1,y:0,duration:.6},10.1)
+        .to('#device',{scale:1.04,duration:.8,yoyo:true,repeat:1},9.4);
+    });
+
+    mm.add('(max-width:900px)',function(){
+      /* Mobile — FIXATION IS BACK (plan A): the stage is CSS-sticky inside #scrollRoot (the body is
+         locked, so the container scroll is native-smooth and the address bar never moves). The story
+         is driven by a light rAF loop reading scrollRoot.scrollTop — offsets are cached and only
+         re-measured on a width change, so the loop never forces a reflow. No GSAP scroll-linking. */
+      var sr=document.getElementById('scrollRoot');
+      var scrs=['scrReg','scrId','scrAcc','scrCry','scrDone'].map(function(id){return document.getElementById(id);}),
+          stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
+      scrs.forEach(function(s){s.style.opacity='0';});
+      gsap.set(['#fcUs','#fcEu','#cn1','#cn2','#cn3'],{autoAlpha:0});
+      var barsEl=document.getElementById('stepBars'), thEl=document.getElementById('sbTh');
+      var SEG=scrs.length-1, BARSTEP=32; /* 4 segments between 5 screens; bar 20px + 12px gap */
+      var asmTop=0, range=1, segPx=1;
+      function measure(){ var stage=document.querySelector('.asm-stage'), sh=stage?stage.offsetHeight:H;
+        asmTop=asm?asm.offsetTop:0; range=Math.max(1,(asm?asm.offsetHeight:sh)-sh); segPx=range/SEG;
+        window.__asmEnd=asmTop+(asm?asm.offsetHeight:H); }
+      measure();
+      var lastW=window.innerWidth;
+      function onRs(){ if(window.innerWidth===lastW)return; lastW=window.innerWidth; measure(); }
+      window.addEventListener('resize',onRs);
+      var idx=-1, lastP=-1, rafId=null, coinFin=null, kycTw=null;
       function show(i){ if(i===idx)return;
         scrs.forEach(function(s,k){ s.style.opacity=(k===i)?'1':'0'; s.style.transform=(k===i)?'none':'translateY(-10px)'; });
         setStep(stp[i][0],stp[i][1]);
@@ -1539,13 +1546,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           cc.style.top=Math.min(ccMid, devB-146)+'px'; /* clamped above the coin pile now living inside the phone */
           loadMatter().then(function(){ if(idx===3)coinsUp(); }).catch(function(){});
           coinFin=gsap.fromTo(cc,{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.25,onComplete:function(){coinFin=null;}});
-          /* handwritten "tap" + a thin arrow onto the pile, bobbing gently (appears after landing) */
-          var th2=document.getElementById('tapHint');
-          th2.style.top=(((wr.top-str.top)-12)-134)+'px';
-          gsap.fromTo(th2,{autoAlpha:0,y:10},{autoAlpha:1,y:0,duration:.5,delay:1.9,overwrite:'auto'});
-          gsap.to(th2,{y:7,duration:.85,ease:'sine.inOut',yoyo:true,repeat:-1,delay:2.5}); }
+          }
         else { coinsDown();
-          gsap.killTweensOf('#tapHint'); gsap.to('#tapHint',{autoAlpha:0,duration:.25});
           gsap.to('#crypCount',{autoAlpha:0,duration:.3,overwrite:'auto'}); }
         /* finale: "Ready to pay / accept / anywhere" tick in ONE BY ONE (honest, not a fake balance) */
         if(i===4) gsap.fromTo('#scrDone .rdy',{autoAlpha:0,x:-16},{autoAlpha:1,x:0,stagger:.45,duration:.5,ease:'power2.out',delay:.4,overwrite:'auto'});
