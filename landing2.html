@@ -237,8 +237,15 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 /* CTA */
 .cta{background:var(--surf);border:1px solid var(--line);border-radius:28px;padding:78px 40px;text-align:center;position:relative;overflow:hidden;width:100%;transition:background .55s ease,border-color .55s ease,box-shadow .55s ease}
 .cta.lit{background:linear-gradient(155deg,var(--mint),var(--mint-dd));border-color:transparent;box-shadow:0 0 70px rgba(52,224,161,.30),0 0 130px rgba(52,224,161,.15)}
-.cta .grain,.cta .rd,.cta h2,.cta p,.cta .hero-cta{opacity:0;transition:opacity .55s ease}
-.cta.lit .grain,.cta.lit .rd,.cta.lit h2,.cta.lit p,.cta.lit .hero-cta{opacity:1}
+.cta .grain,.cta .rd{opacity:0;transition:opacity .55s ease}
+.cta h2,.cta p,.cta .hero-cta{opacity:0;transform:translateY(22px);transition:opacity .5s ease,transform .55s cubic-bezier(.22,1,.36,1)}
+.cta.lit .grain,.cta.lit .rd{opacity:1}
+.cta.lit h2,.cta.lit p,.cta.lit .hero-cta{opacity:1;transform:none}
+.cta.lit h2{transition-delay:.08s}
+.cta.lit p{transition-delay:.2s}
+.cta.lit .hero-cta{transition-delay:.32s}
+.cta{transform:scale(.985)}
+.cta.lit{transform:scale(1);transition:background .55s ease,border-color .55s ease,box-shadow .55s ease,transform .6s cubic-bezier(.3,1.4,.5,1)}
 .cta .grain{position:absolute;inset:0;background-image:radial-gradient(circle at 25% 20%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
 .cta .rd{position:absolute;border:2px solid rgba(4,20,13,.1);border-radius:50%}
 .cta .rd.a{width:300px;height:300px;top:-130px;right:-60px}.cta .rd.b{width:220px;height:220px;bottom:-120px;left:-40px}
@@ -331,8 +338,6 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 @media (min-width:901px){
   /* desktop: wordmark 40% smaller and dimmer (do not give the trick away); bigger brighter
      corner quarters; the Pull hint shows here too */
-  .foot-word{width:60%;margin:0 auto}
-  .fw-wrap{display:flex;justify-content:center}
   .foot-word .fw-base,.foot-word .fw-top{stroke:#101412}
   #toTop,#chatBub{width:84px;height:84px;background:rgba(10,16,13,.72)}
   #toTop{border-top:1.4px solid rgba(52,224,161,.8);border-left:1.4px solid rgba(52,224,161,.8)}
@@ -340,7 +345,7 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
   #toTop svg{right:20px;bottom:18px;width:22px;height:22px}
   #chatBub svg{left:20px;bottom:18px;width:23px;height:23px}
   .pull-hint{display:flex}
-  .fw-wrap{margin-bottom:46px} /* lifted a bit off the footer on desktop */
+  .fw-wrap{margin-bottom:46px;max-width:890px;margin-left:auto;margin-right:auto} /* lifted off the footer; width = the teal CTA block */
 }
 
 /* FOOTER */
@@ -970,7 +975,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     }
     window.__fwRainActive=false;
     window.__fwRainOn=function(v){ v=!!v; if(v===on)return; on=v; window.__fwRainActive=v;
-      if(v){ sz(); if(!raf) raf=requestAnimationFrame(frame); } };
+      if(v){ sz();
+        /* the cord FALLS OUT physically: points start furled at the anchor, gravity unrolls it
+           with a natural sway instead of it just appearing (owner) */
+        var ax2=W2*ROPE_X; pts.forEach(function(p2,i){ p2.x=ax2+(Math.random()-.5)*3; p2.y=i*1.2; p2.px=p2.x; p2.py=p2.y; });
+        if(!raf) raf=requestAnimationFrame(frame); } };
   })();
 
   /* ===== PILOT DOT — jelly portals, planet pass-through+ignite, +30% size ===== */
