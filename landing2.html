@@ -240,7 +240,7 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 /* giant outline wordmark above the footer (ported from landing v1) */
 .fw-wrap{position:relative;margin:72px 5px 0;line-height:0} /* 5px: matches the CTA box edges exactly */
 .foot-word{display:block;width:100%;height:auto;user-select:none;pointer-events:none}
-.foot-word .fw-base,.foot-word .fw-top{fill:none;stroke:#57625B;stroke-width:1.8;transition:stroke .7s ease}
+.foot-word .fw-base,.foot-word .fw-top{fill:none;stroke:#151A17;stroke-width:1.8;transition:stroke .7s ease} /* pitch-dark until the cord is pulled */
 #fwWord.fw-lit .fw-base,#fwWord.fw-lit .fw-top{stroke:#34E0A1}
 .fw-halo{position:absolute;left:-4%;right:-4%;top:-170%;bottom:-130%;pointer-events:none;z-index:0;opacity:0;transition:opacity .9s ease;
   background:radial-gradient(ellipse 34% 30% at 50% 56%,rgba(120,255,205,.9),rgba(52,224,161,0) 62%),
@@ -781,15 +781,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   })();
 
 
-  /* ===== CARTOON SLIME DRIP + LIQUID FILL over the wordmark (owner's sprite reference:
-     drops HANG from the edge stretching down, tear off as pears, fall elongating, and land
-     as a flat cartoon puddle with small bouncing droplets) ===== */
+  /* ===== PULL-CORD LIGHT SWITCH (owner's concept): a rope with REAL physics (verlet chain -
+     the canonical rope sim: point masses + distance constraints, pinned at the CTA's bottom
+     edge) hangs from the teal block. Drag the handle down past the click point and the black
+     invisible wordmark IGNITES like a lamp (gradient fill + halo). Pull again to switch off. ===== */
   (function(){
     var wrap=document.querySelector('.fw-wrap'), cv=document.getElementById('fwRain'), fw=document.getElementById('fwWord');
-    if(!wrap||!cv||!fw) return;
+    var sr=document.getElementById('scrollRoot');
+    if(!wrap||!cv||!fw||!sr) return;
     var ctx=cv.getContext('2d'), DPR=Math.min(window.devicePixelRatio||1,2);
-    var TOP=110; /* recomputed: drops hang from the BOTTOM EDGE of the teal CTA block (owner) */
-    var W2=0,H2=0,svgH=0;
+    var TOP=110, W2=0,H2=0,svgH=0;
     function sz(){ var r=fw.getBoundingClientRect(); W2=r.width; svgH=r.height;
       var ctaB=document.querySelector('#cta .cta');
       if(ctaB){ var g=r.top-ctaB.getBoundingClientRect().bottom; if(g>40&&g<2200) TOP=Math.round(g)-2; }
@@ -798,89 +799,75 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       cv.style.height=H2+'px'; cv.style.width=W2+'px'; }
     sz(); var lw=window.innerWidth;
     window.addEventListener('resize',function(){ if(window.innerWidth===lw)return; lw=window.innerWidth; sz(); });
-    var on=false, level=0, raf=null, water=document.getElementById('fwWater');
-    var C_MAIN='#2ED9A0', C_DARK='#0F9E6D', C_HI='rgba(230,255,246,.85)';
-    var hangs=[], falls=[], puddles=[], beads=[], recoils=[], G=0.3, tick=0;
-    function surfaceY(){ var yv=320-(340*level); return TOP + Math.max(0, Math.min(1, yv/294))*svgH; }
-    function pear(x,y,r,stretch,a){ /* pear-shaped viscous drop with a highlight */
-      ctx.globalAlpha=a; ctx.fillStyle=C_MAIN;
-      ctx.beginPath(); ctx.ellipse(x*DPR,y*DPR,r*0.85*DPR,r*(1+stretch)*DPR,0,0,7); ctx.fill();
-      ctx.beginPath(); ctx.moveTo((x-r*0.4)*DPR,(y-r*(1+stretch)*0.55)*DPR);
-      ctx.quadraticCurveTo(x*DPR,(y-r*(1+stretch)-r*1.5)*DPR,(x+r*0.4)*DPR,(y-r*(1+stretch)*0.55)*DPR);
-      ctx.closePath(); ctx.fill();
-      ctx.fillStyle=C_HI; ctx.beginPath();
-      ctx.arc((x-r*0.3)*DPR,(y-r*0.35)*DPR,Math.max(0.8,r*0.22)*DPR,0,7); ctx.fill();
-      ctx.globalAlpha=1; }
+    /* --- verlet rope --- */
+    var N=13, SEG=11, ROPE_X=0.72; /* anchored at 72% of the block width */
+    var pts=[], grab=false, gp2=null, clicked=false, lamp=false, level=0, raf=null;
+    var water=document.getElementById('fwWater');
+    function initRope(){ pts=[]; var ax=W2*ROPE_X;
+      for(var i=0;i<N;i++) pts.push({x:ax,y:i*SEG,px:ax,py:i*SEG}); }
+    initRope();
+    function ropeStep(){ var ax=W2*ROPE_X;
+      for(var i=1;i<N;i++){ var p2=pts[i], vx=(p2.x-p2.px)*0.985, vy=(p2.y-p2.py)*0.985;
+        p2.px=p2.x; p2.py=p2.y; p2.x+=vx; p2.y+=vy+0.55; }
+      var last=pts[N-1];
+      if(grab&&gp2){ last.x=gp2.x; last.y=gp2.y; last.px=gp2.x; last.py=gp2.y; }
+      for(var k=0;k<3;k++){ pts[0].x=ax; pts[0].y=0;
+        for(var j=0;j<N-1;j++){ var a=pts[j], b2=pts[j+1];
+          var dx=b2.x-a.x, dy=b2.y-a.y, d=Math.max(0.001,Math.sqrt(dx*dx+dy*dy));
+          var diff=(d-SEG)/d*0.5, ox=dx*diff, oy=dy*diff;
+          if(j===0){ b2.x-=ox*2; b2.y-=oy*2; }
+          else if(grab&&j===N-2){ a.x+=ox*2; a.y+=oy*2; }
+          else { a.x+=ox; a.y+=oy; b2.x-=ox; b2.y-=oy; } } }
+    }
+    function handlePos(){ return pts[N-1]; }
+    /* --- interaction: grab the handle; while dragging we preventDefault so the page holds still.
+       The move listener is non-passive but only acts (and only prevents) during an active grab. --- */
+    function toCanvas(e){ var t=e.touches?e.touches[0]:e, r=cv.getBoundingClientRect();
+      return {x:t.clientX-r.left, y:t.clientY-r.top}; }
+    function tryGrab(e){ if(lampBusy())return; var pt=toCanvas(e), hp=handlePos();
+      var dx=pt.x-hp.x, dy=pt.y-hp.y;
+      if(dx*dx+dy*dy<28*28){ grab=true; clicked=false; gp2=pt; if(!raf)raf=requestAnimationFrame(frame); } }
+    function lampBusy(){ return false; }
+    function onMove(e){ if(!grab)return; e.preventDefault();
+      var pt=toCanvas(e), ax=W2*ROPE_X, dx=pt.x-ax, dy=pt.y;
+      var maxL=(N-1)*SEG*1.45, d=Math.sqrt(dx*dx+dy*dy);
+      if(d>maxL){ dx*=maxL/d; dy*=maxL/d; }
+      gp2={x:ax+dx,y:dy};
+      /* the switch CLICKS once per grab when pulled far enough */
+      if(!clicked && dy>(N-1)*SEG+34){ clicked=true; lamp=!lamp; }
+    }
+    function onUp(){ grab=false; gp2=null; }
+    sr.addEventListener('touchstart',tryGrab,{passive:true});
+    sr.addEventListener('mousedown',tryGrab);
+    window.addEventListener('touchmove',onMove,{passive:false});
+    window.addEventListener('mousemove',onMove);
+    window.addEventListener('touchend',onUp,{passive:true});
+    window.addEventListener('mouseup',onUp);
+    /* --- render --- */
+    var on=false;
     function frame(){
-      if(!on && !hangs.length && !falls.length && !puddles.length && !beads.length && level<=0.001){
-        raf=null; ctx.clearRect(0,0,cv.width,cv.height); return; }
-      /* the level rises ONLY from landed drops (owner: it used to fill before any drop flew);
-         each splash adds water in proportion to the drop size. Drain stays time-based. */
-      if(!on){ level=Math.max(0, level-0.02); }
-      if(water) water.setAttribute('transform','translate(0,'+(320-340*level).toFixed(1)+')');
-      if(level>0.9){ fw.classList.add('fw-lit'); wrap.classList.add('fw-on'); } else if(level<0.8){ fw.classList.remove('fw-lit'); wrap.classList.remove('fw-on'); }
-      tick++;
-      /* spawn a new hanging drip every ~20 frames, keep a handful at once */
-      if(on && level<0.97 && tick%8===0 && hangs.length<9)
-        hangs.push({x:16+Math.random()*(W2-32), t:0, sp:0.011+Math.random()*0.014,
-          R:3.3+Math.random()*4.8, L:22+Math.random()*28, ph:Math.random()*6.28});
-      var sy2=surfaceY();
+      if(!on && level<=0.001 && !grab){ raf=null; ctx.clearRect(0,0,cv.width,cv.height); return; }
+      /* lamp state drives the fill: quick ignite, quick fade */
+      var tgt=lamp?1:0;
+      level += (tgt-level)*0.09;
+      if(level<0.001&&!lamp)level=0;
+      if(water) water.setAttribute('transform','translate(0,'+(320-340*Math.min(1,Math.max(0,level))).toFixed(1)+')');
+      if(level>0.5){ fw.classList.add('fw-lit'); wrap.classList.add('fw-on'); }
+      else { fw.classList.remove('fw-lit'); wrap.classList.remove('fw-on'); }
+      ropeStep();
       ctx.clearRect(0,0,cv.width,cv.height);
-      /* hanging drips: a BASE BLOB clings to the edge, the neck stretches with a viscous
-         ease-in (slow gather, fast final stretch), thinning toward the tear-off */
-      for(var i=hangs.length-1;i>=0;i--){ var hg=hangs[i]; hg.t+=hg.sp;
-        var tt2=hg.t*hg.t*(0.4+0.6*hg.t);            /* ease-in: viscous gather then stretch */
-        var L=tt2*hg.L, r=hg.R*(0.55+0.45*hg.t), yb=L+r;
-        var neckW=Math.max(0.8, hg.R*0.9*(1-hg.t*0.8));
-        ctx.fillStyle=C_MAIN; ctx.globalAlpha=0.96;
-        /* base blob (half-ellipse hugging the edge) */
-        ctx.beginPath(); ctx.ellipse(hg.x*DPR,0,(hg.R*1.7)*DPR,(hg.R*0.95*(1-0.3*hg.t))*DPR,0,0,Math.PI); ctx.fill();
-        /* thinning neck */
-        ctx.beginPath(); ctx.moveTo((hg.x-hg.R*1.1)*DPR,0);
-        ctx.quadraticCurveTo((hg.x-neckW*0.7)*DPR,L*0.45*DPR,(hg.x-neckW*0.5)*DPR,L*DPR);
-        ctx.lineTo((hg.x+neckW*0.5)*DPR,L*DPR);
-        ctx.quadraticCurveTo((hg.x+neckW*0.7)*DPR,L*0.45*DPR,(hg.x+hg.R*1.1)*DPR,0);
-        ctx.closePath(); ctx.fill(); ctx.globalAlpha=1;
-        pear(hg.x,yb,r,0.14+hg.t*0.1,0.97);
-        if(hg.t>=1){ falls.push({x:hg.x,y:yb,vy:0.9,r:hg.R,ph:hg.ph,w:0});
-          recoils.push({x:hg.x,R:hg.R,t:0}); hangs.splice(i,1); } }
-      /* elastic recoil stubs: what is left at the edge snaps back up */
-      for(var rc=recoils.length-1;rc>=0;rc--){ var rr=recoils[rc]; rr.t+=0.12;
-        if(rr.t>=1){ recoils.splice(rc,1); continue; }
-        var k=1-rr.t, bounce=Math.sin(rr.t*9)*k*0.35;
-        ctx.globalAlpha=0.96*k; ctx.fillStyle=C_MAIN;
-        ctx.beginPath(); ctx.ellipse(rr.x*DPR,0,(rr.R*1.7*k)*DPR,(rr.R*(0.9+bounce)*k)*DPR,0,0,Math.PI); ctx.fill();
-        ctx.globalAlpha=1; }
-      /* falling pears elongate with speed */
-      for(var j=falls.length-1;j>=0;j--){ var fd=falls[j]; fd.vy+=G; fd.y+=fd.vy;
-        if(fd.y>=sy2){ level=Math.min(1, level+0.0052*fd.r);
-          puddles.push({x:fd.x,y:sy2,t:0,w:fd.r*1.6});
-          var nb=3+Math.round(Math.random()*2);
-          for(var k=0;k<nb;k++) beads.push({x:fd.x+(Math.random()-.5)*7, y:sy2-2,
-            vx:(Math.random()-.5)*3.2, vy:-(2.2+Math.random()*3.4), r:1.0+Math.random()*1.6});
-          falls.splice(j,1); }
-        else { fd.w+=0.55; var jig=Math.sin(fd.ph+fd.w)*Math.max(0,0.28-fd.w*0.012);
-          pear(fd.x,fd.y,fd.r*(1+jig*0.4),Math.min(1.1,fd.vy*0.085)-jig,0.97); } }
-      /* landing INTO liquid: expanding ripple rings (perspective ellipses) + a brief crown bump —
-         it used to splat like hitting a solid floor (owner) */
-      for(var q=puddles.length-1;q>=0;q--){ var pd=puddles[q]; pd.t+=0.032;
-        if(pd.t>=1){ puddles.splice(q,1); continue; }
-        var a=1-pd.t;
-        ctx.strokeStyle=C_MAIN; ctx.lineWidth=1.6*DPR;
-        ctx.globalAlpha=a*0.85;
-        var r1=pd.w+34*pd.t;
-        ctx.beginPath(); ctx.ellipse(pd.x*DPR,pd.y*DPR,r1*DPR,(r1*0.24)*DPR,0,0,7); ctx.stroke();
-        if(pd.t>0.22){ var t2=(pd.t-0.22)/0.78, r2=pd.w+30*t2;
-          ctx.globalAlpha=(1-t2)*0.55;
-          ctx.beginPath(); ctx.ellipse(pd.x*DPR,pd.y*DPR,r2*DPR,(r2*0.24)*DPR,0,0,7); ctx.stroke(); }
-        if(pd.t<0.3){ var cb=1-pd.t/0.3;                       /* crown bump right at impact */
-          ctx.globalAlpha=cb*0.9; ctx.fillStyle=C_MAIN;
-          ctx.beginPath(); ctx.ellipse(pd.x*DPR,(pd.y-1.5*cb)*DPR,(pd.w*1.1)*DPR,(3.5*cb)*DPR,0,0,Math.PI,true); ctx.fill(); }
-        ctx.globalAlpha=1; }
-      /* small bouncing droplets from the impact */
-      for(var b=beads.length-1;b>=0;b--){ var bd=beads[b]; bd.vy+=G; bd.x+=bd.vx; bd.y+=bd.vy;
-        if(bd.y>=sy2+2){ beads.splice(b,1); continue; }
-        pear(bd.x,bd.y,bd.r,Math.min(0.9,Math.abs(bd.vy)*0.1),0.9); }
+      /* cord */
+      ctx.strokeStyle='rgba(190,205,198,.9)'; ctx.lineWidth=1.8*DPR;
+      ctx.lineJoin='round'; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(pts[0].x*DPR,pts[0].y*DPR);
+      for(var i=1;i<N;i++) ctx.lineTo(pts[i].x*DPR,pts[i].y*DPR);
+      ctx.stroke();
+      /* handle: small mint ring + core, glows when the lamp is on */
+      var hp=handlePos();
+      ctx.strokeStyle=lamp?'#34E0A1':'rgba(190,205,198,.95)'; ctx.lineWidth=2*DPR;
+      ctx.beginPath(); ctx.arc(hp.x*DPR,hp.y*DPR,7*DPR,0,7); ctx.stroke();
+      ctx.fillStyle=lamp?'#7CFFD0':'rgba(190,205,198,.5)';
+      ctx.beginPath(); ctx.arc(hp.x*DPR,hp.y*DPR,2.6*DPR,0,7); ctx.fill();
       raf=requestAnimationFrame(frame);
     }
     window.__fwRainActive=false;
