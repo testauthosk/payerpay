@@ -268,6 +268,31 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 @keyframes pullBob{from{transform:translateY(0)}to{transform:translateY(7px)}}
 @media (max-width:900px){ .pull-hint{display:flex} }
 
+/* SUPPORT CHAT (owner's spec): tap the quarter - it first GROWS WIDE (same height) until the
+   right button, then GROWS TALL (same width) up to the header, then the chat fades in. Close via
+   the bottom-left cross; the page behind blurs to black. */
+#chatBd{position:fixed;inset:0;z-index:208;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .5s ease}
+#chatBd.open{opacity:1;pointer-events:auto}
+#chatPanel{position:fixed;left:0;bottom:0;z-index:212;width:60px;height:60px;background:rgba(9,14,11,.94);border:1px solid rgba(52,224,161,.4);border-left:0;border-bottom:0;border-radius:0 20px 0 0;overflow:hidden;opacity:0;pointer-events:none;
+  transition:width .45s cubic-bezier(.4,0,.2,1) .5s,height .5s cubic-bezier(.4,0,.2,1) 0s,opacity .25s ease .95s}
+#chatPanel.open{opacity:1;pointer-events:auto;width:calc(100% - 72px);height:calc(100% - 88px);
+  transition:width .45s cubic-bezier(.4,0,.2,1) 0s,height .5s cubic-bezier(.4,0,.2,1) .45s,opacity .2s ease}
+#chatPanel .cp-in{opacity:0;transition:opacity .3s ease;display:flex;flex-direction:column;height:100%}
+#chatPanel.open .cp-in{opacity:1;transition-delay:1s}
+.cp-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+.cp-t{font-weight:800;font-size:16px;letter-spacing:-.02em}
+.cp-st{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;color:var(--mint)}
+.cp-st i{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint)}
+.cp-msgs{flex:1;padding:16px 18px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.cp-m{max-width:82%;background:var(--surf);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:11px 13px;font-size:13.5px;color:var(--sub);line-height:1.45}
+.cp-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line)}
+#chatClose{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:transparent;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+#chatClose svg{width:16px;height:16px;stroke:var(--sub);stroke-width:2;stroke-linecap:round}
+.cp-input{flex:1;display:flex;align-items:center;gap:8px;background:var(--surf);border:1px solid var(--line);border-radius:999px;padding:4px 4px 4px 14px}
+.cp-input input{flex:1;background:transparent;border:0;outline:0;color:var(--ink);font-size:13.5px;font-family:inherit;min-width:0}
+.cp-send{width:34px;height:34px;border-radius:50%;border:0;background:var(--mint);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.cp-send svg{width:16px;height:16px;stroke:var(--on-mint);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
 /* floating utility buttons */
 /* QUARTER-CIRCLE corner buttons (owner's sketch): dark quarter pinned to the bottom corner
    with a mint arc edge; they INFLATE from the corner (scale from the corner origin) */
@@ -346,6 +371,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .device{width:250px;height:500px}
   .flycard{width:170px;height:108px}
   .fc-us{left:calc(50% - 190px)}.fc-eu{right:calc(50% - 190px)}
+  .foot-btm{flex-direction:column;align-items:center;text-align:center;gap:8px;padding-bottom:96px}
   .scr{padding:28px 18px;transition:opacity .6s ease,transform .6s ease}
   /* one-line account rows on the narrow phone screen: tighter icon/gaps/type so name+sub+amount
      all fit without wrapping or overflowing (budgeted: 30+9+text+9+amount = 184px) */
@@ -372,6 +398,20 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 </head>
 <body>
 
+<div id="chatBd"></div>
+<div id="chatPanel">
+  <div class="cp-in">
+    <div class="cp-head"><span class="cp-t">Support</span><span class="cp-st"><i></i>Online</span></div>
+    <div class="cp-msgs">
+      <div class="cp-m">Hi! How can we help you today?</div>
+      <div class="cp-m">Ask us anything about accounts, cards or crypto.</div>
+    </div>
+    <div class="cp-row">
+      <button id="chatClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="cp-input"><input type="text" placeholder="Type a message..." /><button class="cp-send"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+    </div>
+  </div>
+</div>
 <button id="toTop" aria-label="To top"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <button id="chatBub" aria-label="Chat"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/><circle cx="9.2" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="13" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="16.8" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg></button>
 
@@ -613,7 +653,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         onComplete:function(){ window.__noLock=false; },onInterrupt:function(){ window.__noLock=false; }});
     } else { if(_mobQ)_srEl.scrollTop=y; else window.scrollTo(0,y); window.__noLock=false; } }
   if(_tt) _tt.addEventListener('click',function(){ _flyTo(_mobQ?1:0); });
-  if(_cb) _cb.addEventListener('click',function(){ /* online chat: placeholder bubble for now (owner will spec the animation) */ });
+  var _cp=document.getElementById('chatPanel'), _cbd=document.getElementById('chatBd');
+  function _chatOpen(v){ if(_cp)_cp.classList.toggle('open',v); if(_cbd)_cbd.classList.toggle('open',v); }
+  if(_cb) _cb.addEventListener('click',function(){ _chatOpen(true); });
+  var _cx=document.getElementById('chatClose');
+  if(_cx) _cx.addEventListener('click',function(){ _chatOpen(false); });
+  if(_cbd) _cbd.addEventListener('click',function(){ _chatOpen(false); });
   /* smooth anchors: intercept in-page links (native jumps were instant) */
   document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('a[href^="#"]');
     if(!a) return; var id=a.getAttribute('href').slice(1); if(!id) return;
@@ -841,7 +886,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       return {x:t.clientX-r.left, y:t.clientY-r.top}; }
     function tryGrab(e){ if(lampBusy())return; var pt=toCanvas(e), hp=handlePos();
       var dx=pt.x-hp.x, dy=pt.y-hp.y;
-      if(dx*dx+dy*dy<28*28){ grab=true; clicked=false; gp2=pt; if(!raf)raf=requestAnimationFrame(frame); } }
+      if(dx*dx+dy*dy<40*40){ grab=true; clicked=false; gp2=pt; if(!raf)raf=requestAnimationFrame(frame); } }
     function lampBusy(){ return false; }
     function onMove(e){ if(!grab)return; e.preventDefault();
       var pt=toCanvas(e), ax=W2*ROPE_X, dx=pt.x-ax, dy=pt.y;
@@ -880,10 +925,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       ctx.stroke();
       /* handle: small mint ring + core, glows when the lamp is on */
       var hp=handlePos();
-      ctx.strokeStyle=lamp?'#34E0A1':'rgba(190,205,198,.95)'; ctx.lineWidth=2*DPR;
-      ctx.beginPath(); ctx.arc(hp.x*DPR,hp.y*DPR,7*DPR,0,7); ctx.stroke();
+      ctx.strokeStyle=lamp?'#34E0A1':'rgba(190,205,198,.95)'; ctx.lineWidth=2.6*DPR;
+      ctx.beginPath(); ctx.arc(hp.x*DPR,hp.y*DPR,11.2*DPR,0,7); ctx.stroke();
       ctx.fillStyle=lamp?'#7CFFD0':'rgba(190,205,198,.5)';
-      ctx.beginPath(); ctx.arc(hp.x*DPR,hp.y*DPR,2.6*DPR,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(hp.x*DPR,hp.y*DPR,4.2*DPR,0,7); ctx.fill();
       raf=requestAnimationFrame(frame);
     }
     window.__fwRainActive=false;
