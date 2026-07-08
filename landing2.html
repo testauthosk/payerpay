@@ -340,6 +340,7 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
   #toTop svg{right:20px;bottom:18px;width:22px;height:22px}
   #chatBub svg{left:20px;bottom:18px;width:23px;height:23px}
   .pull-hint{display:flex}
+  .fw-wrap{margin-bottom:46px} /* lifted a bit off the footer on desktop */
 }
 
 /* FOOTER */
@@ -920,7 +921,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       return {x:t.clientX-r.left, y:t.clientY-r.top}; }
     function tryGrab(e){ if(lampBusy())return; var pt=toCanvas(e), hp=handlePos();
       var dx=pt.x-hp.x, dy=pt.y-hp.y;
-      if(dx*dx+dy*dy<40*40){ grab=true; clicked=false; gp2=pt; if(!raf)raf=requestAnimationFrame(frame); } }
+      if(dx*dx+dy*dy<40*40){ grab=true; clicked=false; gp2=pt;
+        if(e.type==='mousedown') e.preventDefault(); /* stops text selection while dragging the ring */
+        if(!raf)raf=requestAnimationFrame(frame); } }
     function lampBusy(){ return false; }
     function onMove(e){ if(!grab)return; e.preventDefault();
       var pt=toCanvas(e), ax=W2*ROPE_X, dx=pt.x-ax, dy=pt.y;
