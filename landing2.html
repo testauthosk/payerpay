@@ -1128,7 +1128,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             for(var ci=0;ci<N;ci++) track.children[ci].classList.toggle('lit', ci<=ai);
             var cur=track.children[ai].getBoundingClientRect();
             var nxt=(ai<N-1)?track.children[ai+1].getBoundingClientRect():null;
-            var HOLD=0.38;                      /* sit hidden on the card, then a longer corner-to-corner arc reads clearly */
+            var HOLD=0.22;                      /* short hold on the card, then a LONG visible flight */
             if(loc<HOLD || !nxt){ st.p=[(cur.left+cur.right)/2,(cur.top+cur.bottom)/2]; st.scale=0; return st; }
             var tt=(loc-HOLD)/(1-HOLD); tt=tt*tt*(3-2*tt);
             var down=nxt.top>cur.top;           /* next card sits lower → dive from bottom corner */
@@ -1141,7 +1141,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             /* bulge to the OUTER side of the zigzag (away from the mid-line): going down → sag
                downward, going up → bulge upward */
             if(down ? nyv<0 : nyv>0){ nxv=-nxv; nyv=-nyv; }
-            var bg=ln2*0.32;
+            var bg=ln2*0.55;                    /* big bulge → a pronounced, obvious arc (owner: was flat/weak) */
             st.p=qb(ex,[(ex[0]+en[0])/2+nxv*bg,(ex[1]+en[1])/2+nyv*bg],en,tt);
             var ovr=(st.p[0]>cur.left&&st.p[0]<cur.right&&st.p[1]>cur.top&&st.p[1]<cur.bottom)||(st.p[0]>nxt.left&&st.p[0]<nxt.right&&st.p[1]>nxt.top&&st.p[1]<nxt.bottom);
             st.scale=ovr?0:1;
@@ -1149,6 +1149,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             st.lit=true; return st;
           }
           /* last card outlined → the two trails merge into one dot that exits from its bottom */
+          window.__featDone=true;               /* whole section traversed — keep cards lit afterwards */
           for(var cj=0;cj<N;cj++) track.children[cj].classList.add('lit');
           var lac=track.children[N-1].getBoundingClientRect(), et=cl((fp-0.88)/0.12,0,1); et=et*et*(3-2*et);
           st.p=[lac.left+lac.width*0.5, lp((lac.top+lac.bottom)/2, lac.bottom, et)]; st.scale=0;
@@ -1204,13 +1205,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           for(var cq=0;cq<N;cq++) track.children[cq].classList.remove('lit');
         }
         var fsec=document.getElementById('feat'), fRect=fsec?fsec.getBoundingClientRect():null, ftop=fRect?fRect.top:H;
-        if(ftop>-20){
+        if(ftop>H*0.9) window.__featDone=false;  /* section far below again → allow a fresh ignite run */
+        if(ftop>-20 && !window.__featDone){
           var fc0=track.children[0].getBoundingClientRect(), cardEntry=[fc0.left, fc0.top+fc0.height/2];
           var cfrac=cl((H*0.53-ftop)/(H*0.53),0,1), bt2=cfrac*cfrac*(3-2*cfrac);
           for(var cu=0;cu<N;cu++) track.children[cu].classList.remove('lit');
           st.p=cb([W*0.62,H*0.24],[W*0.16,H*0.32],[W*-0.02,H*0.86],cardEntry,bt2); return st;
         }
-        for(var cw=0;cw<N;cw++) track.children[cw].classList.remove('lit');
+        if(!window.__featDone){ for(var cw=0;cw<N;cw++) track.children[cw].classList.remove('lit'); }
       }
       /* ===== AFTER FEATURES (block by block): exit BOTTOM of last card -> descend -> enter #who PB block with a wave ===== */
       var pbEl=document.querySelector('.pb'), ctaEl=document.getElementById('cta'), footEl=document.querySelector('footer');
