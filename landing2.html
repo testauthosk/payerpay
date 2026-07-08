@@ -1141,10 +1141,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             /* bulge to the OUTER side of the zigzag (away from the mid-line): going down → sag
                downward, going up → bulge upward */
             if(down ? nyv<0 : nyv>0){ nxv=-nxv; nyv=-nyv; }
-            var bg=ln2*0.55;                    /* big bulge → a pronounced, obvious arc (owner: was flat/weak) */
-            st.p=qb(ex,[(ex[0]+en[0])/2+nxv*bg,(ex[1]+en[1])/2+nyv*bg],en,tt);
-            var ovr=(st.p[0]>cur.left&&st.p[0]<cur.right&&st.p[1]>cur.top&&st.p[1]<cur.bottom)||(st.p[0]>nxt.left&&st.p[0]<nxt.right&&st.p[1]>nxt.top&&st.p[1]<nxt.bottom);
-            st.scale=ovr?0:1;
+            var bg=ln2*0.55;                    /* big bulge → a pronounced arc, matching the owner's sketch */
+            var ctrl=[(ex[0]+en[0])/2+nxv*bg,(ex[1]+en[1])/2+nyv*bg];
+            st.arc={ex:ex, ctrl:ctrl, en:en, tt:tt};   /* DRAW the arc-arrow (owner), not a blinking dot */
+            st.p=qb(ex,ctrl,en,tt); st.scale=0;        /* the drawn arc carries its own glowing head */
             if(tt>0.97) track.children[ai+1].classList.add('lit');
             st.lit=true; return st;
           }
@@ -1297,6 +1297,34 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         ctx.fillStyle=g; ctx.beginPath(); ctx.arc(dx2,dy2,25*sc*DPR,0,7); ctx.fill();
         ctx.fillStyle='rgba(220,255,240,'+(0.98*sc).toFixed(3)+')'; ctx.beginPath(); ctx.arc(dx2,dy2,6.2*sc*DPR,0,7); ctx.fill(); }
     }
+    /* owner's arrow-arc: a green bezier drawn progressively from the exit corner, an
+       arrowhead + glowing head at the leading end (like the hand-drawn sketch). */
+    function drawArc(a){
+      var tt=cl(a.tt,0,1), steps=Math.max(2,Math.ceil(tt/0.03)), pts=[];
+      for(var i=0;i<=steps;i++){ pts.push(qb(a.ex,a.ctrl,a.en,tt*i/steps)); }
+      ctx.lineJoin='round'; ctx.lineCap='round';
+      /* soft outer glow */
+      ctx.strokeStyle='rgba(52,224,161,0.22)'; ctx.lineWidth=8*DPR;
+      ctx.beginPath(); ctx.moveTo(pts[0][0]*DPR,pts[0][1]*DPR);
+      for(var i2=1;i2<pts.length;i2++) ctx.lineTo(pts[i2][0]*DPR,pts[i2][1]*DPR); ctx.stroke();
+      /* bright core, brighter toward the head */
+      for(var i3=1;i3<pts.length;i3++){ var af=i3/pts.length;
+        ctx.strokeStyle='rgba(150,255,214,'+(0.32+0.6*af).toFixed(3)+')'; ctx.lineWidth=(1.2+2.4*af)*DPR;
+        ctx.beginPath(); ctx.moveTo(pts[i3-1][0]*DPR,pts[i3-1][1]*DPR); ctx.lineTo(pts[i3][0]*DPR,pts[i3][1]*DPR); ctx.stroke(); }
+      var head=pts[pts.length-1], prev=pts[Math.max(0,pts.length-2)];
+      var hx=head[0]*DPR, hy=head[1]*DPR, ang=Math.atan2(head[1]-prev[1], head[0]-prev[0]);
+      /* arrowhead (two barbs) once the arc is underway */
+      if(tt>0.30){ var al=14*DPR, aw=0.44;
+        ctx.strokeStyle='rgba(198,255,236,0.96)'; ctx.lineWidth=2.6*DPR;
+        ctx.beginPath();
+        ctx.moveTo(hx,hy); ctx.lineTo(hx-Math.cos(ang-aw)*al, hy-Math.sin(ang-aw)*al);
+        ctx.moveTo(hx,hy); ctx.lineTo(hx-Math.cos(ang+aw)*al, hy-Math.sin(ang+aw)*al); ctx.stroke(); }
+      /* glowing head */
+      var g=ctx.createRadialGradient(hx,hy,0,hx,hy,16*DPR);
+      g.addColorStop(0,'rgba(200,255,232,0.95)'); g.addColorStop(0.4,'rgba(52,224,161,0.5)'); g.addColorStop(1,'rgba(52,224,161,0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(hx,hy,16*DPR,0,7); ctx.fill();
+      ctx.fillStyle='rgba(235,255,246,0.98)'; ctx.beginPath(); ctx.arc(hx,hy,4.6*DPR,0,7); ctx.fill();
+    }
     function drawContour(c){
       var L=c.L,R=c.R,MY=c.MY,loc=c.loc, phs=[0,1.7];
       function pts(eY){ var a=[], steps=Math.max(2,Math.ceil(loc/0.015)); for(var i=0;i<=steps;i++){ a.push(contour(L,R,eY,MY,loc*i/steps)); } return a; }
@@ -1414,7 +1442,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           cwg.addColorStop(0,'rgba(52,224,161,'+cwa.toFixed(3)+')'); cwg.addColorStop(0.62,'rgba(52,224,161,'+(cwa*0.35).toFixed(3)+')'); cwg.addColorStop(1,'rgba(52,224,161,0)');
           ctx.fillStyle=cwg; ctx.beginPath(); ctx.arc(cfx,cfy,cfR,0,7); ctx.fill();
           ctx.restore(); } }
-      if(st.card){ drawContour(st.card); }
+      if(st.arc){ drawArc(st.arc); }
+      else if(st.card){ drawContour(st.card); }
       else drawComet(trail, hx, hy, cl(curScale,0,1));
       requestAnimationFrame(pframe);
     }
