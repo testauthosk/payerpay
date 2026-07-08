@@ -1134,15 +1134,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             var down=nxt.top>cur.top;           /* next card sits lower → dive from bottom corner */
             /* CORNER to CORNER (owner, like mobile): leave the current card by the trailing corner
                that faces the next card, land on the next card by its facing near corner */
-            var ex=[cur.right-4, down?cur.bottom-4:cur.top+4];
-            var en=[nxt.left+4,  down?nxt.top+4:nxt.bottom-4];
-            var dx2=en[0]-ex[0], dy2=en[1]-ex[1], ln2=Math.max(1,Math.sqrt(dx2*dx2+dy2*dy2));
-            var nxv=-dy2/ln2, nyv=dx2/ln2;      /* unit normal of the chord */
-            /* bulge to the OUTER side of the zigzag (away from the mid-line): going down → sag
-               downward, going up → bulge upward */
-            if(down ? nyv<0 : nyv>0){ nxv=-nxv; nyv=-nyv; }
-            var bg=ln2*0.55;                    /* big bulge → a pronounced arc, matching the owner's sketch */
-            var ctrl=[(ex[0]+en[0])/2+nxv*bg,(ex[1]+en[1])/2+nyv*bg];
+            /* CLEAN swoosh (owner's sketch): leave the current card's right edge horizontally,
+               curve, and enter the next card's left edge diagonally so the arrowhead points
+               cleanly INTO the card (never diving past it). Control at [mid-x, exit-y] makes
+               the exit tangent horizontal and the entry tangent a natural diagonal. */
+            var cmy=(cur.top+cur.bottom)/2, nmy=(nxt.top+nxt.bottom)/2;
+            var ex=[cur.right-8, cmy];
+            var en=[nxt.left+12, nmy];
+            var ctrl=[(ex[0]+en[0])/2, ex[1]];
             st.arc={ex:ex, ctrl:ctrl, en:en, tt:tt};   /* DRAW the arc-arrow (owner), not a blinking dot */
             st.p=qb(ex,ctrl,en,tt); st.scale=0;        /* the drawn arc carries its own glowing head */
             if(tt>0.97) track.children[ai+1].classList.add('lit');
