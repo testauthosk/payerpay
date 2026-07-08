@@ -766,13 +766,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     function frame(){
       if(!on && !hangs.length && !falls.length && !puddles.length && !beads.length && level<=0.001){
         raf=null; ctx.clearRect(0,0,cv.width,cv.height); return; }
-      if(on){ level=Math.min(1, level+0.0026); } else { level=Math.max(0, level-0.02); }
+      /* the level rises ONLY from landed drops (owner: it used to fill before any drop flew);
+         each splash adds water in proportion to the drop size. Drain stays time-based. */
+      if(!on){ level=Math.max(0, level-0.02); }
       if(water) water.setAttribute('transform','translate(0,'+(320-340*level).toFixed(1)+')');
       tick++;
       /* spawn a new hanging drip every ~20 frames, keep a handful at once */
-      if(on && level<0.97 && tick%10===0 && hangs.length<8)
-        hangs.push({x:16+Math.random()*(W2-32), t:0, sp:0.009+Math.random()*0.012,
-          R:2.2+Math.random()*3.2, L:18+Math.random()*24, ph:Math.random()*6.28});
+      if(on && level<0.97 && tick%8===0 && hangs.length<9)
+        hangs.push({x:16+Math.random()*(W2-32), t:0, sp:0.011+Math.random()*0.014,
+          R:3.3+Math.random()*4.8, L:22+Math.random()*28, ph:Math.random()*6.28});
       var sy2=surfaceY();
       ctx.clearRect(0,0,cv.width,cv.height);
       /* hanging drips: a BASE BLOB clings to the edge, the neck stretches with a viscous
@@ -802,19 +804,29 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         ctx.globalAlpha=1; }
       /* falling pears elongate with speed */
       for(var j=falls.length-1;j>=0;j--){ var fd=falls[j]; fd.vy+=G; fd.y+=fd.vy;
-        if(fd.y>=sy2){ puddles.push({x:fd.x,y:sy2,t:0,w:fd.r*3.1});
-          var nb=2+Math.round(Math.random()*2);
-          for(var k=0;k<nb;k++) beads.push({x:fd.x+(Math.random()-.5)*6, y:sy2-2,
-            vx:(Math.random()-.5)*2.6, vy:-(1.6+Math.random()*2.6), r:0.9+Math.random()*1.2});
+        if(fd.y>=sy2){ level=Math.min(1, level+0.0052*fd.r);
+          puddles.push({x:fd.x,y:sy2,t:0,w:fd.r*1.6});
+          var nb=3+Math.round(Math.random()*2);
+          for(var k=0;k<nb;k++) beads.push({x:fd.x+(Math.random()-.5)*7, y:sy2-2,
+            vx:(Math.random()-.5)*3.2, vy:-(2.2+Math.random()*3.4), r:1.0+Math.random()*1.6});
           falls.splice(j,1); }
         else { fd.w+=0.55; var jig=Math.sin(fd.ph+fd.w)*Math.max(0,0.28-fd.w*0.012);
           pear(fd.x,fd.y,fd.r*(1+jig*0.4),Math.min(1.1,fd.vy*0.085)-jig,0.97); } }
-      /* flat cartoon puddles: widen and thin out, then fade */
-      for(var q=puddles.length-1;q>=0;q--){ var pd=puddles[q]; pd.t+=0.045;
+      /* landing INTO liquid: expanding ripple rings (perspective ellipses) + a brief crown bump —
+         it used to splat like hitting a solid floor (owner) */
+      for(var q=puddles.length-1;q>=0;q--){ var pd=puddles[q]; pd.t+=0.032;
         if(pd.t>=1){ puddles.splice(q,1); continue; }
-        var a=1-pd.t, rx=pd.w+26*pd.t, ry=Math.max(1.2,4.4*(1-pd.t*0.62));
-        ctx.globalAlpha=a*0.9; ctx.fillStyle=C_MAIN;
-        ctx.beginPath(); ctx.ellipse(pd.x*DPR,pd.y*DPR,rx*DPR,ry*DPR,0,0,7); ctx.fill();
+        var a=1-pd.t;
+        ctx.strokeStyle=C_MAIN; ctx.lineWidth=1.6*DPR;
+        ctx.globalAlpha=a*0.85;
+        var r1=pd.w+34*pd.t;
+        ctx.beginPath(); ctx.ellipse(pd.x*DPR,pd.y*DPR,r1*DPR,(r1*0.24)*DPR,0,0,7); ctx.stroke();
+        if(pd.t>0.22){ var t2=(pd.t-0.22)/0.78, r2=pd.w+30*t2;
+          ctx.globalAlpha=(1-t2)*0.55;
+          ctx.beginPath(); ctx.ellipse(pd.x*DPR,pd.y*DPR,r2*DPR,(r2*0.24)*DPR,0,0,7); ctx.stroke(); }
+        if(pd.t<0.3){ var cb=1-pd.t/0.3;                       /* crown bump right at impact */
+          ctx.globalAlpha=cb*0.9; ctx.fillStyle=C_MAIN;
+          ctx.beginPath(); ctx.ellipse(pd.x*DPR,(pd.y-1.5*cb)*DPR,(pd.w*1.1)*DPR,(3.5*cb)*DPR,0,0,Math.PI,true); ctx.fill(); }
         ctx.globalAlpha=1; }
       /* small bouncing droplets from the impact */
       for(var b=beads.length-1;b>=0;b--){ var bd=beads[b]; bd.vy+=G; bd.x+=bd.vx; bd.y+=bd.vy;
