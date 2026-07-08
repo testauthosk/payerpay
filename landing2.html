@@ -267,7 +267,7 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 /* neon tube: bright near-white inner stroke over a mint outer stroke — no fill */
 #fwWord.fw-lit .fw-base{stroke:#4FFFB6;stroke-width:4.4}
 #fwWord.fw-lit .fw-top{stroke:#FFFFFF;stroke-width:2.2}
-#fwRain{position:absolute;left:0;bottom:0;width:100%;pointer-events:none;z-index:2}
+#fwRain{position:absolute;left:50%;transform:translateX(-50%);bottom:0;pointer-events:none;z-index:2} /* centred: on desktop the canvas is narrower than the wrap (wordmark 60%) */
 
 /* Pull hint next to the cord (same handwritten style as Tap) */
 .pull-hint{position:absolute;left:calc(50% + 34px);bottom:0;z-index:6;display:none;flex-direction:column;align-items:center;gap:10px;opacity:0;transition:opacity .5s ease;pointer-events:none}
@@ -313,6 +313,19 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 #toTop svg{position:absolute;right:13px;bottom:12px;width:18px;height:18px;stroke:var(--mint);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
 #chatBub svg{position:absolute;left:13px;bottom:12px;width:19px;height:19px;stroke:var(--mint);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
 #toTop.on,#chatBub.on{pointer-events:auto;transform:scale(1);opacity:1}
+@media (min-width:901px){
+  /* desktop: wordmark 40% smaller and dimmer (do not give the trick away); bigger brighter
+     corner quarters; the Pull hint shows here too */
+  .foot-word{width:60%;margin:0 auto}
+  .fw-wrap{display:flex;justify-content:center}
+  .foot-word .fw-base,.foot-word .fw-top{stroke:#101412}
+  #toTop,#chatBub{width:84px;height:84px;background:rgba(10,16,13,.72)}
+  #toTop{border-top:1.4px solid rgba(52,224,161,.8);border-left:1.4px solid rgba(52,224,161,.8)}
+  #chatBub{border-top:1.4px solid rgba(52,224,161,.8);border-right:1.4px solid rgba(52,224,161,.8)}
+  #toTop svg{right:20px;bottom:18px;width:22px;height:22px}
+  #chatBub svg{left:20px;bottom:18px;width:23px;height:23px}
+  .pull-hint{display:flex}
+}
 
 /* FOOTER */
 footer{border-top:1px solid var(--line);padding:56px 0 42px}
