@@ -68,9 +68,13 @@ header.scrolled .nav{height:54px}
 .icon-btn:hover{border-color:var(--mint);color:var(--mint)}
 .icon-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .menu-tgl{display:none}
-.mob-menu{display:none;position:fixed;top:72px;left:0;right:0;z-index:190;background:rgba(0,0,0,.94);backdrop-filter:blur(18px) saturate(1.3);border-bottom:1px solid var(--line);padding:18px 20px 24px;flex-direction:column;gap:2px}
+.mob-menu{position:fixed;top:72px;left:0;right:0;z-index:190;background:rgba(0,0,0,.94);backdrop-filter:blur(18px) saturate(1.3);border-bottom:1px solid transparent;
+  display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.4,0,.2,1),border-color .3s,visibility 0s linear .45s;visibility:hidden}
+.mob-menu .mm-in{overflow:hidden;min-height:0;display:flex;flex-direction:column;gap:2px;padding:0 20px}
+.mob-menu.open{grid-template-rows:1fr;visibility:visible;border-bottom-color:var(--line);transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1),border-color .3s,visibility 0s}
+.mob-menu.open .mm-in{padding:18px 20px 24px}
+.mob-menu .mm-in{transition:padding .45s cubic-bezier(.4,0,.2,1)}
 html.light .mob-menu{background:rgba(255,255,255,.94)}
-.mob-menu.open{display:flex}
 .mob-menu a[data-mm]{color:var(--ink);font-size:17px;font-weight:600;padding:14px 4px;border-bottom:1px solid var(--line)}
 .mob-menu .seg{margin-top:16px;align-self:flex-start}
 .mob-menu .btn-primary{margin-top:16px;justify-content:center;text-align:center}
@@ -371,7 +375,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   .device{width:250px;height:500px}
   .flycard{width:170px;height:108px}
   .fc-us{left:calc(50% - 190px)}.fc-eu{right:calc(50% - 190px)}
-  .foot-btm{flex-direction:column;align-items:center;text-align:center;gap:8px;padding-bottom:96px}
+  .foot-btm{flex-direction:column;align-items:center;text-align:center;gap:8px;padding-bottom:36px}
   .scr{padding:28px 18px;transition:opacity .6s ease,transform .6s ease}
   /* one-line account rows on the narrow phone screen: tighter icon/gaps/type so name+sub+amount
      all fit without wrapping or overflowing (budgeted: 30+9+text+9+amount = 184px) */
@@ -422,20 +426,19 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <a href="#" class="logo">PayerPay<span class="d"></span></a>
     <nav class="nav-links"><a href="#asm">How it works</a><a href="#feat">Features</a><a href="#who">Who it's for</a><a href="#send">Transfers</a></nav>
     <div class="nav-right">
-      <div class="seg" id="navSeg"><div class="thumb"></div><button class="on" data-pb="personal">Personal</button><button data-pb="business">Business</button></div>
+      
       <a href="#cta" class="btn btn-primary">Open account</a>
       <button class="icon-btn menu-tgl" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </div>
 </header>
-<div class="mob-menu" id="mobMenu">
+<div class="mob-menu" id="mobMenu"><div class="mm-in">
   <a href="#asm" data-mm>How it works</a>
   <a href="#feat" data-mm>Features</a>
   <a href="#who" data-mm>Who it's for</a>
   <a href="#send" data-mm>Transfers</a>
-  <div class="seg" id="mmSeg"><div class="thumb"></div><button class="on" data-pb="personal">Personal</button><button data-pb="business">Business</button></div>
   <a href="#cta" class="btn btn-primary" data-mm>Open account</a>
-</div>
+</div></div>
 
 <canvas id="pilotCv"></canvas>
 
