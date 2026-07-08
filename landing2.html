@@ -1457,16 +1457,19 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var M=window.Matter; if(!M)return;
         var field=document.getElementById('coinField'), stg=document.querySelector('.asm-stage');
         var fw=stg.clientWidth, fh=stg.clientHeight;
-        var wordR=document.getElementById('asmWord').getBoundingClientRect(), stR=stg.getBoundingClientRect();
-        var floorY=(wordR.top-stR.top)-12;
+        /* EVERYTHING INSIDE THE PHONE (owner): the physics world is the phone screen — floor at
+           its bottom bezel, walls at its sides, and the field is CLIPPED to the phone rect so
+           nothing ever pokes outside the mock. */
+        var stR=stg.getBoundingClientRect(), dev=document.querySelector('.device'), dr=dev.getBoundingClientRect();
+        var PL=dr.left-stR.left+14, PR=dr.right-stR.left-14, PT=dr.top-stR.top, PB=dr.bottom-stR.top-16;
+        var floorY=PB;
+        field.style.clipPath='inset('+(PT+6)+'px '+(fw-(PR+10))+'px '+(fh-(PB+12))+'px '+(PL-10)+'px round 30px)';
+        field.style.webkitClipPath=field.style.clipPath;
         var eng=M.Engine.create(), world=eng.world;
-        /* thick walls/floor — thin ones let fast-falling bodies tunnel through (owner's photo:
-           a coin ended up half off-screen) */
         M.Composite.add(world,[
-          M.Bodies.rectangle(fw/2,floorY+40,fw*2,80,{isStatic:true}),
-          M.Bodies.rectangle(-40,fh/2,80,fh*4,{isStatic:true}),
-          /* right wall pulled in: keeps a clear lane for the "tap" hint so coins never roll under it */
-          M.Bodies.rectangle(fw-24,fh/2,80,fh*4,{isStatic:true})]);
+          M.Bodies.rectangle((PL+PR)/2,floorY+40,(PR-PL)*2,80,{isStatic:true}),
+          M.Bodies.rectangle(PL-40,fh/2,80,fh*4,{isStatic:true}),
+          M.Bodies.rectangle(PR+40,fh/2,80,fh*4,{isStatic:true})]);
         field.innerHTML=''; gsap.set(field,{autoAlpha:1});
         var bodies=[];
         COINS.forEach(function(cn,k){ var r=cn[1]/2;
@@ -1474,8 +1477,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           img.src='https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/'+cn[0]+'.svg';
           img.style.cssText='position:absolute;left:0;top:0;width:'+cn[1]+'px;height:'+cn[1]+'px;border-radius:50%;will-change:transform';
           field.appendChild(img);
-          var x=fw/2+((k%6)-2.5)*30+((k%2)?16:-16);
-          var b=M.Bodies.circle(x,-60-k*64,r,{restitution:.55,friction:.35,frictionAir:.012});
+          var x=(PL+PR)/2+((k%6)-2.5)*((PR-PL)/7)+((k%2)?10:-10);
+          var b=M.Bodies.circle(x,PT-40-k*56,r,{restitution:.5,friction:.4,frictionAir:.012});
           M.Body.setAngularVelocity(b,(Math.random()-.5)*.3);
           M.Composite.add(world,b); bodies.push([b,img,r]); });
         var last=performance.now();
@@ -1531,7 +1534,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
             ethR=document.querySelector('#scrCry .acc-r:last-child').getBoundingClientRect();
           /* owner's exact spec: halfway between the Ethereum row and the "04" word — well above
              where the coin pile can reach */
-          cc.style.top=((((ethR.bottom-str.top)+(wr.top-str.top))/2)-8)+'px';
+          var ccMid=(((ethR.bottom-str.top)+(wr.top-str.top))/2)-8;
+          var devB=document.querySelector('.device').getBoundingClientRect().bottom-str.top;
+          cc.style.top=Math.min(ccMid, devB-146)+'px'; /* clamped above the coin pile now living inside the phone */
           loadMatter().then(function(){ if(idx===3)coinsUp(); }).catch(function(){});
           coinFin=gsap.fromTo(cc,{autoAlpha:0,y:16,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.6,ease:'back.out(1.7)',delay:1.25,onComplete:function(){coinFin=null;}});
           /* handwritten "tap" + a thin arrow onto the pile, bobbing gently (appears after landing) */
