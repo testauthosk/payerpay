@@ -106,7 +106,8 @@ html.light .mob-menu{background:rgba(255,255,255,.94)}
 
 /* ===== ASSEMBLY (pinned scrub) ===== */
 #asm{position:relative;background:var(--bg)}
-.asm-stage{height:100lvh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.asm-stage{height:100svh;position:sticky;top:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#asm{height:500svh}
 .clock{position:absolute;top:clamp(92px,13vh,130px);left:clamp(20px,5vw,60px);display:flex;flex-direction:row;align-items:center;gap:14px;z-index:6}
 .clock .ring{position:relative;width:92px;height:92px;flex-shrink:0}
 .clock .ring svg{transform:rotate(-90deg)}
@@ -355,8 +356,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
      snap container is a documented WebKit bug-mine (wrong snap positions, flick-to-end). Instead the
      scroll stays native and a JS settler eases to the nearest step boundary (max ±1 per gesture)
      after the gesture ends. 4 segments of 100svh between 5 screens. */
-  #asm{height:500svh}
-  .asm-stage{position:sticky;top:0;height:100svh}
+
   /* step indicator: 5 thin bars to the right of the phone; the mint "drop" flows between them */
   .stepbars{position:absolute;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:7;opacity:0;transition:opacity .45s ease}
   .stepbars.show{opacity:1}
@@ -1005,18 +1005,18 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       /* MOBILE: the dot's phone phase must span only the STUCK range of the sticky stage (same range
          the story uses) — mapping it over the full section meant the exit played while the phone was
          already sliding off-screen, so the dot left from above the viewport instead of the phone. */
-      if(_dotSR && asm && _stageEl) aEnd=aTop+Math.max(1,asm.offsetHeight-_stageEl.offsetHeight);
+      if(asm && _stageEl) aEnd=aTop+Math.max(1,asm.offsetHeight-_stageEl.offsetHeight);
       if(sy<aTop){ var t=cl(sy/aTop,0,1); st.p=qb(logo,[W*0.15,H*0.5],[W*0.22,H*0.40],t); st.scale=cl(0.35+sy/140,0.35,1);
         /* MOBILE: the dive INTO the phone happens on approach — with the hard stepper the locked
            position sits exactly on the section start, so the old in-section dive range never plays */
-        if(_dotSR && device && t>0.86){ var t2=(t-0.86)/0.14; t2=t2*t2*(3-2*t2); var dvr=device.getBoundingClientRect();
+        if(device && t>0.86){ var t2=(t-0.86)/0.14; t2=t2*t2*(3-2*t2); var dvr=device.getBoundingClientRect();
           st.p=[lp(st.p[0],dvr.left+dvr.width/2,t2), lp(st.p[1],dvr.top+dvr.height/2,t2)]; st.scale=1-t2; st.inPhone=t2>0.55; }
         return st; }
       if(sy<aEnd && device){
         /* MOBILE: the whole locked story = firefly INSIDE the phone. It must not pre-exit on the
            last slide (owner screen: it stood outside under the phone) — it leaves only when the
            exit motion starts, via the bridge below. */
-        if(_dotSR){ var drm=device.getBoundingClientRect(); st.p=[drm.left+drm.width/2, drm.top+drm.height/2]; st.scale=0; st.inPhone=true; return st; }
+        { var drm=device.getBoundingClientRect(); st.p=[drm.left+drm.width/2, drm.top+drm.height/2]; st.scale=0; st.inPhone=true; return st; }
         var dr=device.getBoundingClientRect(), dcx=dr.left+dr.width/2, dcy=dr.top+dr.height/2;
         var prog=cl((sy-aTop)/Math.max(1,aEnd-aTop),0,1);
         if(prog<0.07){ var t=prog/0.07; st.p=[lp(W*0.22,dcx,t), lp(H*0.40,dcy,t)]; st.scale=cl(1-t,0,1); st.inPhone=(t>0.55); return st; }
@@ -1024,7 +1024,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         var e=cl((prog-0.82)/0.18,0,1); st.p=[dcx, lp(dcy, dr.bottom+20, e)]; st.scale=cl((e-0.55)/0.3,0,1); return st;
       }
       if(gcv){ var gr=gcv.getBoundingClientRect(), G=[gr.left+gr.width/2, gr.top+gr.height/2], gR=gr.width/2;
-        if(_dotSR){
           /* MOBILE: scroll-distance-driven handoff. The desktop frac maths assumed a long pinned #asm
              — with the short sticky section the globe is already in view when the phone phase ends,
              which teleported the dot. Here bridge and descent are functions of how far we scrolled
@@ -1068,17 +1067,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
                 st.p=[lp(G[0],mf2.left+mf2.width/2,g2)+Math.sin(g2*Math.PI)*24, lp(G[1]+gR*1.2, mf2.top+8, g2)];
                 st.scale=1; st.lit=true; return st; } }
           }
-        } else {
-        var frac=cl((H*1.15-G[1])/(H*1.25),0,1);
-        if(frac<0.9){
-        if(frac<0.35 && device){ var d2=device.getBoundingClientRect(), src=[d2.left+d2.width/2, d2.bottom+22], gE=[G[0],G[1]-gR];
-          var bt=cl(frac/0.35,0,1); bt=bt*bt*(3-2*bt);
-          st.p=cb(src,[src[0]+30,lp(src[1],gE[1],0.42)],[gE[0]+gR*0.75,lp(src[1],gE[1],0.72)],gE,bt);
-          st.inGlobe=false; st.lit=false;
-        } else { var pt=cl((frac-0.35)/0.65,0,1), yOff=lp(-gR,gR*1.2,pt);
-          st.p=[G[0]-Math.sin(pt*Math.PI)*gR*0.12, G[1]+yOff];
-          st.inGlobe=Math.abs(yOff)<gR*0.72; st.lit=pt>0.15; if(st.inGlobe)st.scale=0; }
-        return st; } } }
+      }
       var track=document.getElementById('featTrack');
       if(track && track.children.length){ var N=track.children.length;
         if(window.__featActive){ var fp=cl(window.__featProg||0,0,1);
@@ -1456,49 +1445,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 
     var mm=gsap.matchMedia();
 
-    mm.add('(min-width:901px)',function(){
-      gsap.set(['#scrReg','#scrId','#scrAcc','#scrCry','#scrDone'],{opacity:0,y:24});
-      // autoAlpha (opacity + visibility:hidden at 0) so nothing paints beside the phone until
-      // its own reveal — a plain opacity:0 still gets faintly rendered during the scrub lag.
-      gsap.set(['#fcUs','#fcEu'],{autoAlpha:0});
-      gsap.set(['#cn1','#cn2','#cn3'],{autoAlpha:0});
 
-      window.__asmEnd=(asm?asm.offsetTop:0)+5200;
-      var tl=gsap.timeline({scrollTrigger:{trigger:'#asm',start:'top top',end:'+=5200',scrub:1,pin:'.asm-stage',anticipatePin:1,
-        onRefresh:function(self){window.__asmEnd=self.end;},
-        onUpdate:function(s){var p=s.progress; setClock(p);
-          if(p<0.18)setStep('01','Sign up'); else if(p<0.36)setStep('02','Verify'); else if(p<0.58)setStep('03','US + EU accounts'); else if(p<0.81)setStep('04','Crypto wallet'); else setStep('5m','Done');
-          /* physics coins inside the phone on desktop too (ported from mobile) */
-          var wantPhys=(p>=0.60&&p<0.82);
-          if(wantPhys&&!window.__coinsOn){ window.__coinsOn=true; loadMatter().then(function(){ if(window.__coinsOn)coinsUp(); }).catch(function(){}); }
-          else if(!wantPhys&&window.__coinsOn){ window.__coinsOn=false; coinsDown(); } }}});
-      tl.to('#scrReg',{opacity:1,y:0,duration:1},0.05)
-        .fromTo('#scrReg .frow',{opacity:.2},{opacity:1,stagger:.4,duration:.6},0.1)
-        .to('#scrReg .fbtn',{scale:1.06,duration:.5,yoyo:true,repeat:1},1.0)
-        .to('#scrReg',{opacity:0,y:-24,duration:.8},1.9)
-        .fromTo('#scrId',{opacity:0,y:24},{opacity:1,y:0,duration:.8},2.0)
-        .fromTo('#scanLine',{top:'8%'},{top:'78%',duration:1.1,ease:'power1.inOut',yoyo:true,repeat:1},2.2)
-        .to('#scrId',{opacity:0,y:-24,duration:.8},4.0)
-        .fromTo('#fcUs',{autoAlpha:0,x:-160,y:-120,rotate:-18},{autoAlpha:1,x:0,y:0,rotate:-7,duration:1.1,ease:'back.out(1.3)'},4.1)
-        .fromTo('#fcEu',{autoAlpha:0,x:160,y:120,rotate:18},{autoAlpha:1,x:0,y:0,rotate:7,duration:1.1,ease:'back.out(1.3)'},4.3)
-        .fromTo('#scrAcc',{opacity:0,y:24},{opacity:1,y:0,duration:.7},4.8)
-        .to(['#fcUs','#fcEu'],{autoAlpha:0,scale:.85,duration:.7},6.2)
-        .to('#scrAcc',{opacity:0,y:-24,duration:.7},6.2)
-        .fromTo('#scrCry',{opacity:0,y:24},{opacity:1,y:0,duration:.7},7.4)
-        .fromTo('#scrCry .acc-r',{opacity:0,x:16},{opacity:1,x:0,stagger:.2,duration:.5},7.6)
-        .to('#scrCry',{opacity:0,y:-24,duration:.7},8.8)
-        .fromTo('#scrDone',{opacity:0,scale:.9},{opacity:1,scale:1,duration:.9,ease:'back.out(1.4)'},8.9)
-        .fromTo('#scrDone .rdy',{opacity:0,x:-16},{opacity:1,x:0,stagger:.3,duration:.5},9.1)
-        .fromTo('#scrDone .st',{opacity:0,y:14},{opacity:1,y:0,duration:.6},10.1)
-        .to('#device',{scale:1.04,duration:.8,yoyo:true,repeat:1},9.4);
-    });
-
-    mm.add('(max-width:900px)',function(){
+    function phoneStepper(isMob){
       /* Mobile — FIXATION IS BACK (plan A): the stage is CSS-sticky inside #scrollRoot (the body is
          locked, so the container scroll is native-smooth and the address bar never moves). The story
          is driven by a light rAF loop reading scrollRoot.scrollTop — offsets are cached and only
          re-measured on a width change, so the loop never forces a reflow. No GSAP scroll-linking. */
-      var sr=document.getElementById('scrollRoot');
+      var sr=document.getElementById('scrollRoot'), docEl=document.documentElement;
+      function readY(){ return isMob? sr.scrollTop : (window.scrollY||docEl.scrollTop); }
+      function writeY(v){ if(isMob) sr.scrollTop=v; else window.scrollTo(0,v); }
       var scrs=['scrReg','scrId','scrAcc','scrCry','scrDone'].map(function(id){return document.getElementById(id);}),
           stp=[['01','Sign up'],['02','Verify'],['03','US + EU accounts'],['04','Crypto wallet'],['5m','Done']];
       scrs.forEach(function(s){s.style.opacity='0';});
@@ -1506,9 +1461,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       var barsEl=document.getElementById('stepBars'), thEl=document.getElementById('sbTh');
       var SEG=scrs.length-1, BARSTEP=32; /* 4 segments between 5 screens; bar 20px + 12px gap */
       var asmTop=0, range=1, segPx=1;
-      function measure(){ var stage=document.querySelector('.asm-stage'), sh=stage?stage.offsetHeight:H;
+      function measure(){ var stage=document.querySelector('.asm-stage'), sh=stage?stage.offsetHeight:window.innerHeight;
         asmTop=asm?asm.offsetTop:0; range=Math.max(1,(asm?asm.offsetHeight:sh)-sh); segPx=range/SEG;
-        window.__asmEnd=asmTop+(asm?asm.offsetHeight:H); }
+        window.__asmEnd=asmTop+(asm?asm.offsetHeight:window.innerHeight);
+        if(barsEl&&stage){ var dR=document.querySelector('.device').getBoundingClientRect(), sR3=stage.getBoundingClientRect();
+          barsEl.style.right='auto'; barsEl.style.left=(dR.right-sR3.left+26)+'px'; } }
       measure();
       var lastW=window.innerWidth;
       function onRs(){ if(window.innerWidth===lastW)return; lastW=window.innerWidth; measure(); }
@@ -1566,21 +1523,29 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
          first/last slide, which unlocks native scroll and eases out of the section. */
       var locked=false, tw=null, tStartY=null;
       function killTw(){ if(tw){ tw.kill(); tw=null; } }
-      function tweenTo(y,dur,ease){ killTw(); var o={v:sr.scrollTop};
-        tw=gsap.to(o,{v:y,duration:dur,ease:ease||'power2.inOut',onUpdate:function(){sr.scrollTop=o.v;},onComplete:function(){tw=null;},onInterrupt:function(){tw=null;}}); }
-      function lock(){ if(locked)return; locked=true; sr.style.overflowY='hidden'; }
-      function unlock(){ if(!locked)return; locked=false; sr.style.overflowY='auto'; }
+      function tweenTo(y,dur,ease){ killTw(); var o={v:readY()};
+        tw=gsap.to(o,{v:y,duration:dur,ease:ease||'power2.inOut',onUpdate:function(){writeY(o.v);},onComplete:function(){tw=null;},onInterrupt:function(){tw=null;}}); }
+      function lock(){ if(locked)return; locked=true;
+        if(isMob){ sr.style.overflowY='hidden'; }
+        else { var sbw=window.innerWidth-docEl.clientWidth; docEl.style.overflow='hidden'; document.body.style.paddingRight=sbw+'px'; } }
+      function unlock(){ if(!locked)return; locked=false;
+        if(isMob){ sr.style.overflowY='auto'; }
+        else { docEl.style.overflow=''; document.body.style.paddingRight=''; } }
       function step(dir){ if(tw)return; var tgt=idx+dir, vh=window.innerHeight;
         if(tgt>=0&&tgt<=SEG) tweenTo(asmTop+tgt*segPx,.65);
         /* exit is a NUDGE, not a throw: just past the zone edge (owner kept landing a full
            section away — "кинуло сюда"); from there the user scrolls on at their own pace */
         else { unlock(); tweenTo(tgt<0?Math.max(0,asmTop-vh*0.2):asmTop+range+vh*0.2,.8,'power1.inOut'); } }
-      sr.addEventListener('touchstart',function(e){ if(locked) tStartY=e.touches[0].clientY; },{passive:true});
-      sr.addEventListener('touchend',function(e){ if(!locked||tStartY===null)return;
+      var evTgt=isMob? sr : window;
+      var onTs=function(e){ if(locked) tStartY=e.touches[0].clientY; };
+      var onTe=function(e){ if(!locked||tStartY===null)return;
         var dy=tStartY-e.changedTouches[0].clientY; tStartY=null;
-        if(Math.abs(dy)>28) step(dy>0?1:-1); },{passive:true});
-      sr.addEventListener('wheel',function(e){ if(!locked||tw)return; if(Math.abs(e.deltaY)>24) step(e.deltaY>0?1:-1); },{passive:true});
-      function loop(){ var sy=sr.scrollTop, rp=(sy-asmTop)/range, p=Math.max(0,Math.min(1,rp));
+        if(Math.abs(dy)>28) step(dy>0?1:-1); };
+      var onWh=function(e){ if(!locked||tw)return; if(Math.abs(e.deltaY)>24) step(e.deltaY>0?1:-1); };
+      evTgt.addEventListener('touchstart',onTs,{passive:true});
+      evTgt.addEventListener('touchend',onTe,{passive:true});
+      evTgt.addEventListener('wheel',onWh,{passive:true});
+      function loop(){ var sy=readY(), rp=(sy-asmTop)/range, p=Math.max(0,Math.min(1,rp));
         /* the phone screen stays dark until the firefly has fully dived in (its dive completes
            exactly at rp=0) — then the first cascade "ignites" the screen */
         if(rp>=-0.002 && p!==lastP){ setClock(p); lastP=p; show(Math.min(SEG,Math.round(p*SEG))); }
@@ -1593,8 +1558,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         if(locked && !tw && (rp<-0.001||rp>1.001)) unlock();
         rafId=requestAnimationFrame(loop); }
       setClock(0); rafId=requestAnimationFrame(loop);
-      return function(){ if(rafId)cancelAnimationFrame(rafId); killTw(); unlock(); coinsDown(); window.removeEventListener('resize',onRs); };
-    });
+      return function(){ if(rafId)cancelAnimationFrame(rafId); killTw(); unlock(); coinsDown(); window.removeEventListener('resize',onRs);
+        evTgt.removeEventListener('touchstart',onTs); evTgt.removeEventListener('touchend',onTe); evTgt.removeEventListener('wheel',onWh); };
+    }
+    mm.add('(max-width:900px)',function(){ return phoneStepper(true); });
+    mm.add('(min-width:901px)',function(){ return phoneStepper(false); });
 
     var _mob=window.matchMedia('(max-width:900px)').matches, _sr=document.getElementById('scrollRoot');
     gsap.utils.toArray('.reveal').forEach(function(el){
