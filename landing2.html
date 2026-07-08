@@ -236,7 +236,9 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 
 /* CTA */
 .cta{background:var(--surf);border:1px solid var(--line);border-radius:28px;padding:78px 40px;text-align:center;position:relative;overflow:hidden;width:100%;transition:background .55s ease,border-color .55s ease,box-shadow .55s ease}
-.cta.lit{background:linear-gradient(155deg,var(--mint),var(--mint-dd));border-color:transparent;box-shadow:0 0 70px rgba(52,224,161,.30),0 0 130px rgba(52,224,161,.15)}
+.cta .cta-fill{position:absolute;inset:0;background:linear-gradient(155deg,var(--mint),var(--mint-dd));clip-path:circle(0px at 50% 0%);-webkit-clip-path:circle(0px at 50% 0%);transition:clip-path .9s cubic-bezier(.45,0,.2,1),-webkit-clip-path .9s cubic-bezier(.45,0,.2,1)}
+.cta.lit .cta-fill{clip-path:circle(145% at 50% 0%);-webkit-clip-path:circle(145% at 50% 0%)}
+.cta.lit{border-color:transparent;box-shadow:0 0 70px rgba(52,224,161,.30),0 0 130px rgba(52,224,161,.15)}
 .cta .grain,.cta .rd{opacity:0;transition:opacity .55s ease}
 .cta h2,.cta p,.cta .hero-cta{opacity:0;transform:translateY(22px);transition:opacity .5s ease,transform .55s cubic-bezier(.22,1,.36,1)}
 .cta.lit .grain,.cta.lit .rd{opacity:1}
@@ -345,7 +347,7 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
   #toTop svg{right:20px;bottom:18px;width:22px;height:22px}
   #chatBub svg{left:20px;bottom:18px;width:23px;height:23px}
   .pull-hint{display:flex}
-  .fw-wrap{margin-bottom:46px;max-width:890px;margin-left:auto;margin-right:auto} /* lifted off the footer; width = the teal CTA block */
+  .fw-wrap{margin-bottom:96px;max-width:890px;margin-left:auto;margin-right:auto} /* lifted off the footer; width = the teal CTA block */
 }
 
 /* FOOTER */
@@ -623,7 +625,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <!-- CTA -->
 <section class="scene" id="cta">
   <div class="wrap">
-    <div class="cta">
+    <div class="cta"><div class="cta-fill"></div>
       <div class="grain"></div><div class="rd a"></div><div class="rd b"></div>
       <h2>Open your account in 5 minutes</h2>
       <p>The US, Europe and a crypto wallet — all in one place. Get started now.</p>
