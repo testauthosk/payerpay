@@ -243,26 +243,26 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 .foot-word .fw-base,.foot-word .fw-top{fill:none;stroke:#151A17;stroke-width:1.8;transition:stroke .7s ease} /* pitch-dark until the cord is pulled */
 
 .fw-halo{position:absolute;left:-4%;right:-4%;top:-60%;bottom:-45%;pointer-events:none;z-index:0;opacity:0;transition:opacity .9s ease;
-  background:radial-gradient(ellipse 58% 46% at 50% 52%,rgba(52,224,161,.20),rgba(52,224,161,.07) 55%,rgba(52,224,161,0) 78%)}
+  background:radial-gradient(ellipse 58% 46% at 50% 52%,rgba(52,224,161,.32),rgba(52,224,161,.12) 55%,rgba(52,224,161,0) 78%)}
   background:radial-gradient(ellipse 34% 30% at 50% 56%,rgba(120,255,205,.9),rgba(52,224,161,0) 62%),
              radial-gradient(ellipse 62% 55% at 50% 56%,rgba(52,224,161,.55),rgba(52,224,161,.18) 52%,rgba(52,224,161,0) 76%)}
 .fw-wrap.fw-on .fw-halo{opacity:1;animation:fwPulse 2.6s ease-in-out infinite}
 @keyframes fwPulse{0%,100%{opacity:1}50%{opacity:.72}}
 .foot-word{position:relative;z-index:1}
 .fw-glo{fill:none;stroke:rgba(52,224,161,0);stroke-linejoin:round;stroke-linecap:round;transition:stroke .6s ease}
-.fw-glo1{stroke-width:16}
+.fw-glo1{stroke-width:22}
 .fw-glo2{stroke-width:7}
-#fwWord.fw-lit .fw-glo1{stroke:rgba(52,224,161,.15)}
-#fwWord.fw-lit .fw-glo2{stroke:rgba(52,224,161,.36)}
+#fwWord.fw-lit .fw-glo1{stroke:rgba(52,224,161,.28)}
+#fwWord.fw-lit .fw-glo2{stroke:rgba(52,224,161,.6)}
 /* neon tube: bright near-white inner stroke over a mint outer stroke — no fill */
-#fwWord.fw-lit .fw-base{stroke:#5CF5B6;stroke-width:3.4}
+#fwWord.fw-lit .fw-base{stroke:#45FFAF;stroke-width:3.8}
 #fwWord.fw-lit .fw-top{stroke:#F2FFF9;stroke-width:1.9}
 #fwRain{position:absolute;left:0;bottom:0;width:100%;pointer-events:none;z-index:2}
 
 /* Pull hint next to the cord (same handwritten style as Tap) */
 .pull-hint{position:absolute;left:calc(50% + 34px);bottom:0;z-index:6;display:none;flex-direction:column;align-items:center;gap:0;opacity:0;transition:opacity .5s ease;pointer-events:none}
 .pull-hint span{font-family:'Caveat',cursive;font-size:23px;font-weight:600;color:rgba(255,255,255,.88);letter-spacing:.02em;transform:rotate(6deg)}
-.pull-hint svg{width:34px;height:36px;transform:rotate(150deg)}
+.pull-hint svg{width:34px;height:36px;transform:rotate(240deg)}
 .pull-hint svg path{fill:rgba(52,224,161,.92)}
 .pull-hint.on{opacity:1;animation:pullBob .95s ease-in-out infinite alternate}
 @keyframes pullBob{from{transform:translateY(0)}to{transform:translateY(7px)}}
