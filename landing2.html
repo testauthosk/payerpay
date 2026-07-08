@@ -347,8 +347,12 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
   #toTop svg{right:20px;bottom:18px;width:22px;height:22px}
   #chatBub svg{left:20px;bottom:18px;width:23px;height:23px}
   .pull-hint{display:flex}
-  .fw-wrap{margin-bottom:96px;max-width:890px;margin-left:auto;margin-right:auto} /* lifted off the footer; width = the teal CTA block */
+  .fw-wrap{max-width:890px;margin-left:auto;margin-right:auto} /* lifted off the footer; width = the teal CTA block */
 }
+
+/* the CTA scene no longer stretches to a full viewport - the gap between the teal block and
+   the glowing wordmark (where the cord hangs) is now compact (owner) */
+#cta{min-height:0;padding:130px 0 120px} /* rope is 132px - keep air for it + the ring */
 
 /* FOOTER */
 footer{border-top:1px solid var(--line);padding:56px 0 42px}
