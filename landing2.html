@@ -1310,15 +1310,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       for(var i3=1;i3<pts.length;i3++){ var af=i3/pts.length;
         ctx.strokeStyle='rgba(150,255,214,'+(0.32+0.6*af).toFixed(3)+')'; ctx.lineWidth=(1.2+2.4*af)*DPR;
         ctx.beginPath(); ctx.moveTo(pts[i3-1][0]*DPR,pts[i3-1][1]*DPR); ctx.lineTo(pts[i3][0]*DPR,pts[i3][1]*DPR); ctx.stroke(); }
-      var head=pts[pts.length-1], prev=pts[Math.max(0,pts.length-2)];
-      var hx=head[0]*DPR, hy=head[1]*DPR, ang=Math.atan2(head[1]-prev[1], head[0]-prev[0]);
-      /* arrowhead (two barbs) once the arc is underway */
-      if(tt>0.30){ var al=14*DPR, aw=0.44;
-        ctx.strokeStyle='rgba(198,255,236,0.96)'; ctx.lineWidth=2.6*DPR;
-        ctx.beginPath();
-        ctx.moveTo(hx,hy); ctx.lineTo(hx-Math.cos(ang-aw)*al, hy-Math.sin(ang-aw)*al);
-        ctx.moveTo(hx,hy); ctx.lineTo(hx-Math.cos(ang+aw)*al, hy-Math.sin(ang+aw)*al); ctx.stroke(); }
-      /* glowing head */
+      var head=pts[pts.length-1];
+      var hx=head[0]*DPR, hy=head[1]*DPR;
+      /* glowing head (the firefly tracing the path — no arrowhead; the owner's drawn arrow
+         only indicated the direction of travel, it was never meant to be rendered) */
       var g=ctx.createRadialGradient(hx,hy,0,hx,hy,16*DPR);
       g.addColorStop(0,'rgba(200,255,232,0.95)'); g.addColorStop(0.4,'rgba(52,224,161,0.5)'); g.addColorStop(1,'rgba(52,224,161,0)');
       ctx.fillStyle=g; ctx.beginPath(); ctx.arc(hx,hy,16*DPR,0,7); ctx.fill();
