@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-<title>PayerPay — US & EU accounts and a crypto wallet in 5 minutes</title>
-<meta name="description" content="Open a US account, an EU account and a crypto wallet in 5 minutes. Real bank details, worldwide transfers, crypto and a card — all in one place." />
+<title>PayerPay — Get paid in the US. Send money home. Spend globally.</title>
+<meta name="description" content="A global money account for expats in the US. Open a US account, receive salary or payouts, and send money to family in 60+ countries — India via UPI, Brazil via PIX, and bank transfers worldwide." />
 <meta name="theme-color" content="#000000" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -190,6 +190,23 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 .rails{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
 .rail{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--sub);background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:8px 13px;transition:border-color .2s,color .2s}
 .rail:hover{border-color:var(--mint);color:var(--mint)}
+/* ===== expat block ===== */
+.xp-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:64px;align-items:center;width:100%}
+.xp-card{background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:10px 26px}
+.xp-item{display:flex;gap:16px;align-items:flex-start;padding:19px 0;border-bottom:1px solid var(--line)}
+.xp-item:last-child{border-bottom:0}
+.xp-chk{width:34px;height:34px;border-radius:50%;background:var(--tint);border:1px solid var(--tline);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.xp-chk svg{width:16px;height:16px}
+.xp-item h3{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.xp-item p{color:var(--sub);font-size:13.5px;margin-top:4px;line-height:1.55}
+/* ===== trust block ===== */
+.tr-head{text-align:center;max-width:620px;margin:0 auto 46px}
+.tr-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.tr-card{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:26px 24px;grid-column:span 2}
+.tr-card:nth-child(4){grid-column:2/4}
+.tr-card:nth-child(5){grid-column:4/6}
+.tr-card h3{font-size:17px;font-weight:700;margin-top:18px;letter-spacing:-.01em}
+.tr-card p{color:var(--sub);font-size:13.5px;margin-top:8px;line-height:1.58}
 
 /* FEATURES horizontal */
 #feat{position:relative;background:var(--bg)}
@@ -391,6 +408,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
      GSAP's own recommended pattern for this exact problem. Header/menu/canvas sit outside the root. */
   html{height:100%;overscroll-behavior-y:none}
   body{position:fixed;inset:0;width:100%;overflow:hidden;overscroll-behavior-y:none}
+  .xp-grid{grid-template-columns:1fr;gap:34px}
+  .xp-card{padding:4px 18px}
+  .tr-grid{grid-template-columns:1fr;gap:12px}
+  .tr-card,.tr-card:nth-child(4),.tr-card:nth-child(5){grid-column:auto}
+  #expat,#trust{padding:72px 0}
   #scrollRoot{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;scroll-padding-top:84px;z-index:1}
   /* Phone fixation is back: CSS sticky inside the scroll container (native-smooth), the story is
      driven by a rAF loop on scrollRoot.scrollTop. svh is correct here — the bar is frozen visible,
@@ -482,7 +504,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <header id="hdr">
   <div class="wrap nav">
     <a href="#" class="logo">PayerPay<span class="d"></span></a>
-    <nav class="nav-links"><a href="#asm">How it works</a><a href="#feat">Features</a><a href="#who">Who it's for</a><a href="#send">Transfers</a></nav>
+    <nav class="nav-links"><a href="#asm">How it works</a><a href="#expat">For expats</a><a href="#feat">Features</a><a href="#send">Countries</a></nav>
     <div class="nav-right">
       
       <a href="#cta" class="btn btn-primary">Open account</a>
@@ -492,9 +514,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 </header>
 <div class="mob-menu" id="mobMenu"><div class="mm-in">
   <a href="#asm" data-mm>How it works</a>
+  <a href="#expat" data-mm>For expats</a>
   <a href="#feat" data-mm>Features</a>
-  <a href="#who" data-mm>Who it's for</a>
-  <a href="#send" data-mm>Transfers</a>
+  <a href="#send" data-mm>Countries</a>
+  <a href="#trust" data-mm>Security</a>
   <a href="#cta" class="btn btn-primary" data-mm>Open account</a>
 </div></div>
 
@@ -508,17 +531,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <section class="hero">
   <div class="glowbg"></div>
   <div class="wrap">
-    <span class="hpill reveal"><span class="dot"></span>Fiat and crypto in one place</span>
+    <span class="hpill reveal"><span class="dot"></span>Global money account for expats</span>
     <h1 class="kin">
-      <span class="row"><span class="ln">US &amp; EU accounts</span></span>
-      <span class="row"><span class="ln">and crypto</span></span>
-      <span class="row"><span class="ln hl">in 5 minutes</span></span>
+      <span class="row"><span class="ln">Get paid in the US.</span></span>
+      <span class="row"><span class="ln">Send money home.</span></span>
+      <span class="row"><span class="ln hl">Spend globally.</span></span>
     </h1>
     <div class="hero-sub">
-      <p class="lead reveal">Real bank details in the US and Europe, crypto and a card. Open one — and start getting paid from anywhere in the world.</p>
+      <p class="lead reveal">Open a US account, receive salary or payouts, convert money, and send funds to family in 60+ countries — including India via UPI, Brazil via PIX, and bank transfers worldwide.</p>
       <div class="hero-cta reveal">
         <a href="#cta" class="btn btn-primary">Open account <svg class="ic" style="width:16px;height:16px;stroke:var(--on-mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="#asm" class="btn btn-ghost">See how</a>
+        <a href="#send" class="btn btn-ghost">See supported countries</a>
       </div>
     </div>
   </div>
@@ -591,15 +614,33 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <section class="scene" id="send">
   <div class="wrap globe-grid">
     <div>
-      <span class="eyebrow reveal">Transfers</span>
-      <h2 class="reveal">Send money<br>anywhere in the world</h2>
-      <p class="s-lead reveal">Bank transfers and local rails — your recipient gets paid in their own currency. 120+ currencies, 60+ countries.</p>
+      <span class="eyebrow reveal">Supported countries</span>
+      <h2 class="reveal">Send money home<br>to 60+ countries</h2>
+      <p class="s-lead reveal">Local rails and bank transfers — your family gets paid in their own currency, the way they already use. 120+ currencies, 60+ countries.</p>
       <div class="rails">
-        <span class="rail reveal">US · ACH</span><span class="rail reveal">US · Wire</span><span class="rail reveal">EU · SEPA</span><span class="rail reveal">UK · FPS</span><span class="rail reveal">SWIFT</span><span class="rail reveal">India · UPI</span><span class="rail reveal">Brazil · PIX</span><span class="rail reveal">Mobile money</span>
+        <span class="rail reveal">India · UPI</span><span class="rail reveal">Brazil · PIX</span><span class="rail reveal">Europe · SEPA</span><span class="rail reveal">UK · FPS</span><span class="rail reveal">US · ACH / Wire</span><span class="rail reveal">Worldwide · SWIFT</span><span class="rail reveal">Mobile money</span>
       </div>
     </div>
     <div class="globe-stage reveal">
       <canvas id="globeCv"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- EXPATS -->
+<section class="scene" id="expat">
+  <div class="wrap xp-grid">
+    <div>
+      <span class="eyebrow reveal">Who we built it for</span>
+      <h2 class="reveal">For expats living<br>in the US</h2>
+      <p class="s-lead reveal">One account built around your real life: earn here, support the people back home, keep every currency in one place.</p>
+    </div>
+    <div class="xp-card reveal">
+      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Receive salary, freelance income or business payouts</h3><p>Real US bank details in your name — get paid like a local.</p></div></div>
+      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Send money to family in your home country</h3><p>Fast transfers to 60+ countries in their local currency.</p></div></div>
+      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Pay bills and support relatives abroad</h3><p>Recurring or one-off — rent, tuition, medical, anything.</p></div></div>
+      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Hold USD, EUR and crypto in one account</h3><p>Multi-currency balances with instant conversion when you need it.</p></div></div>
+      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Use the rails you already know</h3><p>UPI, PIX, SEPA, ACH, PayPal and SWIFT — local on both ends.</p></div></div>
     </div>
   </div>
 </section>
@@ -642,13 +683,31 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   </div>
 </section>
 
+<!-- TRUST -->
+<section class="scene" id="trust">
+  <div class="wrap">
+    <div class="tr-head">
+      <span class="eyebrow reveal" style="justify-content:center">Trust &amp; compliance</span>
+      <h2 class="reveal">Regulated. Verified. Secure.</h2>
+      <p class="s-lead reveal" style="margin-left:auto;margin-right:auto;text-align:center">A financial product should not ask for your trust — it should show the paperwork.</p>
+    </div>
+    <div class="tr-grid">
+      <div class="tr-card reveal"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.4-7 9.5-4-1.1-7-5-7-9.5V6l7-3z"/></svg></div><h3>Registered Canadian MSB</h3><p>PAYER PAY INTERNATIONAL INC — a Money Services Business registered with FINTRAC.</p></div>
+      <div class="tr-card reveal"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.4 3.6-5.5 7-5.5s6.2 2.1 7 5.5"/></svg></div><h3>KYC / AML compliant</h3><p>Full identity verification and anti-money-laundering controls on every account.</p></div>
+      <div class="tr-card reveal"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="4.5" y="10" width="15" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/></svg></div><h3>Bank-grade security</h3><p>Encrypted in transit and at rest, with secure verification on sensitive actions.</p></div>
+      <div class="tr-card reveal"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h9"/></svg></div><h3>Transparent fees</h3><p>You see the rate and the fee before you confirm. No surprises after the fact.</p></div>
+      <div class="tr-card reveal"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/></svg></div><h3>Real support team</h3><p>Humans answer — before you open an account and every day after.</p></div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="scene" id="cta">
   <div class="wrap">
     <div class="cta"><div class="cta-fill"></div>
       <div class="grain"></div><div class="rd a"></div><div class="rd b"></div>
       <h2>Open your account in 5 minutes</h2>
-      <p>The US, Europe and a crypto wallet — all in one place. Get started now.</p>
+      <p>Get paid in the US, send money home, spend globally — one account for all of it.</p>
       <div class="hero-cta">
         <a href="#" class="btn btn-dark">Open account <svg class="ic" style="width:16px;height:16px;stroke:var(--mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a href="#" class="btn btn-line">Contact us</a>
@@ -664,10 +723,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <footer>
   <div class="wrap">
     <div class="foot">
-      <div><p class="lead2" style="margin-top:2px">One account for the world: the US, Europe and crypto in one place. Fiat-crypto payment infrastructure.</p></div>
+      <div><p class="lead2" style="margin-top:2px">One account for the world: get paid in the US, send money home, spend globally. Crypto rails under the hood when you need them.</p></div>
       <div class="foot-cols">
-        <div class="foot-col"><h4>Product</h4><a href="#asm">How it works</a><a href="#feat">Features</a><a href="#who">Personal / Business</a><a href="#send">Transfers</a></div>
-        <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Contact</a><a href="#">Security</a></div>
+        <div class="foot-col"><h4>Product</h4><a href="#asm">How it works</a><a href="#expat">For expats</a><a href="#feat">Features</a><a href="#send">Countries</a></div>
+        <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Contact</a><a href="#trust">Security</a></div>
         <div class="foot-col"><h4>Legal</h4><a href="#">Terms</a><a href="#">Privacy</a><a href="#">AML / KYC</a></div>
       </div>
     </div>
