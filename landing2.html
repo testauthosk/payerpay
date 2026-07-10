@@ -54,8 +54,9 @@ header.scrolled .nav{height:54px}
 .nav-links a:hover{color:var(--ink)}
 .nav-right{display:flex;align-items:center;gap:11px}
 .seg{display:inline-flex;background:var(--surf);border:1px solid var(--line);border-radius:11px;padding:3px;position:relative}
-.seg button{position:relative;z-index:1;border:0;background:transparent;color:var(--sub);font-family:inherit;font-weight:600;font-size:13px;padding:7px 15px;border-radius:8px;cursor:pointer;transition:color .3s}
-.seg button.on{color:var(--on-mint)}
+.seg button,.seg a{display:inline-flex;align-items:center;position:relative;z-index:1;border:0;background:transparent;color:var(--sub);font-family:inherit;font-weight:600;font-size:13px;padding:7px 15px;border-radius:8px;cursor:pointer;transition:color .3s;text-decoration:none;white-space:nowrap}
+.seg button.on,.seg a.on{color:var(--on-mint)}
+.seg a:not(.on):hover{color:var(--ink)}
 .seg .thumb{position:absolute;top:3px;left:3px;height:calc(100% - 6px);width:calc(50% - 3px);background:var(--mint);border-radius:8px;transition:transform .34s cubic-bezier(.34,1.25,.5,1)}
 .seg.biz .thumb{transform:translateX(100%)}
 .btn{display:inline-flex;align-items:center;gap:8px;font-family:inherit;font-weight:600;font-size:14px;padding:12px 21px;border-radius:12px;cursor:pointer;border:1px solid transparent;transition:transform .2s,background .25s,border-color .25s,color .25s;white-space:nowrap}
@@ -579,13 +580,22 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <a href="#" class="logo">PayerPay<span class="d"></span></a>
     <nav class="nav-links"><a href="#asm">How it works</a><a href="#feat">Features</a><a data-ct role="button" tabindex="0">Countries</a><a href="#faq">FAQ</a></nav>
     <div class="nav-right">
-      
+      <div class="seg" role="tablist" aria-label="Personal or business">
+        <span class="thumb" aria-hidden="true"></span>
+        <a class="on" href="./landing2.html" aria-current="page">Personal</a>
+        <a href="./business.html">Business</a>
+      </div>
       <a href="#cta" class="btn btn-primary">Open account</a>
       <button class="icon-btn menu-tgl" aria-label="Menu"><span class="bg-l l1"></span><span class="bg-l l2"></span><span class="bg-l l3"></span></button>
     </div>
   </div>
 </header>
 <div class="mob-menu" id="mobMenu"><div class="mm-in">
+  <div class="seg" role="tablist" aria-label="Personal or business" style="margin:0 0 10px">
+    <span class="thumb" aria-hidden="true"></span>
+    <a class="on" href="./landing2.html" aria-current="page">Personal</a>
+    <a href="./business.html">Business</a>
+  </div>
   <a href="#asm" data-mm>How it works</a>
   <a href="#feat" data-mm>Features</a>
   <a data-ct data-mm role="button" tabindex="0">Countries</a>
