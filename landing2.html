@@ -213,10 +213,11 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 .ct-open-cta{display:flex;align-items:center;gap:8px;flex-shrink:0;font-size:13px;font-weight:700;color:var(--mint)}
 .ct-open-cta svg{width:16px;height:16px}
 /* модалка со списком стран */
-#ctBackdrop{position:fixed;inset:0;z-index:220;background:rgba(0,0,0,.66);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .4s ease}
+a[data-ct]{cursor:pointer}
+#ctBackdrop{position:fixed;inset:0;z-index:220;background:rgba(0,0,0,.76);backdrop-filter:blur(24px) saturate(1.25);-webkit-backdrop-filter:blur(24px) saturate(1.25);opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.16,1,.3,1)}
 #ctBackdrop.open{opacity:1;pointer-events:auto}
-#ctModal{position:fixed;top:50%;left:50%;z-index:224;width:min(640px,calc(100vw - 2*var(--gut)));max-height:min(86vh,860px);overflow:hidden;transform:translate(-50%,calc(-50% + 24px)) scale(.985);opacity:0;pointer-events:none;background:var(--surf);border:1px solid var(--line);border-radius:22px;transition:opacity .34s ease,transform .5s cubic-bezier(.4,0,.2,1)}
-#ctModal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+#ctModal{position:fixed;top:50%;left:50%;z-index:224;width:min(640px,calc(100vw - 2*var(--gut)));max-height:min(86vh,860px);overflow:hidden;transform:translate(-50%,calc(-50% + 36px)) scale(.955);opacity:0;filter:blur(7px);pointer-events:none;background:var(--surf);border:1px solid var(--line);border-radius:22px;box-shadow:0 40px 120px -24px rgba(0,0,0,.72);transition:opacity .44s cubic-bezier(.16,1,.3,1),transform .62s cubic-bezier(.16,1,.3,1),filter .44s cubic-bezier(.16,1,.3,1)}
+#ctModal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);filter:blur(0)}
 .ctm-in{display:flex;flex-direction:column;max-height:inherit}
 .ctm-head{position:relative;flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 24px 16px}
 .ct-search{flex-shrink:0}
@@ -576,7 +577,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <header id="hdr">
   <div class="wrap nav">
     <a href="#" class="logo">PayerPay<span class="d"></span></a>
-    <nav class="nav-links"><a href="#asm">How it works</a><a href="#feat">Features</a><a href="#countries">Countries</a><a href="#faq">FAQ</a></nav>
+    <nav class="nav-links"><a href="#asm">How it works</a><a href="#feat">Features</a><a data-ct role="button" tabindex="0">Countries</a><a href="#faq">FAQ</a></nav>
     <div class="nav-right">
       
       <a href="#cta" class="btn btn-primary">Open account</a>
@@ -587,7 +588,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <div class="mob-menu" id="mobMenu"><div class="mm-in">
   <a href="#asm" data-mm>How it works</a>
   <a href="#feat" data-mm>Features</a>
-  <a href="#countries" data-mm>Countries</a>
+  <a data-ct data-mm role="button" tabindex="0">Countries</a>
   <a href="#faq" data-mm>FAQ</a>
   <a href="#trust" data-mm>Security</a>
   <a href="#cta" class="btn btn-primary" data-mm>Open personal account</a>
@@ -697,7 +698,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
         <li><b>Worldwide</b><span>SWIFT and local bank transfers</span></li>
         <li><b>Mobile money</b><span>available in selected countries</span></li>
       </ul>
-      <a href="#countries" class="btn btn-primary send-btn reveal">Selected countries <svg class="ic" style="width:16px;height:16px;stroke:var(--on-mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <button type="button" class="btn btn-primary send-btn reveal" data-ct>Selected countries <svg class="ic" style="width:16px;height:16px;stroke:var(--on-mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
     <div class="globe-stage reveal">
       <canvas id="globeCv"></canvas>
@@ -705,25 +706,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   </div>
 </section>
 
-<!-- COUNTRIES -->
-<section class="scene" id="countries">
-  <div class="wrap">
-    <div class="ct-head ct-head--center">
-      <span class="eyebrow reveal">Payout coverage</span>
-      <h2 class="reveal">Supported countries<br>and payout methods</h2>
-      <p class="s-lead reveal">Where your family can receive money and how it lands. Availability depends on destination country, currency and method.</p>
-    </div>
-    <button type="button" class="ct-open reveal" id="ctOpen" aria-haspopup="dialog" aria-controls="ctModal">
-      <span class="ct-open-l">
-        <span class="ct-open-ic"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
-        <span class="ct-open-tx"><b>Supported countries &amp; payout methods</b><small>36 destinations · search by country, currency or method</small></span>
-      </span>
-      <span class="ct-open-cta">View list<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    </button>
-  </div>
-</section>
-
-<!-- COUNTRIES MODAL -->
+<!-- COUNTRIES MODAL (popup only — no visible section; opens from buttons, not from anchor) -->
 <div id="ctBackdrop" aria-hidden="true"></div>
 <div id="ctModal" role="dialog" aria-modal="true" aria-labelledby="ctmTitle" aria-hidden="true">
   <div class="ctm-in">
@@ -900,7 +883,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       <p>Receive money in the US, send funds home, and spend globally from one verified account.</p>
       <div class="hero-cta">
         <a href="#" class="btn btn-dark">Open personal account <svg class="ic" style="width:16px;height:16px;stroke:var(--mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="#countries" class="btn btn-line">Check supported countries</a>
+        <button type="button" class="btn btn-line" data-ct>Check supported countries</button>
       </div>
     </div>
   </div>
@@ -915,7 +898,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <div class="foot">
       <div><p class="lead2" style="margin-top:2px">One account for the world: get paid in the US, send money home, spend globally. Crypto rails under the hood when you need them.</p></div>
       <div class="foot-cols">
-        <div class="foot-col"><h4>Product</h4><a href="#asm">How it works</a><a href="#feat">Features</a><a href="#countries">Countries</a><a href="#faq">FAQ</a></div>
+        <div class="foot-col"><h4>Product</h4><a href="#asm">How it works</a><a href="#feat">Features</a><a data-ct role="button" tabindex="0">Countries</a><a href="#faq">FAQ</a></div>
         <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Contact</a><a href="#trust">Security</a></div>
         <div class="foot-col"><h4>Legal</h4><a href="#">Terms</a><a href="#">Privacy</a><a href="#">AML / KYC</a></div>
       </div>
@@ -1983,9 +1966,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   if(closeBtn)closeBtn.addEventListener('click',function(){ set(false); });
   bd.addEventListener('click',function(){ set(false); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&open)set(false); });
-  // ссылки на #countries открывают модалку (не прыгают якорем)
-  document.querySelectorAll('a[href="#countries"]').forEach(function(a){
-    a.addEventListener('click',function(e){ e.preventDefault(); set(true); });
+  // попап открывается ТОЛЬКО кнопками-триггерами [data-ct] — никакого якоря/прокрутки
+  document.querySelectorAll('[data-ct]').forEach(function(el){
+    el.addEventListener('click',function(e){ e.preventDefault(); set(true); });
+    el.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); set(true); } });
   });
 
   // живой поиск по валюте / стране / методу
