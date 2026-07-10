@@ -578,7 +578,8 @@ section[id]{scroll-margin-top:92px}
 .bhero h1{font-size:clamp(38px,6vw,72px);line-height:1.03;letter-spacing:-.03em;font-weight:800;color:var(--ink)}
 .bhero .blead{max-width:70ch;font-size:clamp(16px,1.6vw,19px);color:var(--sub)}
 .bhero .bbuilt{margin-top:16px;font-size:15px;line-height:1.55;color:var(--mut);max-width:66ch}
-.bhero-in>*{animation:bup .85s cubic-bezier(.16,1,.3,1) both}
+.bhero-copy>*,.rails{animation:bup .85s cubic-bezier(.16,1,.3,1) both}
+.rails{animation-delay:.2s}
 .bhero h1{animation-delay:.05s}.bhero .blead{animation-delay:.12s}.bhero .bbuilt{animation-delay:.18s}.bhero .brow-cta{animation-delay:.26s}
 @keyframes bup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
@@ -667,9 +668,38 @@ section[id]{scroll-margin-top:92px}
 /* countries modal disclaimer */
 .ctm-note{flex-shrink:0;padding:14px 24px 20px;font-size:11.5px;line-height:1.5;color:var(--mut);border-top:1px solid var(--line);background:var(--surf)}
 
+/* ===== scroll reveal ===== */
+html.js-rv .bhead,html.js-rv .card,html.js-rv .lcard,html.js-rv .tbar-i,html.js-rv .step,html.js-rv .dest,html.js-rv .vcard,html.js-rv .flow-c,html.js-rv .term,html.js-rv .panel,html.js-rv .bcta{opacity:0;transform:translateY(24px)}
+.bhead,.card,.lcard,.tbar-i,.step,.dest,.vcard,.flow-c,.term,.panel,.bcta{transition:opacity .68s cubic-bezier(.16,1,.3,1),transform .68s cubic-bezier(.16,1,.3,1)}
+html.js-rv .bhead.in,html.js-rv .card.in,html.js-rv .lcard.in,html.js-rv .tbar-i.in,html.js-rv .step.in,html.js-rv .dest.in,html.js-rv .vcard.in,html.js-rv .flow-c.in,html.js-rv .term.in,html.js-rv .panel.in,html.js-rv .bcta.in{opacity:1;transform:none}
+
+/* ===== hero 2-col + rails schematic ===== */
+.bhero-in{max-width:var(--max);display:grid;grid-template-columns:1.04fr .96fr;gap:56px;align-items:center}
+.bhero-copy{min-width:0}
+.rails{position:relative;width:100%;max-width:520px;margin-left:auto}
+.rails svg{width:100%;height:auto;overflow:visible;display:block}
+.rails .rk{font-family:var(--mono);font-size:11px;fill:var(--sub);letter-spacing:.02em}
+.rails .rk.mut{fill:var(--mut);font-size:10px}
+.rails .hub-l{font-weight:800;font-size:16px;fill:var(--ink);font-family:inherit}
+.rails .node{fill:var(--elev);stroke:var(--line2);stroke-width:1}
+.rails .wire{stroke:var(--line2);stroke-width:1.4;fill:none}
+.rails .hubring{fill:none;stroke:var(--mint);stroke-width:1.6}
+.rails .hubfill{fill:var(--surf);stroke:var(--line2);stroke-width:1}
+.rails .glow{fill:var(--mint);opacity:.07}
+.rails .dot{fill:var(--mint)}
+@media(max-width:940px){.bhero-in{grid-template-columns:1fr;gap:40px}.rails{margin:0 auto;max-width:440px}}
+@media(max-width:520px){.rails{display:none}}
+@media(prefers-reduced-motion:reduce){.rails .dot{display:none}}
+
+/* ===== scroll-spy nav ===== */
+.nav-links a{position:relative}
+.nav-links a.active{color:var(--ink)}
+.nav-links a.active::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:1.5px;background:var(--mint);border-radius:2px}
+
 /* animations off */
-@media(prefers-reduced-motion:reduce){.bhero-in>*{animation:none}}
+@media(prefers-reduced-motion:reduce){.bhero-copy>*,.rails{animation:none}}
 </style>
+<script>document.documentElement.classList.add('js-rv')</script>
 </head>
 
 <body>
@@ -717,13 +747,49 @@ section[id]{scroll-margin-top:92px}
 <!-- 1. HERO -->
 <section class="bhero" id="top">
   <div class="wrap bhero-in">
-    <span class="eyebrow">PayerPay · For business</span>
-    <h1>Global payouts for companies with teams and partners worldwide</h1>
-    <p class="blead">Receive USD and EUR, fund your account via ACH, Fedwire or SEPA, and send payouts to 60+ countries using bank transfers, SWIFT and local payment methods.</p>
-    <p class="bbuilt">Built for international companies, remote teams, fintech platforms, marketplaces, payroll providers and online businesses.</p>
-    <div class="brow-cta">
-      <a href="mailto:business@payerpay.com" class="btn btn-primary">Open business account <svg class="ic" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a href="mailto:business@payerpay.com?subject=Talk%20to%20sales" class="btn btn-ghost">Talk to sales</a>
+    <div class="bhero-copy">
+      <span class="eyebrow">PayerPay · For business</span>
+      <h1>Global payouts for companies with teams and partners worldwide</h1>
+      <p class="blead">Receive USD and EUR, fund your account via ACH, Fedwire or SEPA, and send payouts to 60+ countries using bank transfers, SWIFT and local payment methods.</p>
+      <p class="bbuilt">Built for international companies, remote teams, fintech platforms, marketplaces, payroll providers and online businesses.</p>
+      <div class="brow-cta">
+        <a href="mailto:business@payerpay.com" class="btn btn-primary">Open business account <svg class="ic" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="mailto:business@payerpay.com?subject=Talk%20to%20sales" class="btn btn-ghost">Talk to sales</a>
+      </div>
+    </div>
+    <div class="rails" aria-hidden="true">
+      <svg viewBox="0 0 520 480" role="img" aria-label="Funds flow in via ACH, Fedwire and SEPA, and out via bank transfer, SWIFT and local rails">
+        <text class="rk mut" x="56" y="34" text-anchor="middle">FUNDING</text>
+        <text class="rk mut" x="464" y="34" text-anchor="middle">PAYOUTS</text>
+        <!-- wires -->
+        <path class="wire" d="M106,96 C158,96 172,214 214,214"/>
+        <path class="wire" d="M106,220 C160,220 180,238 210,238"/>
+        <path class="wire" d="M106,344 C158,344 172,266 214,266"/>
+        <path class="wire" d="M306,214 C360,214 372,96 414,96"/>
+        <path class="wire" d="M310,240 C360,240 372,220 414,220"/>
+        <path class="wire" d="M306,266 C360,266 372,344 414,344"/>
+        <!-- inbound nodes -->
+        <g><rect class="node" x="6" y="73" width="100" height="46" rx="11"/><text class="rk" x="56" y="100" text-anchor="middle">USD · ACH</text></g>
+        <g><rect class="node" x="6" y="197" width="100" height="46" rx="11"/><text class="rk" x="56" y="224" text-anchor="middle">USD · Fedwire</text></g>
+        <g><rect class="node" x="6" y="321" width="100" height="46" rx="11"/><text class="rk" x="56" y="348" text-anchor="middle">EUR · SEPA</text></g>
+        <!-- outbound nodes -->
+        <g><rect class="node" x="414" y="73" width="100" height="46" rx="11"/><text class="rk" x="464" y="100" text-anchor="middle">Bank transfer</text></g>
+        <g><rect class="node" x="414" y="197" width="100" height="46" rx="11"/><text class="rk" x="464" y="224" text-anchor="middle">SWIFT</text></g>
+        <g><rect class="node" x="414" y="321" width="100" height="46" rx="11"/><text class="rk" x="464" y="348" text-anchor="middle">Local rails</text></g>
+        <!-- hub -->
+        <circle class="glow" cx="260" cy="240" r="74"/>
+        <circle class="hubfill" cx="260" cy="240" r="44"/>
+        <circle class="hubring" cx="260" cy="240" r="52"/>
+        <text class="hub-l" x="260" y="237" text-anchor="middle">PayerPay</text>
+        <text class="rk mut" x="260" y="255" text-anchor="middle">core</text>
+        <!-- flowing dots -->
+        <circle class="dot" r="3.6"><animateMotion dur="2.7s" repeatCount="indefinite" begin="0s" path="M106,96 C158,96 172,214 214,214"/></circle>
+        <circle class="dot" r="3.6"><animateMotion dur="2.7s" repeatCount="indefinite" begin="0.9s" path="M106,220 C160,220 180,238 210,238"/></circle>
+        <circle class="dot" r="3.6"><animateMotion dur="2.7s" repeatCount="indefinite" begin="1.8s" path="M106,344 C158,344 172,266 214,266"/></circle>
+        <circle class="dot" r="3.6"><animateMotion dur="2.7s" repeatCount="indefinite" begin="1.35s" path="M306,214 C360,214 372,96 414,96"/></circle>
+        <circle class="dot" r="3.6"><animateMotion dur="2.7s" repeatCount="indefinite" begin="0.45s" path="M310,240 C360,240 372,220 414,220"/></circle>
+        <circle class="dot" r="3.6"><animateMotion dur="2.7s" repeatCount="indefinite" begin="2.25s" path="M306,266 C360,266 372,344 414,344"/></circle>
+      </svg>
     </div>
   </div>
 </section>
@@ -1063,6 +1129,34 @@ document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.
 /* FAQ accordion */
 (function(){ var qs=document.querySelectorAll('.faq-q'); qs.forEach(function(q){ var panel=q.nextElementSibling; q.addEventListener('click',function(){ var op=q.getAttribute('aria-expanded')==='true'; qs.forEach(function(o){ if(o!==q){o.setAttribute('aria-expanded','false');o.nextElementSibling.style.maxHeight='0px';} }); q.setAttribute('aria-expanded',String(!op)); panel.style.maxHeight=op?'0px':panel.scrollHeight+'px'; }); });
   window.addEventListener('resize',function(){ qs.forEach(function(q){ if(q.getAttribute('aria-expanded')==='true'){q.nextElementSibling.style.maxHeight=q.nextElementSibling.scrollHeight+'px';} }); });
+})();
+/* scroll-reveal — sections/cards rise in as they enter (stagger within each grid) */
+(function(){
+  ['.cg','.lcg','.dests','.steps','.tbar','.flow','.vgrid'].forEach(function(g){
+    document.querySelectorAll(g).forEach(function(grp){
+      [].slice.call(grp.children).forEach(function(ch,i){ ch.style.transitionDelay=Math.min(i,8)*55+'ms'; });
+    });
+  });
+  var sel='.bhead,.card,.lcard,.tbar-i,.step,.dest,.vcard,.flow-c,.term,.panel,.bcta';
+  var els=[].slice.call(document.querySelectorAll(sel));
+  if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in');}); return; }
+  var io=new IntersectionObserver(function(ents){ ents.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:0.12,rootMargin:'0px 0px -7% 0px'});
+  els.forEach(function(e){ io.observe(e); });
+})();
+/* scroll-spy — highlight active section in the header nav */
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+  if(!links.length||!('IntersectionObserver' in window))return;
+  var map={}; links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var secs=Object.keys(map).map(function(id){return document.getElementById(id);}).filter(Boolean);
+  var vis={};
+  var io=new IntersectionObserver(function(ents){
+    ents.forEach(function(en){ vis[en.target.id]=en.isIntersecting?en.intersectionRatio:0; });
+    var best=null,br=0; Object.keys(vis).forEach(function(id){ if(vis[id]>br){br=vis[id];best=id;} });
+    links.forEach(function(a){ a.classList.remove('active'); });
+    if(best&&map[best])map[best].classList.add('active');
+  },{rootMargin:'-45% 0px -50% 0px',threshold:[0,.25,.5,1]});
+  secs.forEach(function(s){ io.observe(s); });
 })();
 </script>
 </body>
