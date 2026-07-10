@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
 <title>PayerPay — Get paid in the US. Send money home. Spend globally.</title>
-<meta name="description" content="A global money account for expats in the US. Open a US account, receive salary or payouts, and send money to family in 60+ countries — India via UPI, Brazil via PIX, and bank transfers worldwide." />
+<meta name="description" content="A global money account for expats in the US. Open a virtual US or EU account in your name, receive salary or personal payments, and send money to family in 60+ countries — India via UPI, Brazil via PIX, and bank transfers worldwide." />
 <meta name="theme-color" content="#000000" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -190,6 +190,40 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 .rails{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
 .rail{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--sub);background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:8px 13px;transition:border-color .2s,color .2s}
 .rail:hover{border-color:var(--mint);color:var(--mint)}
+/* country/rail list under the send story — bigger, more readable */
+.send-list{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.send-list li{display:flex;align-items:baseline;justify-content:space-between;gap:18px;background:var(--surf);padding:15px 20px}
+.send-list b{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.send-list span{font-family:var(--mono);font-size:13px;color:var(--sub);text-align:right}
+.send-btn{margin-top:28px}
+/* ===== countries table ===== */
+.ct-head{max-width:620px;margin:0 0 40px}
+.ct-wrap{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--surf)}
+.ct-table{width:100%;border-collapse:collapse;font-size:14px}
+.ct-table th{text-align:left;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:16px 22px;border-bottom:1px solid var(--line);background:var(--tint)}
+.ct-table td{padding:14px 22px;border-bottom:1px solid var(--line);color:var(--sub)}
+.ct-table tr:last-child td{border-bottom:0}
+.ct-table tbody tr{transition:background .18s}
+.ct-table tbody tr:hover{background:var(--tint)}
+.ct-table .cur{font-family:var(--mono);font-weight:700;color:var(--ink);width:110px}
+.ct-table td:nth-child(2){color:var(--ink);font-weight:600}
+.ct-table .mth{font-family:var(--mono);font-size:13px}
+@media(max-width:560px){.ct-table{font-size:12.5px}.ct-table th,.ct-table td{padding:12px 14px}.ct-table .cur{width:64px}}
+/* ===== FAQ ===== */
+.faq-head{text-align:center;max-width:600px;margin:0 auto 44px}
+.faq-list{max-width:820px;margin:0 auto;border-top:1px solid var(--line)}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-q{width:100%;display:flex;align-items:flex-start;gap:18px;text-align:left;background:none;border:0;cursor:pointer;padding:24px 0;color:var(--ink);font-family:inherit}
+.faq-q .qn{font-family:var(--mono);font-size:12px;color:var(--mut);flex-shrink:0;padding-top:3px}
+.faq-q .qt{flex:1;font-size:17px;font-weight:700;letter-spacing:-.01em}
+.faq-ic{position:relative;width:15px;height:15px;flex-shrink:0;margin-top:4px}
+.faq-ic:before,.faq-ic:after{content:"";position:absolute;inset:50% 0 auto 0;height:1.6px;background:var(--sub);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.faq-ic:after{transform:rotate(90deg)}
+.faq-q[aria-expanded="true"] .faq-ic:after{transform:rotate(0)}
+.faq-q[aria-expanded="true"] .qt{color:var(--mint)}
+.faq-panel{max-height:0;overflow:hidden;transition:max-height .34s cubic-bezier(.4,0,.2,1)}
+.faq-panel p{margin:0;padding:0 0 24px 42px;max-width:64ch;color:var(--sub);font-size:14.5px;line-height:1.65}
+@media(max-width:560px){.faq-panel p{padding-left:0}}
 /* ===== expat block ===== */
 .xp-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:64px;align-items:center;width:100%}
 .xp-card{background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:10px 26px}
@@ -504,7 +538,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 <header id="hdr">
   <div class="wrap nav">
     <a href="#" class="logo">PayerPay<span class="d"></span></a>
-    <nav class="nav-links"><a href="#asm">How it works</a><a href="#expat">For expats</a><a href="#feat">Features</a><a href="#send">Countries</a></nav>
+    <nav class="nav-links"><a href="#asm">How it works</a><a href="#feat">Features</a><a href="#countries">Countries</a><a href="#faq">FAQ</a></nav>
     <div class="nav-right">
       
       <a href="#cta" class="btn btn-primary">Open account</a>
@@ -514,11 +548,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 </header>
 <div class="mob-menu" id="mobMenu"><div class="mm-in">
   <a href="#asm" data-mm>How it works</a>
-  <a href="#expat" data-mm>For expats</a>
   <a href="#feat" data-mm>Features</a>
-  <a href="#send" data-mm>Countries</a>
+  <a href="#countries" data-mm>Countries</a>
+  <a href="#faq" data-mm>FAQ</a>
   <a href="#trust" data-mm>Security</a>
-  <a href="#cta" class="btn btn-primary" data-mm>Open account</a>
+  <a href="#cta" class="btn btn-primary" data-mm>Open personal account</a>
 </div></div>
 
 <canvas id="pilotCv"></canvas>
@@ -538,10 +572,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       <span class="row"><span class="ln hl">Spend globally.</span></span>
     </h1>
     <div class="hero-sub">
-      <p class="lead reveal">Open a US account, receive salary or payouts, convert money, and send funds to family in 60+ countries — including India via UPI, Brazil via PIX, and bank transfers worldwide.</p>
+      <p class="lead reveal">Open a virtual US, EU account in your name, receive salary or personal payments, convert money, and send funds to family in 60+ countries — including India via UPI, Brazil via PIX, and bank transfers worldwide.</p>
       <div class="hero-cta reveal">
-        <a href="#cta" class="btn btn-primary">Open account <svg class="ic" style="width:16px;height:16px;stroke:var(--on-mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="#send" class="btn btn-ghost">See supported countries</a>
+        <a href="#cta" class="btn btn-primary">Get your virtual US account <svg class="ic" style="width:16px;height:16px;stroke:var(--on-mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#cta" class="btn btn-ghost">Get your virtual EU account</a>
       </div>
     </div>
   </div>
@@ -615,14 +649,71 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   <div class="wrap globe-grid">
     <div>
       <span class="eyebrow reveal">Supported countries</span>
-      <h2 class="reveal">Send money home<br>to 60+ countries</h2>
-      <p class="s-lead reveal">Local rails and bank transfers — your family gets paid in their own currency, the way they already use. 120+ currencies, 60+ countries.</p>
-      <div class="rails">
-        <span class="rail reveal">India · UPI</span><span class="rail reveal">Brazil · PIX</span><span class="rail reveal">Europe · SEPA</span><span class="rail reveal">UK · FPS</span><span class="rail reveal">US · ACH / Wire</span><span class="rail reveal">Worldwide · SWIFT</span><span class="rail reveal">Mobile money</span>
-      </div>
+      <h2 class="reveal">Send money home to<br>the countries your<br>family actually uses</h2>
+      <ul class="send-list reveal">
+        <li><b>India</b><span>UPI payouts</span></li>
+        <li><b>Brazil</b><span>PIX transfers</span></li>
+        <li><b>Europe</b><span>SEPA</span></li>
+        <li><b>United Kingdom</b><span>FPS</span></li>
+        <li><b>United States</b><span>ACH / Wire</span></li>
+        <li><b>Worldwide</b><span>SWIFT and local bank transfers</span></li>
+        <li><b>Mobile money</b><span>available in selected countries</span></li>
+      </ul>
+      <a href="#countries" class="btn btn-primary send-btn reveal">Selected countries <svg class="ic" style="width:16px;height:16px;stroke:var(--on-mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
     <div class="globe-stage reveal">
       <canvas id="globeCv"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTRIES -->
+<section class="scene" id="countries">
+  <div class="wrap">
+    <div class="ct-head">
+      <span class="eyebrow reveal">Payout coverage</span>
+      <h2 class="reveal">Supported countries<br>and payout methods</h2>
+      <p class="s-lead reveal">Where your family can receive money and how it lands. Availability depends on destination country, currency and method.</p>
+    </div>
+    <div class="ct-wrap reveal">
+      <table class="ct-table">
+        <thead><tr><th>Currency</th><th>Country</th><th>Payout method</th></tr></thead>
+        <tbody>
+          <tr><td class="cur">NGN</td><td>Nigeria</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">ZAR</td><td>South Africa</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">ZAR</td><td>South Africa</td><td class="mth">Digital Wallets: F4B</td></tr>
+          <tr><td class="cur">KES</td><td>Kenya</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">KES</td><td>Kenya</td><td class="mth">Digital Wallets: F4B</td></tr>
+          <tr><td class="cur">KES</td><td>Kenya</td><td class="mth">Mobile Money: MPESA, Airtel</td></tr>
+          <tr><td class="cur">GHS</td><td>Ghana</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">GHS</td><td>Ghana</td><td class="mth">Digital Wallets: F4B</td></tr>
+          <tr><td class="cur">BRL</td><td>Brazil</td><td class="mth">PIX</td></tr>
+          <tr><td class="cur">CLP</td><td>Chile</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">COP</td><td>Colombia</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">COP</td><td>Colombia</td><td class="mth">Digital Wallets</td></tr>
+          <tr><td class="cur">CRC</td><td>Costa Rica</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">MXN</td><td>Mexico</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">MXN</td><td>Mexico</td><td class="mth">Digital Wallets</td></tr>
+          <tr><td class="cur">ARS</td><td>Argentina</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">INR</td><td>India</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">JPY</td><td>Japan</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">THB</td><td>Thailand</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">SGD</td><td>Singapore</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">AUD</td><td>Australia</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">BDT</td><td>Bangladesh</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">HKD</td><td>Hong Kong</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">IDR</td><td>Indonesia</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">MYR</td><td>Malaysia</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">NPR</td><td>Nepal</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">PKR</td><td>Pakistan</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">PHP</td><td>Philippines</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">KRW</td><td>South Korea</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">ILS</td><td>Israel</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">TRY</td><td>Turkey</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">AED</td><td>UAE</td><td class="mth">Bank Transfer</td></tr>
+          <tr><td class="cur">CAD</td><td>Canada</td><td class="mth">Bank Transfer</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
@@ -632,14 +723,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   <div class="wrap xp-grid">
     <div>
       <span class="eyebrow reveal">Who we built it for</span>
-      <h2 class="reveal">For expats living<br>in the US</h2>
-      <p class="s-lead reveal">One account built around your real life: earn here, support the people back home, keep every currency in one place.</p>
+      <h2 class="reveal">Receive salary,<br>freelance income or<br>personal transfers</h2>
+      <p class="s-lead reveal">Get virtual US payment details in your name and receive money like a local.</p>
     </div>
     <div class="xp-card reveal">
-      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Receive salary, freelance income or business payouts</h3><p>Real US bank details in your name — get paid like a local.</p></div></div>
+      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Receive salary, freelance income or personal transfers</h3><p>Real US bank details in your name — get paid like a local.</p></div></div>
       <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Send money to family in your home country</h3><p>Fast transfers to 60+ countries in their local currency.</p></div></div>
       <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Pay bills and support relatives abroad</h3><p>Recurring or one-off — rent, tuition, medical, anything.</p></div></div>
-      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Hold USD, EUR and crypto in one account</h3><p>Multi-currency balances with instant conversion when you need it.</p></div></div>
+      <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Hold USD, EUR and local currencies</h3><p>Multi-currency balances with instant conversion when you need it.</p></div></div>
       <div class="xp-item"><span class="xp-chk"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></span><div><h3>Use the rails you already know</h3><p>UPI, PIX, SEPA, ACH, PayPal and SWIFT — local on both ends.</p></div></div>
     </div>
   </div>
@@ -650,14 +741,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   <div class="feat-pin">
     <div class="feat-head">
       <span class="eyebrow reveal">Features</span>
-      <h2 class="reveal">A full bank for the world</h2>
+      <h2 class="reveal">One money account for life<br>between countries</h2>
     </div>
     <div class="feat-track" id="featTrack">
-      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 10h18M7 15h4"/></svg></div><h3>US + EU details</h3><p>A US account (ACH/Wire/RTP/FedNow) and an EU account (IBAN/SEPA). One or both — real bank details in your name.</p><div class="no">01</div></div>
-      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2.5v19M16.5 6.5H9.8a3.2 3.2 0 0 0 0 6.4h4.4a3.2 3.2 0 0 1 0 6.4H6.5"/></svg></div><h3>Get paid to your account</h3><p>Receive salary and payouts on real US/EU accounts — no local bank needed.</p><div class="no">02</div></div>
-      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg></div><h3>Fiat ↔ crypto</h3><p>Got fiat — swap to crypto. Got crypto — cash out to your account. All in one app.</p><div class="no">03</div></div>
-      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/></svg></div><h3>Visa / Mastercard</h3><p>Spend your multi-currency and crypto balance. Card acquiring coming soon.</p><div class="no">04</div></div>
-      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6"/></svg></div><h3>0% internal, instant</h3><p>Transfers between PayerPay accounts with no fee and no delays.</p><div class="no">05</div></div>
+      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 10h18M7 15h4"/></svg></div><h3>Virtual US account in your name</h3><p>Real US details (ACH/Wire/RTP/FedNow) and an EU account (IBAN/SEPA). Receive salary and personal payments like a local.</p><div class="no">01</div></div>
+      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg></div><h3>Send money home</h3><p>Send funds to family in 60+ countries on local rails — they get paid in their own currency, the way they already use.</p><div class="no">02</div></div>
+      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2.5v19M16.5 6.5H9.8a3.2 3.2 0 0 0 0 6.4h4.4a3.2 3.2 0 0 1 0 6.4H6.5"/></svg></div><h3>Hold USD, EUR and local currencies</h3><p>Multi-currency balances in one place, with instant conversion whenever you need it.</p><div class="no">03</div></div>
+      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/></svg></div><h3>Spend with card</h3><p>Visa / Mastercard on your multi-currency balance. Card acquiring coming soon.</p><div class="no">04</div></div>
+      <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg></div><h3>Crypto when you need it</h3><p>Use crypto rails only when they help you move money faster or more efficiently. Everyday stays simple: receive, convert, send and spend.</p><div class="no">05</div></div>
       <div class="fcard"><div class="chip-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 9h6v6H9z"/></svg></div><h3>One API + dashboard</h3><p>Payments, payouts, exchange and crypto via a single API. Ready dashboard out of the box.</p><div class="no">06</div></div>
     </div>
     <div class="feat-prog"><div class="bar"><i id="featBar"></i></div></div>
@@ -701,16 +792,45 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
   </div>
 </section>
 
+
+<!-- FAQ -->
+<section class="scene" id="faq">
+  <div class="wrap">
+    <div class="faq-head">
+      <span class="eyebrow reveal" style="justify-content:center">FAQ</span>
+      <h2 class="reveal">Questions, answered</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span class="qn">01</span><span class="qt">Is this a real account?</span><span class="faq-ic" aria-hidden="true"></span></button>
+        <div class="faq-panel"><p>Yes. Your account details are issued in your name through licensed banking partners. For USD, you receive virtual US account details. For EUR, you receive virtual European account details. These accounts are supported by licensed banks in the United States and the European Union, allowing you to receive salary, freelance income, personal transfers and international payments with confidence. PayerPay is a regulated payment service provider registered with FINTRAC in Canada and with the Bank of Canada as a payment service provider.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span class="qn">02</span><span class="qt">Can I receive salary or freelance income?</span><span class="faq-ic" aria-hidden="true"></span></button>
+        <div class="faq-panel"><p>Yes. You can receive eligible salary, freelance income and personal payments using your virtual US account details, subject to verification and compliance checks.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span class="qn">03</span><span class="qt">Can I send money to my family?</span><span class="faq-ic" aria-hidden="true"></span></button>
+        <div class="faq-panel"><p>Yes. You can send money to supported countries using local payout rails and bank transfers. Availability depends on the destination country, currency and payment method.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span class="qn">04</span><span class="qt">Do I need to understand crypto?</span><span class="faq-ic" aria-hidden="true"></span></button>
+        <div class="faq-panel"><p>No. PayerPay is designed as a simple money account. Crypto rails are available when needed, but the everyday experience is focused on receiving, converting, sending and spending money.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="scene" id="cta">
   <div class="wrap">
     <div class="cta"><div class="cta-fill"></div>
       <div class="grain"></div><div class="rd a"></div><div class="rd b"></div>
-      <h2>Open your account in 5 minutes</h2>
-      <p>Get paid in the US, send money home, spend globally — one account for all of it.</p>
+      <h2>Start your global money account</h2>
+      <p>Receive money in the US, send funds home, and spend globally from one verified account.</p>
       <div class="hero-cta">
-        <a href="#" class="btn btn-dark">Open account <svg class="ic" style="width:16px;height:16px;stroke:var(--mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="#" class="btn btn-line">Contact us</a>
+        <a href="#" class="btn btn-dark">Open personal account <svg class="ic" style="width:16px;height:16px;stroke:var(--mint);stroke-width:2.2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#countries" class="btn btn-line">Check supported countries</a>
       </div>
     </div>
   </div>
@@ -725,7 +845,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     <div class="foot">
       <div><p class="lead2" style="margin-top:2px">One account for the world: get paid in the US, send money home, spend globally. Crypto rails under the hood when you need them.</p></div>
       <div class="foot-cols">
-        <div class="foot-col"><h4>Product</h4><a href="#asm">How it works</a><a href="#expat">For expats</a><a href="#feat">Features</a><a href="#send">Countries</a></div>
+        <div class="foot-col"><h4>Product</h4><a href="#asm">How it works</a><a href="#feat">Features</a><a href="#countries">Countries</a><a href="#faq">FAQ</a></div>
         <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Contact</a><a href="#trust">Security</a></div>
         <div class="foot-col"><h4>Legal</h4><a href="#">Terms</a><a href="#">Privacy</a><a href="#">AML / KYC</a></div>
       </div>
@@ -1766,6 +1886,23 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     ScrollTrigger.refresh();
   }
   if(document.readyState==='complete')boot();else window.addEventListener('load',boot);
+})();
+
+/* FAQ accordion — max-height, одна открытая строка */
+(function(){
+  var qs=document.querySelectorAll('.faq-q');
+  qs.forEach(function(q){
+    var panel=q.nextElementSibling;
+    q.addEventListener('click',function(){
+      var open=q.getAttribute('aria-expanded')==='true';
+      qs.forEach(function(o){ if(o!==q){o.setAttribute('aria-expanded','false');o.nextElementSibling.style.maxHeight='0px';} });
+      q.setAttribute('aria-expanded',String(!open));
+      panel.style.maxHeight=open?'0px':panel.scrollHeight+'px';
+    });
+  });
+  window.addEventListener('resize',function(){
+    qs.forEach(function(q){ if(q.getAttribute('aria-expanded')==='true'){q.nextElementSibling.style.maxHeight=q.nextElementSibling.scrollHeight+'px';} });
+  });
 })();
 </script>
 </body>
