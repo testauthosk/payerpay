@@ -196,11 +196,36 @@ h2{font-size:clamp(30px,4.6vw,58px);line-height:1.04;letter-spacing:-.04em;font-
 .send-list b{font-size:16px;font-weight:700;letter-spacing:-.01em}
 .send-list span{font-family:var(--mono);font-size:13px;color:var(--sub);text-align:right}
 .send-btn{margin-top:28px}
-/* ===== countries table ===== */
+/* ===== countries dropdown + table ===== */
 .ct-head{max-width:620px;margin:0 0 40px}
-.ct-wrap{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--surf)}
+/* collapsible: список большой, поэтому свёрнут в дропдаун */
+.ct-drop{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--surf)}
+.ct-drop-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;background:none;border:0;cursor:pointer;padding:22px 24px;color:var(--ink);font-family:inherit;text-align:left;transition:background .2s}
+.ct-drop-btn:hover{background:var(--tint)}
+.ct-drop-t{display:flex;align-items:center;gap:12px;font-size:16px;font-weight:700;letter-spacing:-.01em}
+.ct-drop-t svg{stroke:var(--mint);flex-shrink:0}
+.ct-drop-r{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.ct-count{font-family:var(--mono);font-size:12px;color:var(--mut)}
+.ct-chev{display:flex;color:var(--sub);transition:transform .34s cubic-bezier(.4,0,.2,1)}
+.ct-chev svg{width:16px;height:16px}
+.ct-drop-btn[aria-expanded="true"]{background:var(--tint)}
+.ct-drop-btn[aria-expanded="true"] .ct-chev{transform:rotate(180deg)}
+.ct-drop-panel{max-height:0;overflow:hidden;transition:max-height .42s cubic-bezier(.4,0,.2,1)}
+/* поиск внутри дропдауна */
+.ct-search{display:flex;align-items:center;gap:11px;padding:14px 22px;border-top:1px solid var(--line);background:var(--surf)}
+.ct-search svg{width:18px;height:18px;stroke:var(--mut);flex-shrink:0}
+.ct-search input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--ink);font-family:inherit;font-size:14.5px}
+.ct-search input::placeholder{color:var(--mut)}
+.ct-clear{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid var(--line);border-radius:7px;background:none;color:var(--sub);cursor:pointer;flex-shrink:0}
+.ct-clear svg{width:13px;height:13px}
+.ct-clear:hover{color:var(--ink);border-color:var(--sub)}
+.ct-wrap{border-top:1px solid var(--line);overflow:hidden;background:var(--surf);max-height:420px;overflow-y:auto;scrollbar-width:thin}
+.ct-empty td{text-align:center;color:var(--mut);font-family:var(--mono);font-size:13px;padding:30px 22px!important}
+.ct-table tbody tr.hide{display:none}
+/* подсветка совпадения */
+.ct-table mark{background:var(--tint);color:var(--mint);padding:0 2px;border-radius:3px}
 .ct-table{width:100%;border-collapse:collapse;font-size:14px}
-.ct-table th{text-align:left;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:16px 22px;border-bottom:1px solid var(--line);background:var(--tint)}
+.ct-table th{position:sticky;top:0;z-index:1;text-align:left;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:16px 22px;border-bottom:1px solid var(--line);background:#0d1712}
 .ct-table td{padding:14px 22px;border-bottom:1px solid var(--line);color:var(--sub)}
 .ct-table tr:last-child td{border-bottom:0}
 .ct-table tbody tr{transition:background .18s}
@@ -675,10 +700,21 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
       <h2 class="reveal">Supported countries<br>and payout methods</h2>
       <p class="s-lead reveal">Where your family can receive money and how it lands. Availability depends on destination country, currency and method.</p>
     </div>
-    <div class="ct-wrap reveal">
+    <div class="ct-drop reveal">
+      <button type="button" class="ct-drop-btn" id="ctDropBtn" aria-expanded="false" aria-controls="ctDropPanel">
+        <span class="ct-drop-t"><svg class="ic" style="width:18px;height:18px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>Supported countries &amp; payout methods</span>
+        <span class="ct-drop-r"><span class="ct-count">33 destinations</span><span class="ct-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span></span>
+      </button>
+      <div class="ct-drop-panel" id="ctDropPanel">
+      <div class="ct-search">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input type="text" id="ctSearch" placeholder="Search country, currency or method…" autocomplete="off" aria-label="Search supported countries" />
+        <button type="button" id="ctClear" class="ct-clear" aria-label="Clear" hidden><svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="ct-wrap">
       <table class="ct-table">
         <thead><tr><th>Currency</th><th>Country</th><th>Payout method</th></tr></thead>
-        <tbody>
+        <tbody id="ctBody">
           <tr><td class="cur">NGN</td><td>Nigeria</td><td class="mth">Bank Transfer</td></tr>
           <tr><td class="cur">ZAR</td><td>South Africa</td><td class="mth">Bank Transfer</td></tr>
           <tr><td class="cur">ZAR</td><td>South Africa</td><td class="mth">Digital Wallets: F4B</td></tr>
@@ -712,8 +748,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
           <tr><td class="cur">TRY</td><td>Turkey</td><td class="mth">Bank Transfer</td></tr>
           <tr><td class="cur">AED</td><td>UAE</td><td class="mth">Bank Transfer</td></tr>
           <tr><td class="cur">CAD</td><td>Canada</td><td class="mth">Bank Transfer</td></tr>
+          <tr class="ct-empty" id="ctEmpty" hidden><td colspan="3">Nothing found. Try another country, currency or method.</td></tr>
         </tbody>
       </table>
+      </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1886,6 +1925,53 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
     ScrollTrigger.refresh();
   }
   if(document.readyState==='complete')boot();else window.addEventListener('load',boot);
+})();
+
+/* Countries dropdown — свёрнут по умолчанию, экономит место.
+   Открывается по кнопке и по переходам «Selected/Check countries». */
+(function(){
+  var btn=document.getElementById('ctDropBtn'), panel=document.getElementById('ctDropPanel');
+  if(!btn||!panel)return;
+  var open=false;
+  function set(next){
+    open=next; btn.setAttribute('aria-expanded',String(open));
+    panel.style.maxHeight = open ? panel.scrollHeight+'px' : '0px';
+  }
+  btn.addEventListener('click',function(){ set(!open); });
+  window.addEventListener('resize',function(){ if(open)panel.style.maxHeight=panel.scrollHeight+'px'; });
+  // ссылки на #countries раскрывают дропдаун (и ставят фокус в поиск)
+  document.querySelectorAll('a[href="#countries"]').forEach(function(a){
+    a.addEventListener('click',function(){ if(!open){ set(true); } setTimeout(function(){ var s=document.getElementById('ctSearch'); if(s)s.focus(); },450); });
+  });
+
+  // живой поиск по валюте / стране / методу
+  var input=document.getElementById('ctSearch'), clear=document.getElementById('ctClear'),
+      body=document.getElementById('ctBody'), empty=document.getElementById('ctEmpty');
+  if(input&&body){
+    var rows=[].slice.call(body.querySelectorAll('tr')).filter(function(r){return !r.classList.contains('ct-empty');});
+    var cells=rows.map(function(r){return {r:r, tds:[].slice.call(r.querySelectorAll('td')), txt:r.textContent.toLowerCase()};});
+    function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+    function hl(td,orig,q){
+      if(!q){td.innerHTML=esc(orig);return;}
+      var i=orig.toLowerCase().indexOf(q);
+      if(i<0){td.innerHTML=esc(orig);return;}
+      td.innerHTML=esc(orig.slice(0,i))+'<mark>'+esc(orig.slice(i,i+q.length))+'</mark>'+esc(orig.slice(i+q.length));
+    }
+    function apply(){
+      var q=input.value.trim().toLowerCase(), shown=0;
+      cells.forEach(function(c){
+        var hit=!q||c.txt.indexOf(q)>=0;
+        c.r.classList.toggle('hide',!hit);
+        if(hit)shown++;
+        c.tds.forEach(function(td){ hl(td, td.getAttribute('data-o')||(td.setAttribute('data-o',td.textContent),td.textContent), q); });
+      });
+      if(empty)empty.hidden=shown>0;
+      clear.hidden=!q;
+      if(open)panel.style.maxHeight=panel.scrollHeight+'px';
+    }
+    input.addEventListener('input',apply);
+    clear.addEventListener('click',function(){ input.value=''; apply(); input.focus(); });
+  }
 })();
 
 /* FAQ accordion — max-height, одна открытая строка */
