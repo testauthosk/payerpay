@@ -471,7 +471,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 42px}
 .foot-col h4{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);margin-bottom:15px;font-family:var(--mono)}
 .foot-col a{display:block;color:var(--sub);font-size:14px;padding:5px 0;transition:color .2s}
 .foot-col a:hover{color:var(--ink)}
-.foot-btm{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:46px;padding-top:26px;border-top:1px solid var(--line);color:var(--mut);font-size:12.5px}
+.foot-btm{display:flex;flex-direction:column;gap:14px;margin-top:46px;padding-top:26px;border-top:1px solid var(--line);color:var(--mut);font-size:12.5px}
+.foot-legal{color:var(--mut);font-size:12px;line-height:1.65;max-width:900px;margin:0}
+.foot-links{display:flex;gap:24px;flex-wrap:wrap}
+.foot-links a{color:var(--sub);font-size:13px;transition:color .2s}
+.foot-links a:hover{color:var(--ink)}
 
 .reveal{opacity:0}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1 !important}}
@@ -749,8 +753,8 @@ html.js-rv .bhead.in,html.js-rv .card.in,html.js-rv .lcard.in,html.js-rv .tbar-i
   <div class="wrap bhero-in">
     <div class="bhero-copy">
       <span class="eyebrow">PayerPay · For business</span>
-      <h1>Global payouts for companies with teams and partners worldwide</h1>
-      <p class="blead">Receive USD and EUR, fund your account via ACH, Fedwire or SEPA, and send payouts to 60+ countries using bank transfers, SWIFT and local payment methods.</p>
+      <h1>Global payouts and payroll payments for companies with teams worldwide</h1>
+      <p class="blead">Receive USD and EUR, fund your account via ACH, Fedwire or SEPA, and send salary, contractor and partner payouts to 60+ countries using bank transfers, SWIFT and local payment methods.</p>
       <p class="bbuilt">Built for international companies, remote teams, fintech platforms, marketplaces, payroll providers and online businesses.</p>
       <div class="brow-cta">
         <a href="mailto:business@payerpay.com" class="btn btn-primary">Open business account <svg class="ic" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -1079,7 +1083,11 @@ html.js-rv .bhead.in,html.js-rv .card.in,html.js-rv .lcard.in,html.js-rv .tbar-i
         <div class="foot-col"><h4>Company</h4><a href="mailto:business@payerpay.com?subject=Talk%20to%20sales">Contact sales</a><a href="#compliance">Compliance</a><a href="#faq">FAQ</a></div>
       </div>
     </div>
-    <div class="foot-btm"><span>&copy; 2026 PayerPay. All rights reserved.</span><span class="mono">PAYER PAY INTERNATIONAL INC · FINTRAC</span></div>
+    <div class="foot-btm">
+      <p class="foot-legal">PAYER PAY INTERNATIONAL INC. is registered with FINTRAC as a Money Services Business under registration number C100001025 and with the Bank of Canada as a payment service provider under the Retail Payment Activities Act. Services for customers in the United States are provided through appropriately licensed and regulated U.S. financial and payment service partners.</p>
+      <div class="foot-links"><a href="./terms.html">Terms of service</a><a href="./privacy.html">Privacy policy</a><a href="mailto:business@payerpay.com?subject=Contact%20us">Contact us</a><a href="./aml-kyc.html">AML &amp; KYC Policy</a></div>
+      <span>&copy; 2026 PayerPay. All rights reserved.</span>
+    </div>
   </div>
 </footer>
 
